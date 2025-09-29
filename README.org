@@ -51,11 +51,13 @@ https://www.gnu.org/licenses/fdl-1.3.html
 
 Installing and using Olive CSS is as simple as downloading a pre-built version from ~resources/css/~ directory, or building your own, and serving it via HTTP (of course also loading it in a ~<link>~ tag in your HTML.
 
-⚠️ About bundle size:
+About bundle size: Keep in mind that the default ~olive.min.css~ is pretty large, since it contains all classes and variants and media queries of classes. It is recommended before going to production, to create your own custom optimized build of Olive CSS, by disabling certain features.
 
-Keep in mind that the default ~olive.min.css~ is pretty large, since it contains all classes and variants and media queries of classes. It is recommended before going to production, to create your own custom optimized build of Olive CSS, by disabling certain features. Big factors that can drastically affect the size of the production CSS style sheet are the amount of colors you enable and amount of media queries/breakpoints.
+Some factors that can drastically affect the size of the production CSS style sheet are the amount of colors you enable and amount of media queries/breakpoints.
 
 A rule of thumb is to disable ~xl~ and/or ~2xl~ queries if you won't use them, and only choose some colors. This is made easy thanks to Guile Scheme's powerful ~parameterize~ syntax and helpers, allowing you to override pretty much anything. It can also be useful to disable dark mode since that will save a lot of complexity. See ~scripts/olive-css-gen.scm~ for more.
+
+It's also important to ensure that your web server efficiently caches CSS files and compresses them with GZIP or Brotli.
 
 ** Customizing Olive CSS
 
