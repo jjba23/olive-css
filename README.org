@@ -113,3 +113,13 @@ Find here the Backlog and Kanban boards for olive-css: https://lucidplan.jointhe
 | Output control | Limited, JIT compiler is restricting | Full (generate exactly what you want)       |
 
 Olive CSS is especially appealing if you want a completely libre, hackable, expressive and transparent alternative to Tailwind.
+
+------------------------
+
+* Troubleshooting
+
+Common issues and solutions:
+*Output is too large*: Disable unused breakpoints, variants, or colors in your build script.
+*Class not found*: Make sure you generated the build after adding the class logic.
+*Dark mode not working*: Ensure you are using the correct ~data-theme="dark"~ in the HTML element, and that dark mode queries were included in your build.
+*Invalid CSS*: Double-check your custom rule definitions, especially when formatting oklch colors.
