@@ -31,7 +31,7 @@ blockquote:before, blockquote:after, q:before, q:after {content:''; content:none
 ol, ul {list-style:none;}
 
 /*
-  Load HSS Hygge Style Sheets
+  Load Olive CSS Hygge Style Sheets
 */
 .aspect-square {aspect-ratio:1 / 1;}
 .aspect-auto {aspect-ratio:auto;}
@@ -2582,7 +2582,7 @@ ol, ul {list-style:none;}
 .shadow-none {box-shadow:0 0 #0000;}
 
 /*
-  Load HSS colors
+  Load Olive CSS colors
 */
 .bg-inherit {background:inherit;}
 .bg-white {background:white;}
@@ -11782,7 +11782,7 @@ ol, ul {list-style:none;}
 .decoration-wine-900 {text-decoration-color:oklch(0.3284 0.0747 9.86 / 1);}
 
 /*
-  Load HSS hover colors
+  Load Olive CSS hover colors
 */
 .hover\:bg-inherit {&:hover {background:inherit;}}
 .hover\:bg-white {&:hover {background:white;}}
@@ -20982,7 +20982,7 @@ ol, ul {list-style:none;}
 .hover\:decoration-wine-900 {&:hover {text-decoration-color:oklch(0.3284 0.0747 9.86 / 1);}}
 
 /*
-  Load HSS Dark mode colors
+  Load Olive CSS Dark mode colors
 */
 &:where([data-theme=dark], [data-theme=dark] *)
  {
@@ -30536,7 +30536,7 @@ ol, ul {list-style:none;}
 .dark\:backdrop-invert {backdrop-filter:invert(100%);}
 
 /*
-  Load HSS Dark mode hover colors
+  Load Olive CSS Dark mode hover colors
 */
 .hover\:dark\:bg-inherit {&:hover {background:inherit;}}
 .hover\:dark\:bg-white {&:hover {background:white;}}

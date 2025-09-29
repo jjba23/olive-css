@@ -15,7 +15,7 @@
 ;; You should have received a copy of the Lesser GNU General Public License
 ;; along with hygguile.  If not, see <https://www.gnu.org/licenses/>.
 
-(define-module (olive-css hss)
+(define-module (olive-css main)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-13)
   #:use-module (ice-9 string-fun)
@@ -29,7 +29,7 @@
   #:use-module (olive-css decl filters)
   #:use-module (olive-css decl typography)
   #:use-module (olive-css decl reset)
-  #:export (rounded-multiplier hss all-responsive reduced-responsive
+  #:export (rounded-multiplier olive-css-gen all-responsive reduced-responsive
                                responsive with-dark-mode?))
 
 (define rounded-multiplier
@@ -243,14 +243,14 @@
 
 (define dark-mode
   (param (list '("")
-               (rulc "Load HSS Dark mode colors")
+               (rulc "Load Olive CSS Dark mode colors")
                (list where-dark " {")
                (addmq 'dark
                       (colors (palettes)))
                (addmq 'dark
                       (filter-classes))
                '("")
-               (rulc "Load HSS Dark mode hover colors")
+               (rulc "Load Olive CSS Dark mode hover colors")
                (addhover "hover\\:dark"
                          (colors (palettes)))
                '("}"))))
@@ -393,13 +393,13 @@
 (define with-dark-mode?
   (param #t))
 
-(define* (hss)
+(define* (olive-css-gen)
   (append (rulc (license-header))
           '("")
           (rulc "Load CSS browser reset - should be first")
           (reset-css)
           '("")
-          (rulc "Load HSS Hygge Style Sheets")
+          (rulc "Load Olive CSS Hygge Style Sheets")
           (layout-classes)
           (filter-classes)
           (flexbox-classes)
@@ -419,10 +419,10 @@
           (scroll-snap-types)
           (shadows)
           '("")
-          (rulc "Load HSS colors")
+          (rulc "Load Olive CSS colors")
           (colors (palettes))
           '("")
-          (rulc "Load HSS hover colors")
+          (rulc "Load Olive CSS hover colors")
           (hover-colors (palettes))
           (if (with-dark-mode?)
               (dark-mode)

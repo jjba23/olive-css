@@ -31,7 +31,7 @@ blockquote:before, blockquote:after, q:before, q:after {content:''; content:none
 ol, ul {list-style:none;}
 
 /*
-  Load HSS Hygge Style Sheets
+  Load Olive CSS Hygge Style Sheets
 */
 .aspect-square {aspect-ratio:1 / 1;}
 .aspect-auto {aspect-ratio:auto;}
@@ -2582,7 +2582,7 @@ ol, ul {list-style:none;}
 .shadow-none {box-shadow:0 0 #0000;}
 
 /*
-  Load HSS colors
+  Load Olive CSS colors
 */
 .bg-inherit {background:inherit;}
 .bg-white {background:white;}
@@ -4582,7 +4582,7 @@ ol, ul {list-style:none;}
 .decoration-asparagus-900 {text-decoration-color:oklch(0.5012 0.0882 137.17 / 1);}
 
 /*
-  Load HSS hover colors
+  Load Olive CSS hover colors
 */
 .hover\:bg-inherit {&:hover {background:inherit;}}
 .hover\:bg-white {&:hover {background:white;}}
