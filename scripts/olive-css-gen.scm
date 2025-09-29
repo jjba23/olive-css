@@ -12,6 +12,9 @@
 (define rc-huidkliniek-dest-file
   "./resources/css/rc-huidkliniek.olive.min.css")
 
+(define lucidplan-dest-file
+  "./resources/css/lucidplan.olive.min.css")
+
 ;; generate framework style sheet with ALL features
 (let* ((complete-olive-css (olive-css-gen)))
   (catch #t
@@ -60,3 +63,39 @@
       (display (string-join (flatten-list (map format-css
                                                rc-huidkliniek-olive-css)) "\n")))))
 
+;; generate Lucidplan framework style sheet
+(let* ((lucidplan-olive-css (parameterize ((responsive reduced-responsive)
+                                           (palettes (list (cons 'floral-white
+                                                                 (floral-white))
+                                                           (cons 'china-rose
+                                                                 (china-rose))
+                                                           (cons 'wine
+                                                                 (wine))
+                                                           (cons 'bistre
+                                                                 (bistre))
+                                                           (cons 'redwood
+                                                                 (redwood))
+                                                           (cons 'spiced-terracotta
+                                                                 (spiced-terracotta))
+                                                           (cons 'papaya-whip
+                                                                 (papaya-whip))
+                                                           (cons 'onyx
+                                                                 (onyx))
+                                                           (cons 'stone
+                                                                 (stone))
+                                                           (cons 'jeans-blue
+                                                                 (jeans-blue))
+                                                           (cons 'olive
+                                                                 (olive))
+                                                           (cons 'asparagus
+                                                                 (asparagus)))))
+                              (olive-css-gen))))
+  (catch #t
+         (lambda ()
+           (delete-file lucidplan-dest-file))
+         (lambda _
+           (display "")))
+  (with-output-to-file lucidplan-dest-file
+    (lambda ()
+      (display (string-join (flatten-list (map format-css lucidplan-olive-css))
+                            "\n")))))
