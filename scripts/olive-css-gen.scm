@@ -75,6 +75,7 @@
                                                                  (onyx))
                                                            (cons 'stone
                                                                  (stone))
+                                                           (cons 'redwood (redwood))
                                                            (cons 'jeans-blue
                                                                  (jeans-blue))
                                                            (cons 'olive
