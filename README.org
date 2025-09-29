@@ -17,6 +17,14 @@ You can find olive-css technical Guile Scheme API documentation here:
 
 https://jointhefreeworld.org/api-docs/olive-css/API.html
 
+You can use Olive CSS like any other utility-class CSS framework, like this:
+
+#+begin_src html
+<div class="m-2 px-4 py-6 bg-jeans-blue-500 md:bg-asparagus-300 hover:bg-tawny-700">
+  <span class="text-white font-bold font-serif">Hello Olive CSS!</span>
+</div>
+#+end_src
+
 If you like my work, please support me by [[https://bmc.link/jjbigorra][buying me a cup of coffee ☕]] so I can continue with a lot of motivation.
 
 
@@ -45,6 +53,32 @@ Keep in mind that the default ~olive.min.css~ is pretty large, since it contains
 
 A rule of thumb is to disable ~xl~ and/or ~2xl~ queries if you won't use them, and only choose some colors. This is made easy thanks to Guile Scheme's powerful ~parameterize~ syntax and helpers, allowing you to override pretty much anything. It can also be useful to disable dark mode since that will save a lot of complexity. See ~scripts/olive-css-gen.scm~ for more.
 
+** Customizing Olive CSS
+
+Customization is a first-class feature in Olive CSS. Thanks to the power of Guile Scheme, you can enable/disable features, tweak sizes, colors, and easily add your own utility rules.
+
+Key customization points:
+
+- Choose which screen breakpoints to include (~sm~, ~md~, ~lg~, ~xl~, ~2xl~)
+- Enable or disable dark mode with parameterize
+- Customize your color palette and choose some colors for your project
+
+You can also generate your own responsive or hover-based variants with ~addmq~ and ~addhover~
+
+See ~scripts/olive-css-gen.scm~ and ~src/olive-css/main.scm~ and the API docs for more.
+
+----------------
+
+* Philosophy
+
+Olive CSS is not another Tailwind clone. It is simply inspired by it, and its design is based on these principles:
+
+- Hackability :: You can extend or modify anything via Scheme code.
+- Freedom :: 100% Free Software, licensed under the LGPLv3+ and FDL 1.3+.
+- Self-contained :: Minimal dependencies and lightweight fast builds.
+- Expressiveness :: Easily add support for *ANY* CSS feature and your own palettes and rules/declarations.   
+
+It is built to encourage learning and experimentation, rather than hiding complexity behind rigid inflexible tooling.
 
 ----------------
 
@@ -67,3 +101,15 @@ We welcome everyone to feel invited to the olive-css Project, and encourage acti
 Find here the Backlog and Kanban boards for olive-css: https://lucidplan.jointhefreeworld.org/tickets/olive-css
 
 
+----------------------
+
+* Comparison with Tailwind CSS
+
+| Feature        | Tailwind CSS                         | Olive CSS                                   |
+| Written in     | JavaScript                           | λ Guile Scheme                              |
+| Customization  | - average (via CSS config)           | ✔️ extensive (via code and expressive DSL) |
+| Functional API | ❌                                  | ✔️                                         |
+| Free Software  | ❌ (MIT, not copyleft)           | ✔️ (LGPL v3+ + FDL)                        |
+| Output control | Limited, JIT compiler is restricting | Full (generate exactly what you want)       |
+
+Olive CSS is especially appealing if you want a completely libre, hackable, expressive and transparent alternative to Tailwind.
