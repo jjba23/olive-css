@@ -121,6 +121,10 @@
                      (onyx))
                (cons 'orange
                      (orange))
+               (cons 'olive
+                     (olive))
+               (cons 'dark-khaki
+                     (dark-khaki))
                (cons 'pale-dogwood
                      (pale-dogwood))
                (cons 'papaya-whip

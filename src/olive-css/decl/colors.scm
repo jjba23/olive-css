@@ -320,3 +320,15 @@
 (define-public ferrari-red
   (param (make-palette ferrari-red-oklch)))
 
+(define-public olive-oklch
+  '(0.7457 0.1007 128.08))
+
+(define-public olive
+  (param (make-palette olive-oklch)))
+
+(define-public dark-khaki-oklch
+  '(0.7675 0.098 104.51))
+
+(define-public dark-khaki
+  (param (make-palette dark-khaki-oklch)))
+

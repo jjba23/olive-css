@@ -60,8 +60,6 @@
   (fmt)
   (build)
   (docs)
-  (delete-file-recursively deploy-dir)
-  (mv "dist" deploy-dir)
   (remkdir-p (~ "~a/api-docs/~a" deploy-api-docs-dir project-name))
   (mv "doc/api-dist/*"
       (~ "~a/api-docs/~a" deploy-api-docs-dir project-name))
