@@ -2255,6 +2255,14 @@ ol, ul {list-style:none;}
 .hyphens-none {hyphens:none;}
 .hyphens-manual {hyphens:manual;}
 .hyphens-auto {hyphens:auto;}
+.align-baseline {vertical-align:baseline;}
+.align-top {vertical-align:top;}
+.align-middle {vertical-align:middle;}
+.align-bottom {vertical-align:bottom;}
+.align-text-top {vertical-align:text-top;}
+.align-text-bottom {vertical-align:text-bottom;}
+.align-sub {vertical-align:sub;}
+.align-super {vertical-align:super;}
 .tracking-tighter {letter-spacing:-0.05em;}
 .tracking-tight {letter-spacing:-0.025em;}
 .tracking-normal {letter-spacing:0em;}
@@ -2484,6 +2492,14 @@ ol, ul {list-style:none;}
 .hover\:hyphens-none {&:hover {hyphens:none;}}
 .hover\:hyphens-manual {&:hover {hyphens:manual;}}
 .hover\:hyphens-auto {&:hover {hyphens:auto;}}
+.hover\:align-baseline {&:hover {vertical-align:baseline;}}
+.hover\:align-top {&:hover {vertical-align:top;}}
+.hover\:align-middle {&:hover {vertical-align:middle;}}
+.hover\:align-bottom {&:hover {vertical-align:bottom;}}
+.hover\:align-text-top {&:hover {vertical-align:text-top;}}
+.hover\:align-text-bottom {&:hover {vertical-align:text-bottom;}}
+.hover\:align-sub {&:hover {vertical-align:sub;}}
+.hover\:align-super {&:hover {vertical-align:super;}}
 .hover\:tracking-tighter {&:hover {letter-spacing:-0.05em;}}
 .hover\:tracking-tight {&:hover {letter-spacing:-0.025em;}}
 .hover\:tracking-normal {&:hover {letter-spacing:0em;}}
@@ -8807,6 +8823,14 @@ ol, ul {list-style:none;}
 .sm\:hyphens-none {hyphens:none;}
 .sm\:hyphens-manual {hyphens:manual;}
 .sm\:hyphens-auto {hyphens:auto;}
+.sm\:align-baseline {vertical-align:baseline;}
+.sm\:align-top {vertical-align:top;}
+.sm\:align-middle {vertical-align:middle;}
+.sm\:align-bottom {vertical-align:bottom;}
+.sm\:align-text-top {vertical-align:text-top;}
+.sm\:align-text-bottom {vertical-align:text-bottom;}
+.sm\:align-sub {vertical-align:sub;}
+.sm\:align-super {vertical-align:super;}
 .sm\:tracking-tighter {letter-spacing:-0.05em;}
 .sm\:tracking-tight {letter-spacing:-0.025em;}
 .sm\:tracking-normal {letter-spacing:0em;}
@@ -11082,6 +11106,14 @@ ol, ul {list-style:none;}
 .md\:hyphens-none {hyphens:none;}
 .md\:hyphens-manual {hyphens:manual;}
 .md\:hyphens-auto {hyphens:auto;}
+.md\:align-baseline {vertical-align:baseline;}
+.md\:align-top {vertical-align:top;}
+.md\:align-middle {vertical-align:middle;}
+.md\:align-bottom {vertical-align:bottom;}
+.md\:align-text-top {vertical-align:text-top;}
+.md\:align-text-bottom {vertical-align:text-bottom;}
+.md\:align-sub {vertical-align:sub;}
+.md\:align-super {vertical-align:super;}
 .md\:tracking-tighter {letter-spacing:-0.05em;}
 .md\:tracking-tight {letter-spacing:-0.025em;}
 .md\:tracking-normal {letter-spacing:0em;}
@@ -13357,6 +13389,14 @@ ol, ul {list-style:none;}
 .lg\:hyphens-none {hyphens:none;}
 .lg\:hyphens-manual {hyphens:manual;}
 .lg\:hyphens-auto {hyphens:auto;}
+.lg\:align-baseline {vertical-align:baseline;}
+.lg\:align-top {vertical-align:top;}
+.lg\:align-middle {vertical-align:middle;}
+.lg\:align-bottom {vertical-align:bottom;}
+.lg\:align-text-top {vertical-align:text-top;}
+.lg\:align-text-bottom {vertical-align:text-bottom;}
+.lg\:align-sub {vertical-align:sub;}
+.lg\:align-super {vertical-align:super;}
 .lg\:tracking-tighter {letter-spacing:-0.05em;}
 .lg\:tracking-tight {letter-spacing:-0.025em;}
 .lg\:tracking-normal {letter-spacing:0em;}
@@ -15632,6 +15672,14 @@ ol, ul {list-style:none;}
 .xl\:hyphens-none {hyphens:none;}
 .xl\:hyphens-manual {hyphens:manual;}
 .xl\:hyphens-auto {hyphens:auto;}
+.xl\:align-baseline {vertical-align:baseline;}
+.xl\:align-top {vertical-align:top;}
+.xl\:align-middle {vertical-align:middle;}
+.xl\:align-bottom {vertical-align:bottom;}
+.xl\:align-text-top {vertical-align:text-top;}
+.xl\:align-text-bottom {vertical-align:text-bottom;}
+.xl\:align-sub {vertical-align:sub;}
+.xl\:align-super {vertical-align:super;}
 .xl\:tracking-tighter {letter-spacing:-0.05em;}
 .xl\:tracking-tight {letter-spacing:-0.025em;}
 .xl\:tracking-normal {letter-spacing:0em;}

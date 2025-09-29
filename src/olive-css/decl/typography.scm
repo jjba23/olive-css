@@ -258,6 +258,18 @@
                             (manual manual)
                             (auto auto)))))
 
+(define vertical-align
+  (param (rulv ".align-~a"
+               #:property 'vertical-align
+               #:variants '((baseline baseline)
+                            (top top)
+                            (middle middle)
+                            (bottom bottom)
+                            (text-top text-top)
+                            (text-bottom text-bottom)
+                            (sub sub)
+                            (super super)))))
+
 (define typography-classes
   (param (list (font-family)
                (font-weight)
@@ -282,4 +294,5 @@
                (word-break)
                (overflow-wrap)
                (hyphens)
+               (vertical-align)
                (letter-spacing))))
