@@ -1,4 +1,4 @@
-;; olive-css - Utility-class CSS library that is easy to learn and hack
+;; olive-css - Utility-class CSS framework that is easy to learn and hack
 
 ;; Copyright © Josep Bigorra <jjbigorra@gmail.com>
 
