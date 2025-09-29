@@ -15,12 +15,12 @@
 ;; You should have received a copy of the Lesser GNU General Public License
 ;; along with hygguile.  If not, see <https://www.gnu.org/licenses/>.
 
-(define-module (fika-css decl filters)
+(define-module (olive-css decl filters)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-13)
   #:use-module (ice-9 string-fun)
-  #:use-module (hygguile hss dsl)
-  #:use-module (hygguile hss sizes)
+  #:use-module (olive-css dsl)
+  #:use-module (olive-css sizes)
   #:export (filter-classes blur
                            brightness
                            contrast

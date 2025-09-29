@@ -1,21 +1,21 @@
-;; fika-css - Utility-class CSS library that is easy to learn and hack
+;; olive-css - Utility-class CSS library that is easy to learn and hack
 
 ;; Copyright © Josep Bigorra <jjbigorra@gmail.com>
 
-;; fika-css is free software: you can redistribute it and/or modify
+;; olive-css is free software: you can redistribute it and/or modify
 ;; it under the terms of the Lesser GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
 
-;; fika-css is distributed in the hope that it will be useful,
+;; olive-css is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; Lesser GNU General Public License for more details.
 
 ;; You should have received a copy of the Lesser GNU General Public License
-;; along with fika-css.  If not, see <https://www.gnu.org/licenses/>.
+;; along with olive-css.  If not, see <https://www.gnu.org/licenses/>.
 
-(define-module (fika-css sizes)
+(define-module (olive-css sizes)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-13)
   #:use-module (ice-9 string-fun)

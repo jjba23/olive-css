@@ -1,19 +1,19 @@
-;; fika-css - Utility-class CSS library that is easy to learn and hack
+;; olive-css - Utility-class CSS library that is easy to learn and hack
 
 ;; Copyright © Josep Bigorra <jjbigorra@gmail.com>
 
-;; fika-css is free software: you can redistribute it and/or modify
+;; olive-css is free software: you can redistribute it and/or modify
 ;; it under the terms of the Lesser GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
 
-;; fika-css is distributed in the hope that it will be useful,
+;; olive-css is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; Lesser GNU General Public License for more details.
 
 ;; You should have received a copy of the Lesser GNU General Public License
-;; along with fika-css.  If not, see <https://www.gnu.org/licenses/>.
+;; along with olive-css.  If not, see <https://www.gnu.org/licenses/>.
 
 (define-module (maak)
   #:declarative? #t
@@ -31,7 +31,7 @@
 
 ;; The name of the project, represented as a symbol.
 (define project-name
-  'fika-css)
+  'olive-css)
 
 (define hot-reload-file-types
   '(scm css))
@@ -48,7 +48,7 @@
                     "-c '((@ (ares server) run-nrepl-server))'")))
 
 (define (docs)
-  "Generate technical API documentation for Hygguile."
+  "Generate technical API documentation."
   (delete-file-recursively "doc")
   (manifest-shell (list (~ "documenta api ./src/~a && " project-name)
                         (~ "texi2any -v --html --css-ref=~a" api-docs-css-url)
@@ -69,18 +69,17 @@
 
 (define (build)
   "Generate production CSS."
-  (manifest-shell '("guile -L ./src" "./scripts/fika-css-gen.scm")))
+  (manifest-shell '("guile -L ./src" "./scripts/olive-css-gen.scm")))
 
 (define (hot-reload)
   "Hot-reloading developer's setup."
-  (embed)
   (fmt)
   (manifest-shell (list "watchexec"
                         "--clear"
                         (~ "--exts ~a"
                            (string-join (map symbol->string
                                              hot-reload-file-types) ","))
-                        "--ignore=src/hygguile/embed/*.scm"
+                        "--ignore=resources/css/*.min.css"
                         "--on-busy-update=restart"
                         "--shell bash"
                         "--watch . --"

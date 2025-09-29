@@ -2,15 +2,15 @@
              (ice-9 ports)
              (ice-9 textual-ports)
              (ice-9 popen)
-             (hygguile hss hss)
-             (hygguile hss dsl)
-             (hygguile hss decl colors))
+             (olive-css hss)
+             (olive-css dsl)
+             (olive-css decl colors))
 
 (define hss-dest-file
-  "./resources/css/hss.min.css")
+  "./resources/css/olive.min.css")
 
 (define hss-rc-huidkliniek-dest-file
-  "./resources/css/rc-huidkliniek-hss.min.css")
+  "./resources/css/rc-huidkliniek.olive.min.css")
 
 ;; generate entire HSS
 (let* ((all-hss (hss)))

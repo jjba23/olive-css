@@ -15,11 +15,11 @@
 ;; You should have received a copy of the Lesser GNU General Public License
 ;; along with hygguile.  If not, see <https://www.gnu.org/licenses/>.
 
-(define-module (fika-css decl colors)
+(define-module (olive-css decl colors)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-13)
   #:use-module (ice-9 string-fun)
-  #:use-module (hygguile hss dsl))
+  #:use-module (olive-css dsl))
 
 (define-public redwood-oklch
   '(0.5591 0.1288 31.7))

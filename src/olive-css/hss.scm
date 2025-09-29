@@ -15,20 +15,20 @@
 ;; You should have received a copy of the Lesser GNU General Public License
 ;; along with hygguile.  If not, see <https://www.gnu.org/licenses/>.
 
-(define-module (fika-css hss)
+(define-module (olive-css hss)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-13)
   #:use-module (ice-9 string-fun)
-  #:use-module (hygguile hss dsl)
-  #:use-module (hygguile hss sizes)
-  #:use-module (hygguile hss decl colors)
-  #:use-module (hygguile hss decl layout)
-  #:use-module (hygguile hss decl flexbox)
-  #:use-module (hygguile hss decl spacing)
-  #:use-module (hygguile hss decl sizing)
-  #:use-module (hygguile hss decl filters)
-  #:use-module (hygguile hss decl typography)
-  #:use-module (hygguile hss decl reset)
+  #:use-module (olive-css dsl)
+  #:use-module (olive-css sizes)
+  #:use-module (olive-css decl colors)
+  #:use-module (olive-css decl layout)
+  #:use-module (olive-css decl flexbox)
+  #:use-module (olive-css decl spacing)
+  #:use-module (olive-css decl sizing)
+  #:use-module (olive-css decl filters)
+  #:use-module (olive-css decl typography)
+  #:use-module (olive-css decl reset)
   #:export (rounded-multiplier hss all-responsive reduced-responsive
                                responsive with-dark-mode?))
 
