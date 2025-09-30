@@ -15,6 +15,9 @@
 (define lucidplan-dest-file
   "./resources/css/lucidplan.olive.min.css")
 
+(define byggsteg-dest-file
+  "./resources/css/byggsteg.olive.min.css")
+
 ;; generate framework style sheet with ALL features
 (let* ((complete-olive-css (olive-css-gen)))
   (catch #t
@@ -75,7 +78,8 @@
                                                                  (onyx))
                                                            (cons 'stone
                                                                  (stone))
-                                                           (cons 'redwood (redwood))
+                                                           (cons 'redwood
+                                                                 (redwood))
                                                            (cons 'jeans-blue
                                                                  (jeans-blue))
                                                            (cons 'olive
@@ -91,4 +95,33 @@
   (with-output-to-file lucidplan-dest-file
     (lambda ()
       (display (string-join (flatten-list (map format-css lucidplan-olive-css))
+                            "\n")))))
+
+;; generate Byggsteg framework style sheet
+(let* ((byggsteg-olive-css (parameterize ((responsive reduced-responsive)
+                                           (palettes (list (cons 'onyx
+                                                                 (onyx))
+                                                           (cons 'tawny
+                                                                 (tawny))
+                                                           (cons 'orange
+                                                                 (orange))
+                                                           (cons 'stone
+                                                                 (stone))
+                                                           (cons 'redwood
+                                                                 (redwood))
+                                                           (cons 'jeans-blue
+                                                                 (jeans-blue))
+                                                           (cons 'olive
+                                                                 (olive))
+                                                           (cons 'asparagus
+                                                                 (asparagus)))))
+                              (olive-css-gen))))
+  (catch #t
+         (lambda ()
+           (delete-file byggsteg-dest-file))
+         (lambda _
+           (display "")))
+  (with-output-to-file byggsteg-dest-file
+    (lambda ()
+      (display (string-join (flatten-list (map format-css byggsteg-olive-css))
                             "\n")))))
