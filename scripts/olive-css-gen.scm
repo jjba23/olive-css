@@ -99,23 +99,23 @@
 
 ;; generate Byggsteg framework style sheet
 (let* ((byggsteg-olive-css (parameterize ((responsive reduced-responsive)
-                                           (palettes (list (cons 'onyx
-                                                                 (onyx))
-                                                           (cons 'tawny
-                                                                 (tawny))
-                                                           (cons 'orange
-                                                                 (orange))
-                                                           (cons 'stone
-                                                                 (stone))
-                                                           (cons 'redwood
-                                                                 (redwood))
-                                                           (cons 'jeans-blue
-                                                                 (jeans-blue))
-                                                           (cons 'olive
-                                                                 (olive))
-                                                           (cons 'asparagus
-                                                                 (asparagus)))))
-                              (olive-css-gen))))
+                                          (palettes (list (cons 'onyx
+                                                                (onyx))
+                                                          (cons 'tawny
+                                                                (tawny))
+                                                          (cons 'orange
+                                                                (orange))
+                                                          (cons 'stone
+                                                                (stone))
+                                                          (cons 'redwood
+                                                                (redwood))
+                                                          (cons 'jeans-blue
+                                                                (jeans-blue))
+                                                          (cons 'olive
+                                                                (olive))
+                                                          (cons 'asparagus
+                                                                (asparagus)))))
+                             (olive-css-gen))))
   (catch #t
          (lambda ()
            (delete-file byggsteg-dest-file))
