@@ -345,7 +345,8 @@
                          (dec 'scale "100% 1"))))))
 
 (define slide-from-right
-  (param (list (rul (dec 'animation-duration "1s")
+  (param (list (rul ".slide-from-right"
+                    (dec 'animation-duration "1s")
                     (dec 'animation-name
                          'slide-from-right-element)))))
 
@@ -359,7 +360,8 @@
                          (dec 'scale "100% 1"))))))
 
 (define slide-from-left
-  (param (list (rul (dec 'animation-duration "1s")
+  (param (list (rul ".slide-from-left"
+                    (dec 'animation-duration "1s")
                     (dec 'animation-name
                          'slide-from-left-element)))))
 
