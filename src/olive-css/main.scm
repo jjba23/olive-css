@@ -335,6 +335,34 @@
                     (rul 'to
                          (dec 'opacity 1))))))
 
+(define slide-from-right-element-animation
+  (param (list (rul "@keyframes slide-from-right-element"
+                    (rul "from"
+                         (dec 'translate "150vw 0")
+                         (dec 'scale "200% 1"))
+                    (rul "to"
+                         (dec 'translate "0 0")
+                         (dec 'scale "100% 1"))))))
+
+(define slide-from-right
+  (param (list (rul (dec 'animation-duration "1s")
+                    (dec 'animation-name
+                         'slide-from-right-element)))))
+
+(define slide-from-left-element-animation
+  (param (list (rul "@keyframes slide-from-left-element"
+                    (rul "from"
+                         (dec 'translate "-150vw 0")
+                         (dec 'scale "200% 1"))
+                    (rul "to"
+                         (dec 'translate "0 0")
+                         (dec 'scale "100% 1"))))))
+
+(define slide-from-left
+  (param (list (rul (dec 'animation-duration "1s")
+                    (dec 'animation-name
+                         'slide-from-left-element)))))
+
 (define active-scale
   (param (list (rul ".active\\:scale-95"
                     (rul "&:active"
@@ -445,6 +473,10 @@
           (borders)
           (display-utilities)
           (fade-in-page-transition)
+          (slide-from-right-element-animation)
+          (slide-from-right)
+          (slide-from-left-element-animation)
+          (slide-from-left)
           (visibility)
           (border-radius)
           (scroll-snap-aligns)
