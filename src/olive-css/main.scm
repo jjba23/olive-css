@@ -270,14 +270,46 @@
                     (dec 'cursor
                          'pointer)))))
 
-(define roundings
-  (param (list (rulv ".rounded-~a"
-                     #:property 'border-radius
-                     #:variants (map (lambda (s)
-                                       (siz s
-                                            #:conversion to-rem
-                                            #:multiplier (rounded-multiplier)))
-                                     (append numeric-sizes tshirt-sizes))))))
+(define border-radius
+  (param (append (rulv ".rounded-~a"
+                       #:property 'border-radius
+                       #:variants (map (lambda (s)
+                                         (siz s
+                                              #:conversion to-rem
+                                              #:multiplier (rounded-multiplier)))
+                                       (append numeric-sizes tshirt-sizes)))
+
+                 (rulv ".rounded-tl-~a"
+                       #:property 'border-start-start-radius
+                       #:variants (map (lambda (s)
+                                         (siz s
+                                              #:conversion to-rem
+                                              #:multiplier (rounded-multiplier)))
+                                       (append numeric-sizes tshirt-sizes)))
+
+                 (rulv ".rounded-tr-~a"
+                       #:property 'border-start-end-radius
+                       #:variants (map (lambda (s)
+                                         (siz s
+                                              #:conversion to-rem
+                                              #:multiplier (rounded-multiplier)))
+                                       (append numeric-sizes tshirt-sizes)))
+
+                 (rulv ".rounded-bl-~a"
+                       #:property 'border-end-start-radius
+                       #:variants (map (lambda (s)
+                                         (siz s
+                                              #:conversion to-rem
+                                              #:multiplier (rounded-multiplier)))
+                                       (append numeric-sizes tshirt-sizes)))
+
+                 (rulv ".rounded-br-~a"
+                       #:property 'border-end-end-radius
+                       #:variants (map (lambda (s)
+                                         (siz s
+                                              #:conversion to-rem
+                                              #:multiplier (rounded-multiplier)))
+                                       (append numeric-sizes tshirt-sizes))))))
 
 (define border-style
   (param 'solid))
@@ -336,7 +368,7 @@
                  (spacing-classes)
                  (sizing-classes)
                  (typography-classes)
-                 (roundings)
+                 (border-radius)
                  (scroll-snap-aligns)
                  (scroll-snap-types))))
 
@@ -414,7 +446,7 @@
           (display-utilities)
           (fade-in-page-transition)
           (visibility)
-          (roundings)
+          (border-radius)
           (scroll-snap-aligns)
           (scroll-snap-types)
           (shadows)

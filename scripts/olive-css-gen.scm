@@ -6,6 +6,9 @@
              (olive-css dsl)
              (olive-css decl colors))
 
+(define (log-info msg)
+  (format #t "\n[INFO] ~a" msg))
+
 (define dest-file
   "./resources/css/olive.min.css")
 
@@ -18,7 +21,7 @@
 (define byggsteg-dest-file
   "./resources/css/byggsteg.olive.min.css")
 
-;; generate framework style sheet with ALL features
+(log-info "Generate framework style sheet with ALL features")
 (let* ((complete-olive-css (olive-css-gen)))
   (catch #t
          (lambda ()
@@ -30,7 +33,7 @@
       (display (string-join (flatten-list (map format-css complete-olive-css))
                             "\n")))))
 
-;; generate RC Huidkliniek framework style sheet
+(log-info "Generate RC Huidkliniek framework style sheet")
 (let* ((rc-huidkliniek-olive-css (parameterize ((responsive reduced-responsive)
                                                 (with-dark-mode? #f)
                                                 (palettes (list (cons 'floral-white
@@ -66,14 +69,10 @@
       (display (string-join (flatten-list (map format-css
                                                rc-huidkliniek-olive-css)) "\n")))))
 
-;; generate Lucidplan framework style sheet
+(log-info "Generate Lucidplan framework style sheet")
 (let* ((lucidplan-olive-css (parameterize ((responsive reduced-responsive)
                                            (palettes (list (cons 'floral-white
                                                                  (floral-white))
-                                                           (cons 'spiced-terracotta
-                                                                 (spiced-terracotta))
-                                                           (cons 'papaya-whip
-                                                                 (papaya-whip))
                                                            (cons 'onyx
                                                                  (onyx))
                                                            (cons 'stone
@@ -97,7 +96,7 @@
       (display (string-join (flatten-list (map format-css lucidplan-olive-css))
                             "\n")))))
 
-;; generate Byggsteg framework style sheet
+(log-info "Generate Byggsteg framework style sheet")
 (let* ((byggsteg-olive-css (parameterize ((responsive reduced-responsive)
                                           (palettes (list (cons 'onyx
                                                                 (onyx))
