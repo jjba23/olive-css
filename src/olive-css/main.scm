@@ -29,8 +29,41 @@
   #:use-module (olive-css decl filters)
   #:use-module (olive-css decl typography)
   #:use-module (olive-css decl reset)
-  #:export (rounded-multiplier olive-css-gen all-responsive reduced-responsive
-                               responsive with-dark-mode?))
+  #:export (rounded-multiplier olive-css-gen
+                               all-responsive
+                               reduced-responsive
+                               responsive
+                               with-dark-mode?
+                               mono-font-family
+                               sans-font-family
+                               serif-font-family))
+
+(define mono-font-family
+  (param '("'IBM Plex Mono'" "monospace")))
+
+(define serif-font-family
+  (param '("'IBM Plex Serif'" "ui-serif" "serif" "'Times New Roman'")))
+
+(define sans-font-family
+  (param '("'IBM Plex Sans'" "ui-sans-serif"
+           "system-ui"
+           "sans-serif"
+           "'Apple Color Emoji'"
+           "'Segoe UI Emoji'"
+           "'Segoe UI Symbol'"
+           "'Noto Color Emoji'")))
+
+(define (font-family)
+  (let* ((rules (list (rul ".font-sans"
+                           (dec 'font-family
+                                (string-join (sans-font-family) ", ")))
+                      (rul ".font-mono"
+                           (dec 'font-family
+                                (string-join (mono-font-family) ", ")))
+                      (rul ".font-serif"
+                           (dec 'font-family
+                                (string-join (serif-font-family) ", "))))))
+    rules))
 
 (define rounded-multiplier
   (param 0.16))
@@ -243,8 +276,10 @@
 
 (define dark-mode
   (param (list '("")
-               (rulc "Load Olive CSS Dark mode colors")
+               (rulc "Load Olive CSS Dark mode")
                (list where-dark " {")
+               (addmq 'dark
+                      (font-family))
                (addmq 'dark
                       (colors (palettes)))
                (addmq 'dark
@@ -400,7 +435,8 @@
                  (typography-classes)
                  (border-radius)
                  (scroll-snap-aligns)
-                 (scroll-snap-types))))
+                 (scroll-snap-types)
+                 (font-family))))
 
 (define sm-responsive
   (param (map (lambda (r)
@@ -462,6 +498,7 @@
           (reset-css)
           '("")
           (rulc "Load Olive CSS Hygge Style Sheets")
+          (font-family)
           (layout-classes)
           (filter-classes)
           (flexbox-classes)

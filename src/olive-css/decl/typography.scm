@@ -51,15 +51,6 @@
                                list-style-position
                                text-align))
 
-(define mono-font-family
-  (param "'IBM Plex Mono', monospace"))
-(define serif-font-family
-  (param "'IBM Plex Serif', ui-serif, serif, 'Times New Roman'"))
-(define sans-font-family
-  (param (string-join '("'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif,"
-                        "'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'")
-                      " ")))
-
 (define font-size-multiplier
   (param 0.25))
 
@@ -82,17 +73,6 @@
                                       #:conversion to-rem
                                       #:multiplier (font-size-multiplier)))
                                (append tshirt-sizes numeric-sizes)))))
-
-(define font-family
-  (param (list (rul ".font-sans"
-                    (dec 'font-family
-                         (sans-font-family)))
-               (rul ".font-mono"
-                    (dec 'font-family
-                         (mono-font-family)))
-               (rul ".font-serif"
-                    (dec 'font-family
-                         (serif-font-family))))))
 
 (define text-align
   (param (rulv ".text-~a"
@@ -271,8 +251,7 @@
                             (super super)))))
 
 (define typography-classes
-  (param (list (font-family)
-               (font-weight)
+  (param (list (font-weight)
                (font-size)
                (font-style)
                (text-align)

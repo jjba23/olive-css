@@ -36,6 +36,18 @@
 (log-info "Generate RC Huidkliniek framework style sheet")
 (let* ((rc-huidkliniek-olive-css (parameterize ((responsive reduced-responsive)
                                                 (with-dark-mode? #f)
+                                                (serif-font-family '("'Fraunces'"
+                                                                     "ui-serif"
+                                                                     "serif"
+                                                                     "'Times New Roman'"))
+                                                (sans-font-family '("'Plus Jakarta Sans'"
+                                                                    "ui-sans-serif"
+                                                                    "system-ui"
+                                                                    "sans-serif"
+                                                                    "'Apple Color Emoji'"
+                                                                    "'Segoe UI Emoji'"
+                                                                    "'Segoe UI Symbol'"
+                                                                    "'Noto Color Emoji'"))
                                                 (palettes (list (cons 'floral-white
                                                                       (floral-white))
                                                                 (cons 'china-rose
