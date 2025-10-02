@@ -2544,6 +2544,10 @@ ol, ul {list-style:none;}
 .slide-from-right {animation-duration:1s; animation-name:slide-from-right-element;}
 @keyframes slide-from-left-element {from {translate:-150vw 0; scale:200% 1;} to {translate:0 0; scale:100% 1;}}
 .slide-from-left {animation-duration:1s; animation-name:slide-from-left-element;}
+@keyframes slide-from-top-element {from {translate:0 150vh; scale:1 200%;} to {translate:0 0; scale:1 100%;}}
+.slide-from-top {animation-duration:1s; animation-name:slide-from-top-element;}
+@keyframes slide-from-bottom-element {from {translate:0 -150vh; scale:1 200%;} to {translate:0 0; scale:1 100%;}}
+.slide-from-bottom {animation-duration:1s; animation-name:slide-from-bottom-element;}
 .visible {visibility:visible;}
 .invisible {visibility:invisible;}
 .collapse {visibility:collapse;}
