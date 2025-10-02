@@ -2506,7 +2506,6 @@ ol, ul {list-style:none;}
 .hover\:tracking-wide {&:hover {letter-spacing:0.025em;}}
 .hover\:tracking-wider {&:hover {letter-spacing:0.05em;}}
 .hover\:tracking-widest {&:hover {letter-spacing:0.1em;}}
-.active\:scale-95 {&:active {scale:95% 95%;}}
 .border-1 {border-style:solid; border-width:1.00px;}
 .border-2 {border-style:solid; border-width:2.00px;}
 .border-3 {border-style:solid; border-width:3.00px;}
@@ -2541,13 +2540,14 @@ ol, ul {list-style:none;}
 ::view-transition-old(root), ::view-transition-new(root) {animation:fade 0.1s ease both;}
 @keyframes fade {from {opacity:0.2;} to {opacity:1;}}
 @keyframes slide-from-right-element {from {translate:150vw 0; scale:200% 1;} to {translate:0 0; scale:100% 1;}}
-.slide-from-right {animation-duration:1s; animation-name:slide-from-right-element;}
+.slide-from-right {animation-duration:0.8s; animation-name:slide-from-right-element;}
 @keyframes slide-from-left-element {from {translate:-150vw 0; scale:200% 1;} to {translate:0 0; scale:100% 1;}}
-.slide-from-left {animation-duration:1s; animation-name:slide-from-left-element;}
-@keyframes slide-from-top-element {from {translate:0 150vh; scale:1 200%;} to {translate:0 0; scale:1 100%;}}
-.slide-from-top {animation-duration:1s; animation-name:slide-from-top-element;}
-@keyframes slide-from-bottom-element {from {translate:0 -150vh; scale:1 200%;} to {translate:0 0; scale:1 100%;}}
-.slide-from-bottom {animation-duration:1s; animation-name:slide-from-bottom-element;}
+.slide-from-left {animation-duration:0.8s; animation-name:slide-from-left-element;}
+@keyframes slide-from-top-element {from {translate:0 -150vh; scale:1 200%;} to {translate:0 0; scale:1 100%;}}
+.slide-from-top {animation-duration:0.8s; animation-name:slide-from-top-element;}
+@keyframes slide-from-bottom-element {from {translate:0 150vh; scale:1 200%;} to {translate:0 0; scale:1 100%;}}
+.slide-from-bottom {animation-duration:0.8s; animation-name:slide-from-bottom-element;}
+.active\:scale-95 {&:active {scale:95% 95%;}}
 .visible {visibility:visible;}
 .invisible {visibility:invisible;}
 .collapse {visibility:collapse;}
