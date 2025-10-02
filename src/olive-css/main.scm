@@ -499,6 +499,8 @@
           '("")
           (rulc "Load Olive CSS Hygge Style Sheets")
           (font-family)
+          (addhover 'hover
+                    (font-family))
           (layout-classes)
           (filter-classes)
           (flexbox-classes)
