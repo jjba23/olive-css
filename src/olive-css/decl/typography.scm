@@ -21,15 +21,11 @@
   #:use-module (ice-9 string-fun)
   #:use-module (olive-css dsl)
   #:use-module (olive-css sizes)
-  #:export (typography-classes font-family
-                               mono-font-family
-                               text-wrap
+  #:export (typography-classes text-wrap
                                text-underline-offset
                                text-transform
                                font-smoothing
                                white-space
-                               sans-font-family
-                               serif-font-family
                                font-variant-numeric
                                word-break
                                text-decoration-style
