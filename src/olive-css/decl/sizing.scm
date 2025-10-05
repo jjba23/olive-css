@@ -53,12 +53,19 @@
                                              (format #f "~a"
                                                      (car d)) "-" "~a")
                               #:property (cadr d)
-                              #:variants (map (lambda (s)
-                                                (siz s
-                                                     #:conversion to-rem
-                                                     #:multiplier (width-multiplier)))
-                                              (append numeric-sizes
-                                                      tshirt-sizes))))
+                              #:variants (append (map (lambda (s)
+                                                        (siz s
+                                                             #:conversion
+                                                             to-rem
+                                                             #:multiplier (width-multiplier)))
+                                                      (append numeric-sizes
+                                                              tshirt-sizes))
+                                                 (map (lambda (s)
+                                                        (siz s
+                                                             #:conversion
+                                                             identity
+                                                             #:multiplier (width-multiplier)))
+                                                      fractions))))
                       '((w width)
                         (min-w min-width)
                         (max-w max-width))))))
@@ -77,12 +84,19 @@
                                              (format #f "~a"
                                                      (car d)) "-" "~a")
                               #:property (cadr d)
-                              #:variants (map (lambda (s)
-                                                (siz s
-                                                     #:conversion to-rem
-                                                     #:multiplier (height-multiplier)))
-                                              (append numeric-sizes
-                                                      tshirt-sizes))))
+                              #:variants (append (map (lambda (s)
+                                                        (siz s
+                                                             #:conversion
+                                                             to-rem
+                                                             #:multiplier (height-multiplier)))
+                                                      (append numeric-sizes
+                                                              tshirt-sizes))
+                                                 (map (lambda (s)
+                                                        (siz s
+                                                             #:conversion
+                                                             identity
+                                                             #:multiplier (height-multiplier)))
+                                                      fractions))))
                       '((h height)
                         (min-h min-height)
                         (max-h max-height))))))
