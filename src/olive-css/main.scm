@@ -107,6 +107,8 @@
                      (black-olive))
                (cons 'buff
                      (buff))
+               (cons 'terra
+                     (terra))
                (cons 'cadet-gray
                      (cadet-gray))
                (cons 'cambridge-green
