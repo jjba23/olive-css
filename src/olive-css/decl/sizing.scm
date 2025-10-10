@@ -34,10 +34,12 @@
   (param "84ch"))
 
 (define width
-  (param (append (list (rul ".min-w-screen"
-                            (dec 'min-width "1vh"))
+  (param (append (list (rul ".w-screen"
+                            (dec 'width "100vw"))
+                       (rul ".min-w-screen"
+                            (dec 'min-width "100vw"))
                        (rul ".max-w-screen"
-                            (dec 'max-width "1vh"))
+                            (dec 'max-width "100vw"))
                        (rul ".min-w-prose"
                             (dec 'min-width
                                  (prose-size)))
@@ -73,10 +75,12 @@
                         (max-w max-width))))))
 
 (define height
-  (param (append (list (rul ".min-h-screen"
-                            (dec 'min-height "1vh"))
+  (param (append (list (rul ".h-screen"
+                            (dec 'height "100vh"))
+                       (rul ".min-h-screen"
+                            (dec 'min-height "100vh"))
                        (rul ".max-h-screen"
-                            (dec 'max-height "1vh"))
+                            (dec 'max-height "100vh"))
                        (rul ".h-full"
                             (dec 'height "100%"))                       
                        (rul ".min-h-full"
