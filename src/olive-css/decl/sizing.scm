@@ -41,6 +41,8 @@
                        (rul ".min-w-prose"
                             (dec 'min-width
                                  (prose-size)))
+                       (rul ".w-full"
+                            (dec 'width "100%"))
                        (rul ".min-w-full"
                             (dec 'min-width "100%"))
                        (rul ".max-w-full"
@@ -75,6 +77,8 @@
                             (dec 'min-height "1vh"))
                        (rul ".max-h-screen"
                             (dec 'max-height "1vh"))
+                       (rul ".h-full"
+                            (dec 'height "100%"))                       
                        (rul ".min-h-full"
                             (dec 'min-height "100%"))
                        (rul ".max-h-full"
