@@ -332,3 +332,8 @@
 (define-public dark-khaki
   (param (make-palette dark-khaki-oklch)))
 
+(define-public terra-oklch
+  '(0.6528 0.1464 39.15))
+
+(define-public terra
+  (param (make-palette terra-oklch)))

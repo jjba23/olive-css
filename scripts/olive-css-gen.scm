@@ -54,14 +54,12 @@
                                                                       (china-rose))
                                                                 (cons 'wine
                                                                       (wine))
-                                                                (cons 'bistre
-                                                                      (bistre))
                                                                 (cons 'redwood
                                                                       (redwood))
                                                                 (cons 'spiced-terracotta
                                                                       (spiced-terracotta))
-                                                                (cons 'papaya-whip
-                                                                      (papaya-whip))
+                                                                (cons 'terra
+                                                                      (terra))
                                                                 (cons 'onyx
                                                                       (onyx))
                                                                 (cons 'stone
