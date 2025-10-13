@@ -279,21 +279,21 @@
                   #:variants (list-combinations alphas color-weights)
                   #:palettes palettes)))
 
-(define dark-mode
-  (param (list '("")
-               (rulc "Load Olive CSS Dark mode")
-               (list where-dark " {")
-               (addmq 'dark
-                      (font-family))
-               (addmq 'dark
-                      (colors (palettes)))
-               (addmq 'dark
-                      (filter-classes))
-               '("")
-               (rulc "Load Olive CSS Dark mode hover colors")
-               (addhover "hover\\:dark"
-                         (colors (palettes)))
-               '("}"))))
+(define (dark-mode)
+  (list '("")
+        (rulc "Load Olive CSS Dark mode")
+        (list where-dark " {")
+        (addmq 'dark
+               (font-family))
+        (addmq 'dark
+               (colors (palettes)))
+        (addmq 'dark
+               (filter-classes))
+        '("")
+        (rulc "Load Olive CSS Dark mode hover colors")
+        (addhover "hover\\:dark"
+                  (colors (palettes)))
+        '("}")))
 
 (define (hover-colors palettes)
   (addhover 'hover
