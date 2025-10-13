@@ -21,6 +21,9 @@
 (define byggsteg-dest-file
   "./resources/css/byggsteg.olive.min.css")
 
+(define wikimusic-dest-file
+  "./resources/css/wikimusic.olive.min.css")
+
 (log-info "Generate framework style sheet with ALL features")
 (let* ((complete-olive-css (olive-css-gen)))
   (catch #t
@@ -133,4 +136,39 @@
   (with-output-to-file byggsteg-dest-file
     (lambda ()
       (display (string-join (flatten-list (map format-css byggsteg-olive-css))
+                            "\n")))))
+
+(log-info "Generate Wikimusic framework style sheet")
+(let* ((wikimusic-olive-css (parameterize ((responsive reduced-responsive)
+                                          (palettes (list (cons 'onyx
+                                                                (onyx))
+                                                          (cons 'tawny
+                                                                (tawny))
+                                                          (cons 'orange
+                                                                (orange))
+                                                          (cons 'stone
+                                                                (stone))
+                                                          (cons 'china-violet
+                                                                (china-violet))
+                                                          (cons 'persia-pink
+                                                                (persia-pink))
+                                                          (cons 'cambridge-green
+                                                                (cambridge-green))
+                                                          (cons 'redwood
+                                                                (redwood))
+                                                          (cons 'jeans-blue
+                                                                (jeans-blue))
+                                                          (cons 'olive
+                                                                (olive))
+                                                          (cons 'asparagus
+                                                                (asparagus)))))
+                             (olive-css-gen))))
+  (catch #t
+         (lambda ()
+           (delete-file wikimusic-dest-file))
+         (lambda _
+           (display "")))
+  (with-output-to-file wikimusic-dest-file
+    (lambda ()
+      (display (string-join (flatten-list (map format-css wikimusic-olive-css))
                             "\n")))))
