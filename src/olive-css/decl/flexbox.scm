@@ -222,14 +222,24 @@
 (define grid-template-columns
   (param (list (rulv ".grid-cols-~a"
                      #:property 'grid-template-columns
-                     #:variants (append numeric-sizes
+                     #:variants (append (map (lambda (x)
+                                               (list (car x)
+                                                     (format #f
+                                                      "repeat(~a, minmax(0, 1fr))"
+                                                      (cadr x))))
+                                             numeric-sizes)
                                         '((none none)
                                           (subgrid subgrid)))))))
 
 (define grid-template-rows
   (param (list (rulv ".grid-rows-~a"
                      #:property 'grid-template-rows
-                     #:variants (append numeric-sizes tshirt-sizes
+                     #:variants (append (map (lambda (x)
+                                               (list (car x)
+                                                     (format #f
+                                                      "repeat(~a, minmax(0, 1fr))"
+                                                      (cadr x))))
+                                             numeric-sizes)
                                         '((none none)
                                           (subgrid subgrid)))))))
 
@@ -245,11 +255,10 @@
 (define grid-auto-columns
   (param (list (rulv ".auto-cols-~a"
                      #:property 'grid-auto-columns
-                     #:variants (append
-                                 '((auto auto)
-                                  (min min-content)
-                                  (max max-content))
-                                 numeric-sizes tshirt-sizes)))))
+                     #:variants (append '((auto auto)
+                                          (min min-content)
+                                          (max max-content)) numeric-sizes
+                                        tshirt-sizes)))))
 
 (define flexbox-classes
   (param (list (flex-basis)
