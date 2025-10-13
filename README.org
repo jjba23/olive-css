@@ -92,6 +92,9 @@ It is built to encourage learning and experimentation, rather than hiding comple
 
 - Hygguile :: https://codeberg.org/jjba23/hygguile
 - LucidPlan :: https://codeberg.org/jjba23/lucidplan
+- WikiMusic :: https://codeberg.org/jjba23/wikimusic
+- Byggsteg :: https://codeberg.org/jjba23/byggsteg
+  
 
 --------------
 
