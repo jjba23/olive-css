@@ -219,6 +219,38 @@
                             (end-safe "safe end")
                             (stretch stretch)))))
 
+(define grid-template-columns
+  (param (list (rulv ".grid-cols-~a"
+                     #:property 'grid-template-columns
+                     #:variants (append numeric-sizes tshirt-sizes
+                                        '((none none)
+                                          (subgrid subgrid)))))))
+
+(define grid-template-rows
+  (param (list (rulv ".grid-rows-~a"
+                     #:property 'grid-template-rows
+                     #:variants (append numeric-sizes tshirt-sizes
+                                        '((none none)
+                                          (subgrid subgrid)))))))
+
+(define grid-auto-flow
+  (param (list (rulv ".grid-flow-~a"
+                     #:property 'grid-auto-flow
+                     #:variants '((row row)
+                                  (col column)
+                                  (dense dense)
+                                  (row-dense "row dense")
+                                  (col-dense "column dense"))))))
+
+(define grid-auto-columns
+  (param (list (rulv ".auto-cols-~a"
+                     #:property 'grid-auto-columns
+                     #:variants (append
+                                 '((auto auto)
+                                  (min min-content)
+                                  (max max-content))
+                                 numeric-sizes tshirt-sizes)))))
+
 (define flexbox-classes
   (param (list (flex-basis)
                (flex-place-content)
@@ -236,4 +268,8 @@
                (flex-shrink)
                (flex-grow)
                (gap)
-               (flex-wrap))))
+               (flex-wrap)
+               (grid-template-columns)
+               (grid-template-rows)
+               (grid-auto-flow)
+               (grid-auto-columns))))
