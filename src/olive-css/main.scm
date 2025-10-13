@@ -28,16 +28,18 @@
   #:use-module (olive-css decl sizing)
   #:use-module (olive-css decl filters)
   #:use-module (olive-css decl typography)
-  #:use-module (olive-css decl animation)  
+  #:use-module (olive-css decl animation)
   #:use-module (olive-css decl reset)
   #:export (rounded-multiplier olive-css-gen
                                all-responsive
                                reduced-responsive
+                               palettes
                                responsive
                                with-dark-mode?
                                mono-font-family
                                sans-font-family
-                               serif-font-family))
+                               serif-font-family
+                               write-css-to-file))
 
 (define mono-font-family
   (param '("'IBM Plex Mono'" "monospace")))
@@ -90,7 +92,7 @@
            (lg ,(lg-breakpoint))
            (xl ,(xl-breakpoint)))))
 
-(define-public palettes
+(define palettes
   (param (list (cons 'apple-green
                      (apple-green))
                (cons 'ash-gray
@@ -486,3 +488,12 @@
           (rulc "Load responsive classes")
           (responsive)))
 
+(define* (write-css-to-file #:key file css-lines)
+  (catch #t
+         (lambda ()
+           (delete-file file))
+         (lambda _
+           (display "")))
+  (with-output-to-file file
+    (lambda ()
+      (display (string-join (flatten-list (map format-css css-lines)) "\n")))))
