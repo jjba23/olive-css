@@ -222,7 +222,7 @@
 (define grid-template-columns
   (param (list (rulv ".grid-cols-~a"
                      #:property 'grid-template-columns
-                     #:variants (append numeric-sizes tshirt-sizes
+                     #:variants (append numeric-sizes
                                         '((none none)
                                           (subgrid subgrid)))))))
 
