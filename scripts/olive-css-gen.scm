@@ -81,12 +81,48 @@
         (cons 'asparagus
               (asparagus))))
 
+(define documentation-intro-lines
+  (param (list
+          "#+title: Olive CSS Documentation
+#+language: en
+
+🚧 Work in progress
+
+* 🫒 Welcome to Olive CSS
+
+Olive CSS is a utility-class CSS framework designed for rapid, flexible web development, drawing inspiration from Tailwind CSS and other frameworks. It's unique because it's written entirely in Lisp (Guile Scheme), making it exceptionally hackable, transparent, and aligned with Free Software principles.
+
+Here you'll find the resources here to build fast, beautiful, and freedom-respecting web projects with utility-class CSS. 
+")))
+
+(define* (mk-docs-from-css lines)
+  (let* ((dynamic-lines (map (lambda (cl)
+                               (cond
+                                 ((and (rule? cl)
+                                       (string-prefix? ".font-"
+                                                       (format #f "~a"
+                                                               (rule-selector
+                                                                cl))))
+                                  (list "#+begin_src css" cl "#+end_src\n"))
+
+                                 ((and (rule? cl)
+                                       (string-prefix? ".text-"
+                                                       (format #f "~a"
+                                                               (rule-selector
+                                                                cl))))
+                                  (list "#+begin_src css" cl "#+end_src\n"))
+                                 (else '()))) lines))
+         (lines (append (documentation-intro-lines) dynamic-lines)))
+    lines))
+
 (define css-gen-tasks
   (list (lambda ()
-          (log-info "Generate framework style sheet with ALL features")
-          (write-css-to-file #:file "./resources/css/olive.min.css"
-                             #:css-lines (begin
-                                           (olive-css-gen))))
+          (let* ((css-lines (olive-css-gen)))
+            (log-info "Generate framework style sheet with ALL features")
+            (write-css-to-file #:file "./resources/css/olive.min.css"
+                               #:css-lines css-lines)
+            (write-docs-to-file #:file "./docs/olive/olive.org"
+                                #:lines (mk-docs-from-css css-lines))))
 
         (lambda ()
           (log-info "Generate RC Huidkliniek framework style sheet")

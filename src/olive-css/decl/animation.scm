@@ -50,7 +50,8 @@
 
 (define slide-from-top
   (param (list (rul ".slide-from-top"
-                    (dec 'animation-duration (animation-duration))
+                    (dec 'animation-duration
+                         (animation-duration))
                     (dec 'animation-name
                          'slide-from-top-element)))))
 
@@ -65,7 +66,8 @@
 
 (define slide-from-bottom
   (param (list (rul ".slide-from-bottom"
-                    (dec 'animation-duration (animation-duration))
+                    (dec 'animation-duration
+                         (animation-duration))
                     (dec 'animation-name
                          'slide-from-bottom-element)))))
 
@@ -80,7 +82,8 @@
 
 (define slide-from-right
   (param (list (rul ".slide-from-right"
-                    (dec 'animation-duration (animation-duration))
+                    (dec 'animation-duration
+                         (animation-duration))
                     (dec 'animation-name
                          'slide-from-right-element)))))
 
@@ -95,7 +98,8 @@
 
 (define slide-from-left
   (param (list (rul ".slide-from-left"
-                    (dec 'animation-duration (animation-duration))
+                    (dec 'animation-duration
+                         (animation-duration))
                     (dec 'animation-name
                          'slide-from-left-element)))))
 

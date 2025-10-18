@@ -82,7 +82,7 @@
                        (rul ".max-h-screen"
                             (dec 'max-height "100vh"))
                        (rul ".h-full"
-                            (dec 'height "100%"))                       
+                            (dec 'height "100%"))
                        (rul ".min-h-full"
                             (dec 'min-height "100%"))
                        (rul ".max-h-full"

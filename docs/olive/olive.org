@@ -1,0 +1,38 @@
+#+title: Olive CSS Documentation
+#+language: en
+
+🚧 Work in progress
+
+* 🫒 Welcome to Olive CSS
+
+Olive CSS is a utility-class CSS framework designed for rapid, flexible web development, drawing inspiration from Tailwind CSS and other frameworks. It's unique because it's written entirely in Lisp (Guile Scheme), making it exceptionally hackable, transparent, and aligned with Free Software principles.
+
+Here you'll find the resources here to build fast, beautiful, and freedom-respecting web projects with utility-class CSS. 
+
+#+begin_src css
+.font-sans {font-family:'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}
+#+end_src
+
+#+begin_src css
+.font-mono {font-family:'IBM Plex Mono', monospace;}
+#+end_src
+
+#+begin_src css
+.font-serif {font-family:'IBM Plex Serif', ui-serif, serif, 'Times New Roman';}
+#+end_src
+
+#+begin_src css
+.text-inherit {color:inherit;}
+#+end_src
+
+#+begin_src css
+.text-white {color:white;}
+#+end_src
+
+#+begin_src css
+.text-black {color:black;}
+#+end_src
+
+#+begin_src css
+.text-transparent {color:transparent;}
+#+end_src

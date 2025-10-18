@@ -39,6 +39,7 @@
                                mono-font-family
                                sans-font-family
                                serif-font-family
+                               write-docs-to-file
                                write-css-to-file))
 
 (define mono-font-family
@@ -497,3 +498,13 @@
   (with-output-to-file file
     (lambda ()
       (display (string-join (flatten-list (map format-css css-lines)) "\n")))))
+
+(define* (write-docs-to-file #:key file lines)
+  (catch #t
+         (lambda ()
+           (delete-file file))
+         (lambda _
+           (display "")))
+  (with-output-to-file file
+    (lambda ()
+      (display (string-join (flatten-list (map format-css lines)) "\n")))))
