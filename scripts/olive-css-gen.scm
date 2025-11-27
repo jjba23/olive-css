@@ -81,6 +81,24 @@
         (cons 'asparagus
               (asparagus))))
 
+(define iter-vitae-palettes
+  (list (cons 'onyx
+              (onyx))
+        (cons 'stone
+              (stone))
+        (cons 'china-violet
+              (china-violet))
+        (cons 'persia-pink
+              (persia-pink))
+        (cons 'redwood
+              (redwood))
+        (cons 'jeans-blue
+              (jeans-blue))
+        (cons 'asparagus
+              (asparagus))
+        
+        ))
+
 (define documentation-intro-lines
   (param (list
           "#+title: Olive CSS Documentation
@@ -164,6 +182,15 @@ Here you'll find the resources here to build fast, beautiful, and freedom-respec
                                                         (palettes
                                                          byggsteg-palettes))
                                            (olive-css-gen))))
+
+        (lambda ()
+          (log-info "Generate Iter Vitae framework style sheet")
+          (write-css-to-file #:file "./resources/css/iter-vitae.olive.min.css"
+                             #:css-lines (parameterize ((responsive
+                                                         reduced-responsive)
+                                                        (palettes
+                                                         iter-vitae-palettes))
+                                           (olive-css-gen))))        
 
         (lambda ()
           (log-info "Generate Wikimusic framework style sheet")
