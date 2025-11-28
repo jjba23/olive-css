@@ -7,7 +7,7 @@
 [[https://jointhefreeworld.org/ggg/dist/license-lgpl3+.svg]]    [[https://jointhefreeworld.org/ggg/dist/license-fdl13+.svg]] 
 
 
-/Utility-class CSS framework inspired by Tailwind syntax, easy to learn and hack, written in Lisp (Guile Scheme)/
+/Utility-class vanilla CSS framework inspired by Tailwind syntax, easy to learn and hack, written in Lisp (Guile Scheme)/
 
 You can use this in any web project, Scheme or not, and it serves as a kind-of drop-in replacement for Tailwind.
 
