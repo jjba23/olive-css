@@ -44,15 +44,17 @@
 
 (define (repl)
   "Development REPL."
-  (manifest-shell '("guile -L ./src"
-                    "-c '((@ (ares server) run-nrepl-server))'")))
+  (time-machine-manifest-shell '("guile -L ./src"
+                                 "-c '((@ (ares server) run-nrepl-server))'")))
 
 (define (docs)
   "Generate technical API documentation."
   (delete-file-recursively "doc")
-  (manifest-shell (list (~ "documenta api ./src/~a && " project-name)
-                        (~ "texi2any -v --html --css-ref=~a" api-docs-css-url)
-                        "./doc/api/index.texi"))
+  (time-machine-manifest-shell (list (~ "documenta api ./src/~a && "
+                                        project-name)
+                                     (~ "texi2any -v --html --css-ref=~a"
+                                        api-docs-css-url)
+                                     "./doc/api/index.texi"))
   (mv "./index" "./doc/api-dist"))
 
 (define (deploy)
@@ -67,21 +69,23 @@
 
 (define (build)
   "Generate production CSS."
-  (manifest-shell '("guile -L ./src" "./scripts/olive-css-gen.scm")))
+  (time-machine-manifest-shell '("guile -L ./src"
+                                 "./scripts/olive-css-gen.scm")))
 
 (define (hot-reload)
   "Hot-reloading developer's setup."
   (fmt)
-  (manifest-shell (list "watchexec"
-                        "--clear"
-                        (~ "--exts ~a"
-                           (string-join (map symbol->string
-                                             hot-reload-file-types) ","))
-                        "--ignore=resources/css/*.min.css"
-                        "--on-busy-update=restart"
-                        "--shell bash"
-                        "--watch . --"
-                        "maak build")))
+  (time-machine-manifest-shell (list "watchexec"
+                                     "--clear"
+                                     (~ "--exts ~a"
+                                        (string-join (map symbol->string
+                                                      hot-reload-file-types)
+                                                     ","))
+                                     "--ignore=resources/css/*.min.css"
+                                     "--on-busy-update=restart"
+                                     "--shell bash"
+                                     "--watch . --"
+                                     "maak build")))
 
 (define (dev)
   "Developer's setup."
