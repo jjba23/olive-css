@@ -1,4 +1,4 @@
-#+title: Olive CSS
+#+title: Olive CSS 🫒
 #+author: Josep Bigorra
 #+email: jjbigorra@gmail.com
 #+language: en
@@ -13,7 +13,11 @@ You can use this in any web project, Scheme or not, and it serves as a kind-of d
 
 This project is licensed under the Lesser GNU General Public License v3 or later.
 
-You can find olive-css technical Guile Scheme API documentation here:
+You can read more about Olive CSS's features and syntax here, in the documentation page:
+
+[[file:docs/olive/olive.org]]
+
+You can also find olive-css technical Guile Scheme API documentation here:
 
 https://jointhefreeworld.org/api-docs/olive-css/API.html
 
