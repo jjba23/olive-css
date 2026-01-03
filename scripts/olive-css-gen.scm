@@ -1,3 +1,20 @@
+;; olive-css - Utility-class CSS framework that is easy to learn and hack
+
+;; Copyright © Josep Bigorra <jjbigorra@gmail.com>
+
+;; olive-css is free software: you can redistribute it and/or modify
+;; it under the terms of the Lesser GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; olive-css is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; Lesser GNU General Public License for more details.
+
+;; You should have received a copy of the Lesser GNU General Public License
+;; along with olive-css.  If not, see <https://www.gnu.org/licenses/>.
+
 (use-modules (ice-9 string-fun)
              (ice-9 ports)
              (ice-9 textual-ports)
@@ -62,6 +79,26 @@
               (jeans-blue))
         (cons 'olive
               (olive))
+        (cons 'asparagus
+              (asparagus))))
+
+(define torikomi-palettes
+  (list (cons 'onyx
+              (onyx))
+        (cons 'tawny
+              (tawny))
+        (cons 'orange
+              (orange))
+        (cons 'stone
+              (stone))
+        (cons 'china-violet
+              (china-violet))
+        (cons 'prussian-blue
+              (prussian-blue))
+        (cons 'jeans-blue
+              (jeans-blue))
+        (cons 'iris
+              (iris))
         (cons 'asparagus
               (asparagus))))
 
@@ -181,6 +218,15 @@ Here you'll find the resources here to build fast, beautiful, and freedom-respec
                                                          reduced-responsive)
                                                         (palettes
                                                          byggsteg-palettes))
+                                           (olive-css-gen))))
+
+        (lambda ()
+          (log-info "Generate Torikomi framework style sheet")
+          (write-css-to-file #:file "./resources/css/torikomi.olive.min.css"
+                             #:css-lines (parameterize ((responsive
+                                                         reduced-responsive)
+                                                        (palettes
+                                                         torikomi-palettes))
                                            (olive-css-gen))))
 
         (lambda ()
