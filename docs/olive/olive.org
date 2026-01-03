@@ -1,9 +1,9 @@
-#+title: Olive CSS Documentation
+#+title: Olive CSS Documentation 🫒
 #+language: en
 
-* 🫒 Welcome to Olive CSS
+Olive CSS is a utility-class CSS framework designed for rapid, flexible web development, drawing inspiration from Tailwind CSS and other frameworks. Its syntax should be very familiar to you if you ever used Tailwind CSS..
 
-Olive CSS is a utility-class CSS framework designed for rapid, flexible web development, drawing inspiration from Tailwind CSS and other frameworks. It's unique because it's written entirely in Lisp (Guile Scheme), making it exceptionally hackable, transparent, and aligned with Free Software principles.
+Some of its uniqueness comes from beingwritten entirely in Lisp (Guile Scheme), making it exceptionally *hackable, transparent and flexible*, aligned with Free Software principles.
 
 Here you'll find the resources here to build fast, beautiful, and freedom-respecting web projects with utility-class CSS. 
 
