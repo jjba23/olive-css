@@ -64,6 +64,34 @@
         (cons 'asparagus
               (asparagus))))
 
+(define carvoeiro-water-fun-palettes
+  (list (cons 'floral-white
+              (floral-white))
+        (cons 'lapis-lazuli
+              (lapis-lazuli))
+        (cons 'prussian-blue
+              (prussian-blue))
+        (cons 'orange
+              (orange))
+        (cons 'tawny
+              (tawny))
+        (cons 'papaya-whip
+              (papaya-whip))
+        (cons 'white-smoke
+              (white-smoke))
+        (cons 'onyx
+              (onyx))
+        (cons 'stone
+              (stone))
+        (cons 'redwood
+              (redwood))
+        (cons 'jeans-blue
+              (jeans-blue))
+        (cons 'olive
+              (olive))
+        (cons 'asparagus
+              (asparagus))))
+
 (define byggsteg-palettes
   (list (cons 'onyx
               (onyx))
@@ -133,7 +161,7 @@
               (jeans-blue))
         (cons 'asparagus
               (asparagus))
-        
+
         ))
 
 (define documentation-intro-lines
@@ -221,6 +249,14 @@ Here you'll find the resources here to build fast, beautiful, and freedom-respec
                                            (olive-css-gen))))
 
         (lambda ()
+          (log-info "Generate Carvoeiro Water Fun framework style sheet")
+          (write-css-to-file #:file
+           "./resources/css/carvoeiro-water-fun.olive.min.css"
+           #:css-lines (parameterize ((responsive reduced-responsive)
+                                      (palettes carvoeiro-water-fun-palettes))
+                         (olive-css-gen))))
+
+        (lambda ()
           (log-info "Generate Torikomi framework style sheet")
           (write-css-to-file #:file "./resources/css/torikomi.olive.min.css"
                              #:css-lines (parameterize ((responsive
@@ -236,7 +272,7 @@ Here you'll find the resources here to build fast, beautiful, and freedom-respec
                                                          reduced-responsive)
                                                         (palettes
                                                          iter-vitae-palettes))
-                                           (olive-css-gen))))        
+                                           (olive-css-gen))))
 
         (lambda ()
           (log-info "Generate Wikimusic framework style sheet")

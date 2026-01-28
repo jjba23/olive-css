@@ -1,131 +1,38 @@
-#+title: Olive CSS Documentation 🫒
+#+title: Olive CSS Documentation
 #+language: en
 
-Olive CSS is a utility-class CSS framework designed for rapid, flexible web development, drawing inspiration from Tailwind CSS and other frameworks. Its syntax should be very familiar to you if you ever used Tailwind CSS..
+🚧 Work in progress
 
-Some of its uniqueness comes from beingwritten entirely in Lisp (Guile Scheme), making it exceptionally *hackable, transparent and flexible*, aligned with Free Software principles.
+* 🫒 Welcome to Olive CSS
+
+Olive CSS is a utility-class CSS framework designed for rapid, flexible web development, drawing inspiration from Tailwind CSS and other frameworks. It's unique because it's written entirely in Lisp (Guile Scheme), making it exceptionally hackable, transparent, and aligned with Free Software principles.
 
 Here you'll find the resources here to build fast, beautiful, and freedom-respecting web projects with utility-class CSS. 
 
-* *Numeric and Size Ranges*
-Olive CSS uses three primary scaling systems for utility classes like
-spacing, sizing, positioning, and radius:
+#+begin_src css
+.font-sans {font-family:'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}
+#+end_src
 
-- *Numeric Scale:* Classes often range from *0 to 512*. The specific
-  increments used across the framework are: *0, 1, 2, 3, 4, 5, 6, 7, 8,
-  9, 10, 12, 14, 16, 20, 24, 28, 32, 48, 64, 72, 90, 96, 100, 128, 196,
-  256, and 512*.
-- *Size Scale:* For classes like text size, shadows, and blurs, the
-  scale typically runs from *2xs to 5xl*.
-- *Fractional Scale:* Sizing and positioning (such as =w-= or =top-=)
-  include fractions: *1/2, 1/3, 2/3, 1/4, 3/4, 1/5, 2/5, 3/5, 4/5, 1/6,
-  5/6, and 1/8*.
+#+begin_src css
+.font-mono {font-family:'IBM Plex Mono', monospace;}
+#+end_src
 
-* *Font Weights*
+#+begin_src css
+.font-serif {font-family:'IBM Plex Serif', ui-serif, serif, 'Times New Roman';}
+#+end_src
 
-The framework provides nine standard font weight classes mapping to
-numeric CSS values:
+#+begin_src css
+.text-inherit {color:inherit;}
+#+end_src
 
-- *font-thin:* 100
-- *font-extralight:* 200
-- *font-light:* 300
-- *font-normal:* 400
-- *font-medium:* 500
-- *font-semibold:* 600
-- *font-bold:* 700
-- *font-extrabold:* 800
-- *font-black:* 900
+#+begin_src css
+.text-white {color:white;}
+#+end_src
 
-* *Color Weights and Opacity*
-The color system uses a specific shade and opacity scaling system for
-its background, text, and border classes:
+#+begin_src css
+.text-black {color:black;}
+#+end_src
 
-- *Shade Weights:* Most named colors (like =apple-green=, =charcoal=, or
-  =mantis=) are available in five shade weights: *100, 300, 500, 700,
-  and 900*.
-- *Opacity Weights:* Colors can be modified with fractional opacity
-  values: */1* (1%), */5* (5%), */10* (10%), */25* (25%), */50* (50%),
-  */75* (75%), */90* (90%), and */95* (95%).
-
-
-* *Core Layout and Positioning*
-
-- *Display:* Standard utility classes for =inline=, =block=,
-  =inline-block=, =flex=, =grid=, =flow-root=, =contents=, =table=, and
-  =hidden=.
-
-- *Positioning:* Support for =absolute=, =fixed=, =relative=, =sticky=,
-  and =static=. Directional positioning (top, bottom, left, right) is
-  available in both numeric units (1 to 512) and fractional percentages
-  (e.g., =top-1/2=, =left-3/4=).
-
-- *Z-Index:* Classes ranging from =z-1= to =z-512=.
-
-* *Flexbox & Grid:*
-
-- *Flex:* Includes =flex-row=, =flex-col=, =flex-wrap=, =grow=,
-  =shrink=, and =basis=.
-
-- *Grid:* Comprehensive grid support with =grid-cols-1= through
-  =grid-cols-512= and =grid-rows-1= through =grid-rows-512=.
-
-- *Gap:* Spacing between items from =gap-1= to =gap-512=.
-
-- *Alignment:* Utilities for =justify-=, =items-=, =content-=, =self-=,
-  and =place-= (e.g., =justify-center=, =items-start=).
-
-* *Typography*
-
-- *Font Families:* Supports =font-sans=, =font-serif=, and =font-mono=
-  (defaults to IBM Plex).
-
-- *Weight & Style:* Weights from =font-thin= (100) to =font-black=
-  (900). Styles include =italic=, =not-italic=, =antialiased=, and
-  =uppercase/lowercase/capitalize=.
-
-- *Size & Leading:* Sizes range from =text-2xs= to =text-5xl= and
-  numeric scales =text-1= to =text-512=. Line height (leading) follows a
-  similar scale.
-
-- *Text Decoration:* Support for =underline=, =overline=,
-  =line-through=, and wavy decoration styles.
-
-* *Spacing and Sizing*
-
-- *Margin & Padding:* Classes for all sides, vertical (y), and
-  horizontal (x) axes using scales from =1= to =512= or =2xs= to =5xl=.
-
-- *Width & Height:* Utilities for =w-= and =h-= include numeric scales,
-  fractions (1/2 to 5/6), and full/screen options (e.g., =w-full=,
-  =h-screen=).
-
-* *Visual Effects and Borders*
-
-- *Borders:* Widths from =border-1= to =border-512= and radius utilities
-  from =rounded-1= to =rounded-512=.
-
-- *Shadows:* Presets from =shadow-2xs= to =shadow-2xl=.
-
-- *Filters:* Extensive filter support for =blur=, =brightness=,
-  =contrast=, =grayscale=, =sepia=, =saturate=, and =invert=. Many
-  include =backdrop-= variants.
-
-* *Color System*
-
-- *Palette:* Includes dozens of specific named colors such as
-  =apple-green=, =ferrari-red=, =iris=, =lapis-lazuli=,
-  =midnight-green=, and =spiced-terracotta=.
-
-- *Opacity:* Most colors support fractional opacity variants (e.g.,
-  =bg-color-100/10=, =text-color-500/50=).
-
-* *Interactivity and Features*
-
-- *State Modifiers:* Framework-wide support for =hover:=, =active:=, and
-  =dark:= prefixes (e.g., =hover:bg-white=, =dark:text-black=).
-
-- *Animations:* Built-in slide animations (=slide-from-right=,
-  =slide-from-left=, etc.) and basic fade transitions.
-
-* Browser Reset
- Includes a standard CSS reset for uniform rendering  across browsers.
+#+begin_src css
+.text-transparent {color:transparent;}
+#+end_src
