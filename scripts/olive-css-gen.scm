@@ -71,6 +71,10 @@
               (lapis-lazuli))
         (cons 'prussian-blue
               (prussian-blue))
+        (cons 'naples-yellow
+              (naples-yellow))
+        (cons 'mikado-yellow
+              (mikado-yellow))
         (cons 'orange
               (orange))
         (cons 'tawny
