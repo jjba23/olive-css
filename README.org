@@ -126,12 +126,13 @@ Find here the Backlog and Kanban boards for olive-css: https://lucidplan.jointhe
 
 * Comparison with Tailwind CSS
 
-| Feature        | Tailwind CSS                         | Olive CSS                                   |
-| Written in     | JavaScript                           | λ Guile Scheme                              |
-| Customization  | - average (via CSS config)           | ✔️ extensive (via code and expressive DSL) |
-| Functional API | ❌                                  | ✔️                                         |
-| Free Software  | ❌ (MIT, not copyleft)           | ✔️ (LGPL v3 + FDL)                         |
-| Output control | Limited, JIT compiler is restricting | Full (generate exactly what you want)       |
+| Feature        | Tailwind CSS                              | Olive CSS                                   |
+| Written in     | JavaScript                                | λ Guile Scheme                              |
+| Customization  | - average (via CSS config)                | ✔️ extensive (via code and expressive DSL) |
+| Functional API | ❌                                       | ✔️                                         |
+| Output control | Limited, JIT compiler is restricting      | Full (generate exactly what you want)       |
+| Free Software  | - (MIT, not copyleft)                     | ✔️ (LGPL v3 + FDL)                         |
+| Paid features  | ❌ Enterprise/Tailwind UI behind paywall | ✔️ All included in the source code for everyone |
 
 Olive CSS is especially appealing if you want a completely libre, hackable, expressive and transparent alternative to Tailwind.
 
