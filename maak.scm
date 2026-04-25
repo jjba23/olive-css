@@ -72,6 +72,11 @@
   (time-machine-manifest-shell '("guile -L ./src"
                                  "./scripts/olive-css-gen.scm")))
 
+(define (tree-shake)
+  "Tree-shake and optimize CSS."
+  (time-machine-manifest-shell '("guile -L ./src"
+                                 "./scripts/olive-css-tree-shaking.scm")))
+
 (define (hot-reload)
   "Hot-reloading developer's setup."
   (fmt)
