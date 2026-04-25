@@ -11,9 +11,11 @@
   "public")
 
 (define (escape-class-name name)
-  (let* ((with-colon (string-replace-substring name ":" "\\:"))
-         (with-slash (string-replace-substring with-colon "/" "\\/")))
-    with-slash))
+  (fold (lambda (replacement acc)
+          (string-replace-substring acc
+                                    (car replacement)
+                                    (cdr replacement))) name
+        '((":" . "\\:") ("/" . "\\/"))))
 
 (define (extend-classes classes . prefixes)
   (append-map (lambda (cls)
@@ -65,15 +67,14 @@
                                  (not (or (string-null? s)
                                           (string=? s "\n")))) raw-classes))))
 
-(define (write-matched-class class-name css-content out-port)
+(define (get-matched-class class-name css-content)
   (let* ((quote-name (regexp-quote class-name))
          (pattern (string-append "\\." quote-name "([[:space:]{])" "[^{]*"
                                  "\\{([^{}]*|\\{[^}]*\\})*\\}"))
          (re (make-regexp pattern regexp/extended))
          (matched (regexp-exec re css-content)))
-    (when matched
-      (display (match:substring matched 0) out-port)
-      (newline out-port))))
+    (if matched
+        (match:substring matched 0) #f)))
 
 (define (tree-shake-css input-file output-file . processors)
   (display "Starting css tree-shaking...\n")
@@ -96,17 +97,25 @@
                                                              (list (reset-css))))
                                           "\n") out)
                     (newline out)
-                    (for-each (lambda (cls)
-                                (write-matched-class cls css-content out))
-                              hover-classes))
+                    (let ((matched-results (filter-map (lambda (cls)
+                                                         (get-matched-class
+                                                          cls css-content))
+                                                       hover-classes)))
+                      (for-each (lambda (css-block)
+                                  (display css-block out)
+                                  (newline out)) matched-results)))
                   ;; dark mode
                   (lambda (out css-content)
                     (newline out)
                     (display
                      "&:where([data-theme=dark], [data-theme=dark] *) {" out)
                     (newline out)
-                    (for-each (lambda (cls)
-                                (write-matched-class cls css-content out))
-                              dark-classes)
+                    (let ((matched-results (filter-map (lambda (cls)
+                                                         (get-matched-class
+                                                          cls css-content))
+                                                       dark-classes)))
+                      (for-each (lambda (css-block)
+                                  (display css-block out)
+                                  (newline out)) matched-results))
                     (display "}" out)
                     (newline out))))
