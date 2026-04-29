@@ -3,8 +3,8 @@
 #+email: jjbigorra@gmail.com
 #+language: en
 
-[[https://jointhefreeworld.org/ggg/dist/scheme-guile.svg]] [[https://jointhefreeworld.org/ggg/dist/gnu-guix.svg]]   [[https://jointhefreeworld.org/ggg/dist/maak.svg]] 
-[[https://jointhefreeworld.org/ggg/dist/license-lgpl3+.svg]]    [[https://jointhefreeworld.org/ggg/dist/license-fdl13+.svg]] 
+[[https://jointhefreeworld.org/ggg/dist/scheme-guile.svg]] [[https://jointhefreeworld.org/ggg/dist/gnu-guix.svg]]   [[https://jointhefreeworld.org/ggg/dist/maak.svg]]
+[[https://jointhefreeworld.org/ggg/dist/license-lgpl3+.svg]]    [[https://jointhefreeworld.org/ggg/dist/license-fdl13+.svg]]
 
 
 /Utility-class vanilla CSS framework inspired by Tailwind syntax, easy to learn and hack, written in Lisp (Guile Scheme)/
@@ -86,7 +86,7 @@ Olive CSS is not another Tailwind clone. It is simply inspired by it, and its de
 - Hackability :: You can extend or modify anything via Scheme code.
 - Freedom :: 100% Free Software, licensed under the LGPLv3+ and FDL 1.3+.
 - Self-contained :: Minimal dependencies and lightweight fast builds.
-- Expressiveness :: Easily add support for *ANY* CSS feature and your own palettes and rules/declarations.   
+- Expressiveness :: Easily add support for *ANY* CSS feature and your own palettes and rules/declarations.
 
 It is built to encourage learning and experimentation, rather than hiding complexity behind rigid inflexible tooling.
 
@@ -97,9 +97,9 @@ It is built to encourage learning and experimentation, rather than hiding comple
 - Hygguile :: https://codeberg.org/jjba23/hygguile
 - LucidPlan :: https://codeberg.org/jjba23/lucidplan
 - WikiMusic :: https://codeberg.org/jjba23/wikimusic
-- Iter Vitae :: https://codeberg.org/jjba23/iter-vitae  
+- Iter Vitae :: https://codeberg.org/jjba23/iter-vitae
 - Byggsteg :: https://codeberg.org/jjba23/byggsteg
-  
+
 
 --------------
 
@@ -137,6 +137,21 @@ Find here the Backlog and Kanban boards for olive-css: https://lucidplan.jointhe
 Olive CSS is especially appealing if you want a completely libre, hackable, expressive and transparent alternative to Tailwind.
 
 ------------------------
+
+* Tree Shaking
+
+One of the interesting things about modern tooling and frameworks like Tailwind is indeed its ability to "tree-shake" and get rid of classes which are not used in the project.
+
+This is something really useful and interesting for Olive CSS.
+
+The mindset is that the developer should first of all, before creating an optimized production build, make some optimization choices (like what media queries to support, dark mode or not, which colors to support). That already helps a lot and leads to better and more performant project.
+
+Currently the tree shaking in Olive CSS then scans all the ~.html~ files in ~./public/~, and compares matches to the contents of your optimized build (~.css~ file, for now ~base-stylesheet-path~ set to ~"resources/css/olive.min.css"~) and remove lines with rules/selectors that are not used, producing a new optimized one (you might see amazing gains, like 3MiB going to 13KiB!). So actually it is a "targeted deletion" of things.
+
+There is a [[https://codeberg.org/jjba23/maak][Maak]] task to do tree-shaking, so it's as easy as ~maak tree-shake~.
+
+------------------------
+
 
 * Troubleshooting
 
