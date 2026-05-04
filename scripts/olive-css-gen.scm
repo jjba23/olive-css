@@ -179,7 +179,7 @@
 
 Olive CSS is a utility-class CSS framework designed for rapid, flexible web development, drawing inspiration from Tailwind CSS and other frameworks. It's unique because it's written entirely in Lisp (Guile Scheme), making it exceptionally hackable, transparent, and aligned with Free Software principles.
 
-Here you'll find the resources here to build fast, beautiful, and freedom-respecting web projects with utility-class CSS. 
+Here you'll find the resources here to build fast, beautiful, and freedom-respecting web projects with utility-class CSS.
 ")))
 
 (define* (mk-docs-from-css lines)
@@ -248,6 +248,20 @@ Here you'll find the resources here to build fast, beautiful, and freedom-respec
           (write-css-to-file #:file "./resources/css/byggsteg.olive.min.css"
                              #:css-lines (parameterize ((responsive
                                                          reduced-responsive)
+                                                        (serif-font-family '("'Iosevka Slab Web'"
+                                                                             "ui-serif"
+                                                                             "serif"
+                                                                             "'Times New Roman'"))
+                                                        (mono-font-family '("'Iosevka Web'"
+                                                                            "monospace"))
+                                                        (sans-font-family '("'Iosevka Aile Web'"
+                                                                            "ui-sans-serif"
+                                                                            "system-ui"
+                                                                            "sans-serif"
+                                                                            "'Apple Color Emoji'"
+                                                                            "'Segoe UI Emoji'"
+                                                                            "'Segoe UI Symbol'"
+                                                                            "'Noto Color Emoji'"))
                                                         (palettes
                                                          byggsteg-palettes))
                                            (olive-css-gen))))
@@ -290,4 +304,3 @@ Here you'll find the resources here to build fast, beautiful, and freedom-respec
 (for-each (lambda (f)
             (apply f
                    '())) css-gen-tasks)
-
