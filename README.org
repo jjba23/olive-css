@@ -31,6 +31,15 @@ You can use Olive CSS like any other utility-class CSS framework, like this:
 
 If you like my work, please support me by [[https://bmc.link/jjbigorra][buying me a cup of coffee ☕]] so I can continue with a lot of motivation.
 
+#+begin_src
+___  _ _             ___  ___ ___
+  / _ \| (_)_ _____    / __|/ __/ __|
+ | (_) | | \ V / -_)  | (__ \__ \__ \
+  \___/|_|_|\_/\___|   \___||___/___/
+
+   λ Utility-class CSS for the Free World
+#+end_src
+
 
 --------
 
