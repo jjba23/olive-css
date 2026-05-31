@@ -235,6 +235,20 @@
           (write-css-to-file #:file "./resources/css/lucidplan.olive.min.css"
                              #:css-lines (parameterize ((responsive
                                                          reduced-responsive)
+                                                        (serif-font-family '("'DejaVu Serif'"
+                                                                             "ui-serif"
+                                                                             "serif"
+                                                                             "'Times New Roman'"))
+                                                        (mono-font-family '("'Intel One Mono'"
+                                                                            "monospace"))
+                                                        (sans-font-family '("'Plus Jakarta Sans'"
+                                                                            "ui-sans-serif"
+                                                                            "system-ui"
+                                                                            "sans-serif"
+                                                                            "'Apple Color Emoji'"
+                                                                            "'Segoe UI Emoji'"
+                                                                            "'Segoe UI Symbol'"
+                                                                            "'Noto Color Emoji'"))
                                                         (palettes
                                                          lucidplan-palettes))
                                            (olive-css-gen))))
@@ -244,13 +258,13 @@
           (write-css-to-file #:file "./resources/css/byggsteg.olive.min.css"
                              #:css-lines (parameterize ((responsive
                                                          reduced-responsive)
-                                                        (serif-font-family '("'Iosevka Slab Web'"
+                                                        (serif-font-family '("'DejaVu Serif'"
                                                                              "ui-serif"
                                                                              "serif"
                                                                              "'Times New Roman'"))
-                                                        (mono-font-family '("'Iosevka Web'"
+                                                        (mono-font-family '("'Intel One Mono'"
                                                                             "monospace"))
-                                                        (sans-font-family '("'Iosevka Aile Web'"
+                                                        (sans-font-family '("'Plus Jakarta Sans'"
                                                                             "ui-sans-serif"
                                                                             "system-ui"
                                                                             "sans-serif"
@@ -316,13 +330,27 @@
           (write-css-to-file #:file "./resources/css/wikimusic.olive.min.css"
                              #:css-lines (parameterize ((responsive
                                                          reduced-responsive)
+                                                        (serif-font-family '("'DejaVu Serif'"
+                                                                             "ui-serif"
+                                                                             "serif"
+                                                                             "'Times New Roman'"))
+                                                        (mono-font-family '("'Intel One Mono'"
+                                                                            "monospace"))
+                                                        (sans-font-family '("'Plus Jakarta Sans'"
+                                                                            "ui-sans-serif"
+                                                                            "system-ui"
+                                                                            "sans-serif"
+                                                                            "'Apple Color Emoji'"
+                                                                            "'Segoe UI Emoji'"
+                                                                            "'Segoe UI Symbol'"
+                                                                            "'Noto Color Emoji'"))
                                                         (palettes
                                                          wikimusic-palettes))
                                            (olive-css-gen))))))
 
-  (call-with-input-file "./resources/banner.txt"
-    (lambda (port)
-      (display (get-string-all port))))
+(call-with-input-file "./resources/banner.txt"
+  (lambda (port)
+    (display (get-string-all port))))
 
 (for-each (lambda (f)
             (apply f
