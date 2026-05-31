@@ -43,13 +43,15 @@
                                write-css-to-file))
 
 (define mono-font-family
-  (param '("'IBM Plex Mono'" "monospace")))
+  (param '("'Intel One Mono'" "'IBM Plex Mono'" "monospace")))
 
 (define serif-font-family
-  (param '("'IBM Plex Serif'" "ui-serif" "serif" "'Times New Roman'")))
+  (param '("'DejaVu Serif'" "'IBM Plex Serif'" "ui-serif" "serif"
+           "'Times New Roman'")))
 
 (define sans-font-family
-  (param '("'IBM Plex Sans'" "ui-sans-serif"
+  (param '("'Plus Jakarta Sans'" "'IBM Plex Sans'"
+           "ui-sans-serif"
            "system-ui"
            "sans-serif"
            "'Apple Color Emoji'"
