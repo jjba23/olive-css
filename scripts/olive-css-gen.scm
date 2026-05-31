@@ -293,13 +293,13 @@
           (write-css-to-file #:file "./resources/css/fatum.olive.min.css"
                              #:css-lines (parameterize ((responsive
                                                          reduced-responsive)
-                                                        (serif-font-family '("'Iosevka Slab Web'"
+                                                        (serif-font-family '("'DejaVu Serif'"
                                                                              "ui-serif"
                                                                              "serif"
                                                                              "'Times New Roman'"))
-                                                        (mono-font-family '("'Iosevka Web'"
+                                                        (mono-font-family '("'Intel One Mono'"
                                                                             "monospace"))
-                                                        (sans-font-family '("'Iosevka Aile Web'"
+                                                        (sans-font-family '("'Plus Jakarta Sans'"
                                                                             "ui-sans-serif"
                                                                             "system-ui"
                                                                             "sans-serif"
