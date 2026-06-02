@@ -281,6 +281,19 @@
           (write-css-to-file #:file
            "./resources/css/carvoeiro-water-fun.olive.min.css"
            #:css-lines (parameterize ((responsive reduced-responsive)
+                                      (serif-font-family '("'Lora'"
+                                                           "ui-serif" "serif"
+                                                           "'Times New Roman'"))
+                                      (mono-font-family '("'Intel One Mono'"
+                                                          "monospace"))
+                                      (sans-font-family '("'Plus Jakarta Sans'"
+                                                          "ui-sans-serif"
+                                                          "system-ui"
+                                                          "sans-serif"
+                                                          "'Apple Color Emoji'"
+                                                          "'Segoe UI Emoji'"
+                                                          "'Segoe UI Symbol'"
+                                                          "'Noto Color Emoji'"))
                                       (palettes carvoeiro-water-fun-palettes))
                          (olive-css-gen))))
 
