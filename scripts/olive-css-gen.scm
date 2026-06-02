@@ -289,6 +289,20 @@
           (write-css-to-file #:file "./resources/css/torikomi.olive.min.css"
                              #:css-lines (parameterize ((responsive
                                                          reduced-responsive)
+                                                        (serif-font-family '("'IBM Plex Serif'"
+                                                                             "ui-serif"
+                                                                             "serif"
+                                                                             "'Times New Roman'"))
+                                                        (mono-font-family '("'IBM Plex Mono'"
+                                                                            "monospace"))
+                                                        (sans-font-family '("'IBM Plex Sans'"
+                                                                            "ui-sans-serif"
+                                                                            "system-ui"
+                                                                            "sans-serif"
+                                                                            "'Apple Color Emoji'"
+                                                                            "'Segoe UI Emoji'"
+                                                                            "'Segoe UI Symbol'"
+                                                                            "'Noto Color Emoji'"))
                                                         (palettes
                                                          torikomi-palettes))
                                            (olive-css-gen))))
@@ -298,6 +312,20 @@
           (write-css-to-file #:file "./resources/css/iter-vitae.olive.min.css"
                              #:css-lines (parameterize ((responsive
                                                          reduced-responsive)
+                                                        (serif-font-family '("'IBM Plex Serif'"
+                                                                             "ui-serif"
+                                                                             "serif"
+                                                                             "'Times New Roman'"))
+                                                        (mono-font-family '("'IBM Plex Mono'"
+                                                                            "monospace"))
+                                                        (sans-font-family '("'IBM Plex Sans'"
+                                                                            "ui-sans-serif"
+                                                                            "system-ui"
+                                                                            "sans-serif"
+                                                                            "'Apple Color Emoji'"
+                                                                            "'Segoe UI Emoji'"
+                                                                            "'Segoe UI Symbol'"
+                                                                            "'Noto Color Emoji'"))
                                                         (palettes
                                                          iter-vitae-palettes))
                                            (olive-css-gen))))
