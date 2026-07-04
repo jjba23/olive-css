@@ -25,90 +25,116 @@
                            prose-size))
 
 (define width-multiplier
-  (param 0.24))
+  (make-parameter 0.24))
 
 (define height-multiplier
-  (param 0.24))
+  (make-parameter 0.24))
 
 (define prose-size
-  (param "84ch"))
+  (make-parameter "84ch"))
 
 (define width
-  (param (append (list (rul ".w-screen"
-                            (dec 'width "100vw"))
-                       (rul ".min-w-screen"
-                            (dec 'min-width "100vw"))
-                       (rul ".max-w-screen"
-                            (dec 'max-width "100vw"))
-                       (rul ".min-w-prose"
-                            (dec 'min-width
-                                 (prose-size)))
-                       (rul ".w-full"
-                            (dec 'width "100%"))
-                       (rul ".min-w-full"
-                            (dec 'min-width "100%"))
-                       (rul ".max-w-full"
-                            (dec 'max-width "100%"))
-                       (rul ".max-w-prose"
-                            (dec 'max-width
-                                 (prose-size))))
-                 (map (lambda (d)
-                        (rulv (string-append "."
-                                             (format #f "~a"
-                                                     (car d)) "-" "~a")
-                              #:property (cadr d)
-                              #:variants (append (map (lambda (s)
-                                                        (siz s
-                                                             #:conversion
-                                                             to-rem
-                                                             #:multiplier (width-multiplier)))
-                                                      (append numeric-sizes
-                                                              tshirt-sizes))
-                                                 (map (lambda (s)
-                                                        (siz s
-                                                             #:conversion
-                                                             identity
-                                                             #:multiplier (width-multiplier)))
-                                                      fractions))))
-                      '((w width)
-                        (min-w min-width)
-                        (max-w max-width))))))
+  (make-parameter (append (list (css-rule ".w-screen"
+                                          (css-declaration 'width "100vw"))
+                                (css-rule ".min-w-screen"
+                                          (css-declaration 'min-width "100vw"))
+                                (css-rule ".max-w-screen"
+                                          (css-declaration 'max-width "100vw"))
+                                (css-rule ".min-w-prose"
+                                          (css-declaration 'min-width
+                                                           (prose-size)))
+                                (css-rule ".w-full"
+                                          (css-declaration 'width "100%"))
+                                (css-rule ".min-w-full"
+                                          (css-declaration 'min-width "100%"))
+                                (css-rule ".max-w-full"
+                                          (css-declaration 'max-width "100%"))
+                                (css-rule ".max-w-prose"
+                                          (css-declaration 'max-width
+                                                           (prose-size))))
+                          (map (lambda (d)
+                                 (css-rule-variants (string-append "."
+                                                                   (format #f
+                                                                    "~a"
+                                                                    (car d))
+                                                                   "-" "~a")
+                                                    #:property (cadr d)
+                                                    #:variants (append (map (lambda 
+                                                                                    (s)
+                                                                              
+                                                                              
+                                                                              (css-size
+                                                                               s
+                                                                               #:conversion
+                                                                               to-rem
+                                                                               #:multiplier
+                                                                               (width-multiplier)))
+                                                                            (append
+                                                                             numeric-sizes
+                                                                             tshirt-sizes))
+                                                                       (map (lambda 
+                                                                                    (s)
+                                                                              
+                                                                              
+                                                                              (css-size
+                                                                               s
+                                                                               #:conversion
+                                                                               identity
+                                                                               #:multiplier
+                                                                               (width-multiplier)))
+                                                                        fractions))))
+                               '((w width)
+                                 (min-w min-width)
+                                 (max-w max-width))))))
 
 (define height
-  (param (append (list (rul ".h-screen"
-                            (dec 'height "100vh"))
-                       (rul ".min-h-screen"
-                            (dec 'min-height "100vh"))
-                       (rul ".max-h-screen"
-                            (dec 'max-height "100vh"))
-                       (rul ".h-full"
-                            (dec 'height "100%"))
-                       (rul ".min-h-full"
-                            (dec 'min-height "100%"))
-                       (rul ".max-h-full"
-                            (dec 'max-height "100%")))
-                 (map (lambda (d)
-                        (rulv (string-append "."
-                                             (format #f "~a"
-                                                     (car d)) "-" "~a")
-                              #:property (cadr d)
-                              #:variants (append (map (lambda (s)
-                                                        (siz s
-                                                             #:conversion
-                                                             to-rem
-                                                             #:multiplier (height-multiplier)))
-                                                      (append numeric-sizes
-                                                              tshirt-sizes))
-                                                 (map (lambda (s)
-                                                        (siz s
-                                                             #:conversion
-                                                             identity
-                                                             #:multiplier (height-multiplier)))
-                                                      fractions))))
-                      '((h height)
-                        (min-h min-height)
-                        (max-h max-height))))))
+  (make-parameter (append (list (css-rule ".h-screen"
+                                          (css-declaration 'height "100vh"))
+                                (css-rule ".min-h-screen"
+                                          (css-declaration 'min-height "100vh"))
+                                (css-rule ".max-h-screen"
+                                          (css-declaration 'max-height "100vh"))
+                                (css-rule ".h-full"
+                                          (css-declaration 'height "100%"))
+                                (css-rule ".min-h-full"
+                                          (css-declaration 'min-height "100%"))
+                                (css-rule ".max-h-full"
+                                          (css-declaration 'max-height "100%")))
+                          (map (lambda (d)
+                                 (css-rule-variants (string-append "."
+                                                                   (format #f
+                                                                    "~a"
+                                                                    (car d))
+                                                                   "-" "~a")
+                                                    #:property (cadr d)
+                                                    #:variants (append (map (lambda 
+                                                                                    (s)
+                                                                              
+                                                                              
+                                                                              (css-size
+                                                                               s
+                                                                               #:conversion
+                                                                               to-rem
+                                                                               #:multiplier
+                                                                               (height-multiplier)))
+                                                                            (append
+                                                                             numeric-sizes
+                                                                             tshirt-sizes))
+                                                                       (map (lambda 
+                                                                                    (s)
+                                                                              
+                                                                              
+                                                                              (css-size
+                                                                               s
+                                                                               #:conversion
+                                                                               identity
+                                                                               #:multiplier
+                                                                               (height-multiplier)))
+                                                                        fractions))))
+                               '((h height)
+                                 (min-h min-height)
+                                 (max-h max-height))))))
 
 (define sizing-classes
-  (param (list (width)
-               (height))))
+  (make-parameter (list (width)
+                        (height))))

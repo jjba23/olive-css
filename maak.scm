@@ -67,6 +67,11 @@
       (~ "~a/api-docs/~a" deploy-api-docs-dir project-name))
   (delete-file-recursively "doc"))
 
+(define (compile)
+  "Compile all project source code."
+  (time-machine-manifest-shell (list "guild compile -L ./src" "-W3"
+                                     "./src/**/*.scm")))
+
 (define (build)
   "Generate production CSS."
   (time-machine-manifest-shell '("guile -L ./src"
@@ -99,4 +104,3 @@
 (define (default)
   "Default task to be run, list available tasks."
   ($ '("maak --list")))
-

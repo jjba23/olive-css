@@ -29,11 +29,11 @@
               darken-oklch
               make-palette
               ;;
-              rulc
+              css-comment
               rule
-              mq
-              addmq
-              addhover
+              media-query
+              add-media-query-prefix
+              add-hover-variant
               make-rule
               rule?
               set-rule-selector!
@@ -44,28 +44,21 @@
               declaration?
               declaration-property
               declaration-value
-              rul
-              rulcol
-              dec
+              css-rule
+              css-color-rules
+              css-declaration
               flatten-list
-              rulv
-              siz
+              css-rule-variants
+              css-size
               to-rem
               to-px
               to-rem-blur
               to-percent
-              to-percent-f
-              param
-              ;;
-              ))
-
-;; An alias for @code{make-parameter} used to establish dynamic context parameters.
-(define param
-  make-parameter)
+              to-percent-function))
 
 (define* (~ #:key (output-port #f)
             #:rest args)
-  "Format a string with arguments. This is an alias for @code{format} with a destination.
+  "Format a string with arguments. This is a descriptive alias for @code{format} with an optional destination port.
 
 @example
 (~ \"color: ~a;\" \"red\") @result{} \"color: red;\"
@@ -127,7 +120,7 @@ variations of a base @var{oklch} configuration."
   (selector rule-selector set-rule-selector!)
   (declarations rule-declarations))
 
-(define* (rul selector . args)
+(define* (css-rule selector . args)
   "Construct a new CSS @code{rule} object containing a target @var{selector} and flattened @var{args} declarations."
   (make-rule selector
              (flatten-list args)))
@@ -138,30 +131,30 @@ variations of a base @var{oklch} configuration."
   (value declaration-value))
 
 ;; An alias for @code{make-declaration} used to create individual property-value combinations.
-(define dec
+(define css-declaration
   make-declaration)
 
-(define* (rulv selector
-               #:key property variants
-               (other-properties '()))
+(define* (css-rule-variants selector
+                            #:key property variants
+                            (other-properties '()))
   "Generate a list of CSS rules from a template @var{selector} across multiple string value @var{variants}."
   (map (lambda (v)
-         (rul (format #f selector
-                      (car v))
+         (css-rule (format #f selector
+                           (car v))
 
-              (append (map (lambda (p)
-                             (dec (car p)
-                                  (cadr p))) other-properties)
-                      (list (dec property
-                                 (cadr v))))
+                   (append (map (lambda (p)
+                                  (css-declaration (car p)
+                                                   (cadr p))) other-properties)
+                           (list (css-declaration property
+                                                  (cadr v))))
 
-              )) variants))
+                   )) variants))
 
-(define* (rulc msg)
+(define* (css-comment msg)
   "Format a given string message @var{msg} inside a CSS multi-line block comment wrapper."
   (list (format #f "/*\n  ~a\n*/" msg)))
 
-(define (addmq sel args)
+(define (add-media-query-prefix sel args)
   "Prefix utility class selectors within @var{args} to incorporate a specific media query screen size token @var{sel}."
   (cond
     ((rule? args)
@@ -171,14 +164,14 @@ variations of a base @var{oklch} configuration."
                              (string-take selector 1))
                      (format #f ".~a\\:~a" sel
                              (string-drop selector 1)) selector)))
-       (rul str
-            (rule-declarations a))))
+       (css-rule str
+                 (rule-declarations a))))
     ((list? args)
      (map (lambda (a)
-            (addmq sel a)) args))
+            (add-media-query-prefix sel a)) args))
     (else args)))
 
-(define (addhover sel args)
+(define (add-hover-variant sel args)
   "Transform utility rules in @var{args} into nested interactive pseudo-classes matching @code{&:hover} targets prefixed by @var{sel}."
   (cond
     ((rule? args)
@@ -188,50 +181,55 @@ variations of a base @var{oklch} configuration."
                              (string-take selector 1))
                      (format #f ".~a\\:~a" sel
                              (string-drop selector 1)) selector))
-            (rd (rul "&:hover"
-                     (rule-declarations a))))
-       (rul str rd)))
+            (rd (css-rule "&:hover"
+                          (rule-declarations a))))
+       (css-rule str rd)))
     ((list? args)
      (map (lambda (a)
-            (addhover sel a)) args))
+            (add-hover-variant sel a)) args))
     (else args)))
 
-(define* (rulcol selector
-                 #:key property
-                 variants
-                 (other-properties '())
-                 (palettes '()))
+(define* (css-color-rules selector
+                          #:key property
+                          variants
+                          (other-properties '())
+                          (palettes '()))
   "Construct color-specific utility rules mapping across specified @var{palettes}, configurations, and opacity @var{variants}."
   (map (lambda (palette)
          (map (lambda (alpha-weight)
-                (rul (format #f selector
-                             (car palette)
-                             (caadr alpha-weight)
-                             (if (and (not (equal? ""
-                                                   (caar alpha-weight)))
-                                      (not (equal? #f
-                                                   (caar alpha-weight))))
-                                 (format #f "\\/~a"
-                                         (caar alpha-weight)) ""))
+                (css-rule (format #f selector
+                                  (car palette)
+                                  (caadr alpha-weight)
+                                  (if (and (not (equal? ""
+                                                        (caar alpha-weight)))
+                                           (not (equal? #f
+                                                        (caar alpha-weight))))
+                                      (format #f "\\/~a"
+                                              (caar alpha-weight)) ""))
 
-                     (append (map (lambda (p)
-                                    (dec (car p)
-                                         (cadr p))) other-properties)
-                             (list (dec property
-                                        (apply format
-                                               (append (list #f
-                                                        "oklch(~a ~a ~a / ~a)")
-                                                       (car (assoc-ref palette
-                                                             (caadr
-                                                              alpha-weight)))
-                                                       (list (cadar
-                                                              alpha-weight)))))))
+                          (append (map (lambda (p)
+                                         (css-declaration (car p)
+                                                          (cadr p)))
+                                       other-properties)
+                                  (list (css-declaration property
+                                                         (apply format
+                                                                (append (list
+                                                                              #f
+                                                                              "oklch(~a ~a ~a / ~a)")
+                                                                        (car (assoc-ref
+                                                                              palette
 
-                     )) variants)) palettes))
+                                                                              
+                                                                              (caadr
+                                                                               alpha-weight)))
+                                                                        (list (cadar
+                                                                               alpha-weight)))))))
 
-(define* (siz s
-              #:key (conversion identity)
-              (multiplier 1))
+                          )) variants)) palettes))
+
+(define* (css-size s
+                   #:key (conversion identity)
+                   (multiplier 1))
   "Process a sizing pair @var{s} by modifying numeric values via a @var{multiplier} and formatting output with @var{conversion}."
   (list (car s)
         (conversion (cond
@@ -242,7 +240,7 @@ variations of a base @var{oklch} configuration."
                       (else (cadr s))))))
 
 (define (to-rem x)
-  "Convert a primitive numeric measurement value @var{x} into a standard CSS CSS @code{rem} string value."
+  "Convert a primitive numeric measurement value @var{x} into a standard CSS @code{rem} string value."
   (format #f "~,2frem" x))
 
 (define (to-px x)
@@ -257,7 +255,7 @@ variations of a base @var{oklch} configuration."
   "Wrap a native numeric measurement value @var{x} within a valid CSS standard @code{blur(...)} layout definition."
   (format #f "blur(~,2frem)" x))
 
-(define (to-percent-f f)
+(define (to-percent-function f)
   "Return a higher-order closure function transforming numbers into CSS functional notations @var{f} scaling values in percentage terms."
   (lambda (x)
     (format #f "~a(~,2f%)" f x)))
@@ -306,11 +304,11 @@ variations of a base @var{oklch} configuration."
 (define where-dark
   "&:where([data-theme=dark], [data-theme=dark] *)")
 
-(define* (mq query . args)
+(define* (media-query query . args)
   "Wrap an evaluated set of stylesheet components inside a CSS modern media query expression container block.
 
 @example
-(mq \"min-width: 768px\" \".container { display: block; }\")
+(media-query \"min-width: 768px\" \".container { display: block; }\")
 @end example"
   (append (list (format #f "@media (~a) {" query)) args
           '("}")))

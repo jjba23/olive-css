@@ -281,8 +281,8 @@
           (write-css-to-file #:file
            "./resources/css/carvoeiro-water-fun.olive.min.css"
            #:css-lines (parameterize ((responsive reduced-responsive)
-                                      (serif-font-family '("'Lora'"
-                                                           "ui-serif" "serif"
+                                      (serif-font-family '("'Lora'" "ui-serif"
+                                                           "serif"
                                                            "'Times New Roman'"))
                                       (mono-font-family '("'Intel One Mono'"
                                                           "monospace"))

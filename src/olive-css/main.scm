@@ -43,330 +43,353 @@
                                write-css-to-file))
 
 (define mono-font-family
-  (param '("'Intel One Mono'" "'IBM Plex Mono'" "monospace")))
+  (make-parameter '("'Intel One Mono'" "'IBM Plex Mono'" "monospace")))
 
 (define serif-font-family
-  (param '("'DejaVu Serif'" "'IBM Plex Serif'" "ui-serif" "serif"
-           "'Times New Roman'")))
+  (make-parameter '("'DejaVu Serif'" "'IBM Plex Serif'" "ui-serif" "serif"
+                    "'Times New Roman'")))
 
 (define sans-font-family
-  (param '("'Plus Jakarta Sans'" "'IBM Plex Sans'"
-           "ui-sans-serif"
-           "system-ui"
-           "sans-serif"
-           "'Apple Color Emoji'"
-           "'Segoe UI Emoji'"
-           "'Segoe UI Symbol'"
-           "'Noto Color Emoji'")))
+  (make-parameter '("'Plus Jakarta Sans'" "'IBM Plex Sans'"
+                    "ui-sans-serif"
+                    "system-ui"
+                    "sans-serif"
+                    "'Apple Color Emoji'"
+                    "'Segoe UI Emoji'"
+                    "'Segoe UI Symbol'"
+                    "'Noto Color Emoji'")))
 
 (define (font-family)
-  (let* ((rules (list (rul ".font-sans"
-                           (dec 'font-family
-                                (string-join (sans-font-family) ", ")))
-                      (rul ".font-mono"
-                           (dec 'font-family
-                                (string-join (mono-font-family) ", ")))
-                      (rul ".font-serif"
-                           (dec 'font-family
-                                (string-join (serif-font-family) ", "))))))
+  (let* ((rules (list (css-rule ".font-sans"
+                                (css-declaration 'font-family
+                                                 (string-join (sans-font-family)
+                                                              ", ")))
+                      (css-rule ".font-mono"
+                                (css-declaration 'font-family
+                                                 (string-join (mono-font-family)
+                                                              ", ")))
+                      (css-rule ".font-serif"
+                                (css-declaration 'font-family
+                                                 (string-join (serif-font-family)
+                                                              ", "))))))
     rules))
 
 (define rounded-multiplier
-  (param 0.16))
+  (make-parameter 0.16))
 
 (define shadow-multiplier
-  (param 0.3))
+  (make-parameter 0.3))
 
 (define sm-breakpoint
-  (param "640px"))
+  (make-parameter "640px"))
 
 (define md-breakpoint
-  (param "768px"))
+  (make-parameter "768px"))
 
 (define lg-breakpoint
-  (param "1024px"))
+  (make-parameter "1024px"))
 
 (define xl-breakpoint
-  (param "1280px"))
+  (make-parameter "1280px"))
 
 (define breakpoints
-  (param `((sm ,(sm-breakpoint))
-           (md ,(md-breakpoint))
-           (lg ,(lg-breakpoint))
-           (xl ,(xl-breakpoint)))))
+  (make-parameter `((sm ,(sm-breakpoint))
+                    (md ,(md-breakpoint))
+                    (lg ,(lg-breakpoint))
+                    (xl ,(xl-breakpoint)))))
 
 (define palettes
-  (param (list (cons 'apple-green
-                     (apple-green))
-               (cons 'ash-gray
-                     (ash-gray))
-               (cons 'asparagus
-                     (asparagus))
-               (cons 'beaver
-                     (beaver))
-               (cons 'bistre
-                     (bistre))
-               (cons 'black-bean
-                     (black-bean))
-               (cons 'black-olive
-                     (black-olive))
-               (cons 'buff
-                     (buff))
-               (cons 'terra
-                     (terra))
-               (cons 'cadet-gray
-                     (cadet-gray))
-               (cons 'cambridge-green
-                     (cambridge-green))
-               (cons 'castleton-green
-                     (castleton-green))
-               (cons 'charcoal
-                     (charcoal))
-               (cons 'china-rose
-                     (china-rose))
-               (cons 'china-violet
-                     (china-violet))
-               (cons 'claret
-                     (claret))
-               (cons 'coffee
-                     (coffee))
-               (cons 'dark-purple
-                     (dark-purple))
-               (cons 'ferrari-red
-                     (ferrari-red))
-               (cons 'floral-white
-                     (floral-white))
-               (cons 'glaucous
-                     (glaucous))
-               (cons 'iris
-                     (iris))
-               (cons 'jeans-blue
-                     (jeans-blue))
-               (cons 'lapis-lazuli
-                     (lapis-lazuli))
-               (cons 'light-coral
-                     (light-coral))
-               (cons 'mantis
-                     (mantis))
-               (cons 'melon
-                     (melon))
-               (cons 'midnight-green
-                     (midnight-green))
-               (cons 'mikado-yellow
-                     (mikado-yellow))
-               (cons 'moonstone
-                     (moonstone))
-               (cons 'naples-yellow
-                     (naples-yellow))
-               (cons 'onyx
-                     (onyx))
-               (cons 'orange
-                     (orange))
-               (cons 'olive
-                     (olive))
-               (cons 'dark-khaki
-                     (dark-khaki))
-               (cons 'pale-dogwood
-                     (pale-dogwood))
-               (cons 'papaya-whip
-                     (papaya-whip))
-               (cons 'persia-pink
-                     (persia-pink))
-               (cons 'pomp-and-power
-                     (pomp-and-power))
-               (cons 'prussian-blue
-                     (prussian-blue))
-               (cons 'raisin-black
-                     (raisin-black))
-               (cons 'redwood
-                     (redwood))
-               (cons 'russia-violet
-                     (russia-violet))
-               (cons 'sienna
-                     (sienna))
-               (cons 'spiced-terracotta
-                     (spiced-terracotta))
-               (cons 'stone
-                     (stone))
-               (cons 'tawny
-                     (tawny))
-               (cons 'tyrian
-                     (tyrian))
-               (cons 'umber
-                     (umber))
-               (cons 'van-dyke
-                     (van-dyke))
-               (cons 'white-smoke
-                     (white-smoke))
-               (cons 'wine
-                     (wine)))))
+  (make-parameter (list (cons 'apple-green
+                              (apple-green))
+                        (cons 'ash-gray
+                              (ash-gray))
+                        (cons 'asparagus
+                              (asparagus))
+                        (cons 'beaver
+                              (beaver))
+                        (cons 'bistre
+                              (bistre))
+                        (cons 'black-bean
+                              (black-bean))
+                        (cons 'black-olive
+                              (black-olive))
+                        (cons 'buff
+                              (buff))
+                        (cons 'terra
+                              (terra))
+                        (cons 'cadet-gray
+                              (cadet-gray))
+                        (cons 'cambridge-green
+                              (cambridge-green))
+                        (cons 'castleton-green
+                              (castleton-green))
+                        (cons 'charcoal
+                              (charcoal))
+                        (cons 'china-rose
+                              (china-rose))
+                        (cons 'china-violet
+                              (china-violet))
+                        (cons 'claret
+                              (claret))
+                        (cons 'coffee
+                              (coffee))
+                        (cons 'dark-purple
+                              (dark-purple))
+                        (cons 'ferrari-red
+                              (ferrari-red))
+                        (cons 'floral-white
+                              (floral-white))
+                        (cons 'glaucous
+                              (glaucous))
+                        (cons 'iris
+                              (iris))
+                        (cons 'jeans-blue
+                              (jeans-blue))
+                        (cons 'lapis-lazuli
+                              (lapis-lazuli))
+                        (cons 'light-coral
+                              (light-coral))
+                        (cons 'mantis
+                              (mantis))
+                        (cons 'melon
+                              (melon))
+                        (cons 'midnight-green
+                              (midnight-green))
+                        (cons 'mikado-yellow
+                              (mikado-yellow))
+                        (cons 'moonstone
+                              (moonstone))
+                        (cons 'naples-yellow
+                              (naples-yellow))
+                        (cons 'onyx
+                              (onyx))
+                        (cons 'orange
+                              (orange))
+                        (cons 'olive
+                              (olive))
+                        (cons 'dark-khaki
+                              (dark-khaki))
+                        (cons 'pale-dogwood
+                              (pale-dogwood))
+                        (cons 'papaya-whip
+                              (papaya-whip))
+                        (cons 'persia-pink
+                              (persia-pink))
+                        (cons 'pomp-and-power
+                              (pomp-and-power))
+                        (cons 'prussian-blue
+                              (prussian-blue))
+                        (cons 'raisin-black
+                              (raisin-black))
+                        (cons 'redwood
+                              (redwood))
+                        (cons 'russia-violet
+                              (russia-violet))
+                        (cons 'sienna
+                              (sienna))
+                        (cons 'spiced-terracotta
+                              (spiced-terracotta))
+                        (cons 'stone
+                              (stone))
+                        (cons 'tawny
+                              (tawny))
+                        (cons 'tyrian
+                              (tyrian))
+                        (cons 'umber
+                              (umber))
+                        (cons 'van-dyke
+                              (van-dyke))
+                        (cons 'white-smoke
+                              (white-smoke))
+                        (cons 'wine
+                              (wine)))))
 
 (define shadows
-  (param (rulv ".shadow-~a"
-               #:property 'box-shadow
-               #:variants '(("2xs" "0 1px rgb(0 0 0 / 0.05)")
-                            (xs "0 1px 2px 0 rgb(0 0 0 / 0.05)")
-                            (sm
-                             "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)")
-                            (md
-                             "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)")
-                            (lg
-                             "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)")
-                            (xl
-                             "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)")
-                            ("2xl" "0 25px 50px -12px rgb(0 0 0 / 0.25)")
-                            (none "0 0 #0000")))))
+  (make-parameter (css-rule-variants ".shadow-~a"
+                                     #:property 'box-shadow
+                                     #:variants '(("2xs"
+                                                   "0 1px rgb(0 0 0 / 0.05)")
+                                                  (xs
+                                                   "0 1px 2px 0 rgb(0 0 0 / 0.05)")
+                                                  (sm
+                                                   "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)")
+                                                  (md
+                                                   "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)")
+                                                  (lg
+                                                   "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)")
+                                                  (xl
+                                                   "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)")
+                                                  ("2xl"
+                                                   "0 25px 50px -12px rgb(0 0 0 / 0.25)")
+                                                  (none "0 0 #0000")))))
 
 (define scroll-snap-type
-  (param "proximity"))
+  (make-parameter "proximity"))
 
 (define scroll-snap-types
-  (param (rulv ".snap-~a"
-               #:property 'scroll-snap-type
-               #:variants `((none none)
-                            (x ,(format #f "x ~a"
-                                        (scroll-snap-type)))
-                            (y ,(format #f "y ~a"
-                                        (scroll-snap-type)))
-                            (both ,(format #f "both ~a"
-                                           (scroll-snap-type)))))))
+  (make-parameter (css-rule-variants ".snap-~a"
+                                     #:property 'scroll-snap-type
+                                     #:variants `((none none)
+                                                  (x ,(format #f "x ~a"
+                                                              (scroll-snap-type)))
+                                                  (y ,(format #f "y ~a"
+                                                              (scroll-snap-type)))
+                                                  (both ,(format #f "both ~a"
+                                                                 (scroll-snap-type)))))))
 
 (define scroll-snap-aligns
-  (param (rulv ".snap-~a"
-               #:property 'scroll-snap-align
-               #:variants '((start start)
-                            (end end)
-                            (center center)
-                            (none none)))))
+  (make-parameter (css-rule-variants ".snap-~a"
+                                     #:property 'scroll-snap-align
+                                     #:variants '((start start)
+                                                  (end end)
+                                                  (center center)
+                                                  (none none)))))
 
 (define (colors palettes)
-  (append (rulv ".bg-~a"
-                #:property 'background
-                #:variants '((inherit inherit)
-                             (white white)
-                             (black black)
-                             (transparent transparent)))
-          (rulv ".text-~a"
-                #:property 'color
-                #:variants '((inherit inherit)
-                             (white white)
-                             (black black)
-                             (transparent transparent)))
-          (rulv ".border-~a"
-                #:property 'border-color
-                #:variants '((inherit inherit)
-                             (white white)
-                             (black black)
-                             (transparent transparent)))
-          (rulv ".decoration-~a"
-                #:property 'text-decoration-color
-                #:variants '((inherit inherit)
-                             (white white)
-                             (black black)
-                             (transparent transparent)))
+  (append (css-rule-variants ".bg-~a"
+                             #:property 'background
+                             #:variants '((inherit inherit)
+                                          (white white)
+                                          (black black)
+                                          (transparent transparent)))
+          (css-rule-variants ".text-~a"
+                             #:property 'color
+                             #:variants '((inherit inherit)
+                                          (white white)
+                                          (black black)
+                                          (transparent transparent)))
+          (css-rule-variants ".border-~a"
+                             #:property 'border-color
+                             #:variants '((inherit inherit)
+                                          (white white)
+                                          (black black)
+                                          (transparent transparent)))
+          (css-rule-variants ".decoration-~a"
+                             #:property 'text-decoration-color
+                             #:variants '((inherit inherit)
+                                          (white white)
+                                          (black black)
+                                          (transparent transparent)))
 
-          (rulcol ".bg-~a-~a~a"
+          (css-color-rules ".bg-~a-~a~a"
                   #:property 'background
                   #:variants (list-combinations alphas color-weights)
                   #:palettes palettes)
-          (rulcol ".text-~a-~a~a"
-                  #:property 'color
-                  #:variants (list-combinations alphas color-weights)
-                  #:palettes palettes)
-          (rulcol ".border-~a-~a~a"
-                  #:property 'border-color
-                  #:variants (list-combinations alphas color-weights)
-                  #:palettes palettes)
-          (rulcol ".decoration-~a-~a~a"
-                  #:property 'text-decoration-color
-                  #:variants (list-combinations alphas color-weights)
-                  #:palettes palettes)))
+          (css-color-rules ".text-~a-~a~a"
+                           #:property 'color
+                           #:variants (list-combinations alphas color-weights)
+                           #:palettes palettes)
+          (css-color-rules ".border-~a-~a~a"
+                           #:property 'border-color
+                           #:variants (list-combinations alphas color-weights)
+                           #:palettes palettes)
+          (css-color-rules ".decoration-~a-~a~a"
+                           #:property 'text-decoration-color
+                           #:variants (list-combinations alphas color-weights)
+                           #:palettes palettes)))
 
 (define (dark-mode)
   (list '("")
-        (rulc "Load Olive CSS Dark mode")
+        (css-comment "Load Olive CSS Dark mode")
         (list where-dark " {")
-        (addmq 'dark
-               (font-family))
-        (addmq 'dark
-               (colors (palettes)))
-        (addmq 'dark
-               (filter-classes))
+        (add-media-query-prefix 'dark
+                                (font-family))
+        (add-media-query-prefix 'dark
+                                (colors (palettes)))
+        (add-media-query-prefix 'dark
+                                (filter-classes))
         '("")
-        (rulc "Load Olive CSS Dark mode hover colors")
-        (addhover "hover\\:dark"
+        (css-comment "Load Olive CSS Dark mode hover colors")
+        (add-hover-variant "hover\\:dark"
                   (colors (palettes)))
         '("}")))
 
 (define (hover-colors palettes)
-  (addhover 'hover
+  (add-hover-variant 'hover
             (colors palettes)))
 
 (define display-utilities
-  (param (list (rul ".overflow-x-scroll"
-                    (dec 'overflow-x
-                         'scroll))
-               (rul ".overflow-y-scroll"
-                    (dec 'overflow-y
-                         'scroll))
-               (rul ".cursor-pointer"
-                    (dec 'cursor
-                         'pointer)))))
+  (make-parameter (list (css-rule ".overflow-x-scroll"
+                                  (css-declaration 'overflow-x
+                                                   'scroll))
+                        (css-rule ".overflow-y-scroll"
+                                  (css-declaration 'overflow-y
+                                                   'scroll))
+                        (css-rule ".cursor-pointer"
+                                  (css-declaration 'cursor
+                                                   'pointer)))))
 
 (define border-radius
-  (param (append (rulv ".rounded-~a"
-                       #:property 'border-radius
-                       #:variants (map (lambda (s)
-                                         (siz s
-                                              #:conversion to-rem
-                                              #:multiplier (rounded-multiplier)))
-                                       (append numeric-sizes tshirt-sizes)))
+  (make-parameter (append (css-rule-variants ".rounded-~a"
+                                             #:property 'border-radius
+                                             #:variants (map (lambda (s)
+                                                               (css-size s
+                                                                #:conversion
+                                                                to-rem
+                                                                #:multiplier (rounded-multiplier)))
+                                                             (append
+                                                              numeric-sizes
+                                                              tshirt-sizes)))
 
-                 (rulv ".rounded-tl-~a"
-                       #:property 'border-start-start-radius
-                       #:variants (map (lambda (s)
-                                         (siz s
-                                              #:conversion to-rem
-                                              #:multiplier (rounded-multiplier)))
-                                       (append numeric-sizes tshirt-sizes)))
+                          (css-rule-variants ".rounded-tl-~a"
+                                             #:property 'border-start-start-radius
+                                             #:variants (map (lambda (s)
+                                                               (css-size s
+                                                                #:conversion
+                                                                to-rem
+                                                                #:multiplier (rounded-multiplier)))
+                                                             (append
+                                                              numeric-sizes
+                                                              tshirt-sizes)))
 
-                 (rulv ".rounded-tr-~a"
-                       #:property 'border-start-end-radius
-                       #:variants (map (lambda (s)
-                                         (siz s
-                                              #:conversion to-rem
-                                              #:multiplier (rounded-multiplier)))
-                                       (append numeric-sizes tshirt-sizes)))
+                          (css-rule-variants ".rounded-tr-~a"
+                                             #:property 'border-start-end-radius
+                                             #:variants (map (lambda (s)
+                                                               (css-size s
+                                                                #:conversion
+                                                                to-rem
+                                                                #:multiplier (rounded-multiplier)))
+                                                             (append
+                                                              numeric-sizes
+                                                              tshirt-sizes)))
 
-                 (rulv ".rounded-bl-~a"
-                       #:property 'border-end-start-radius
-                       #:variants (map (lambda (s)
-                                         (siz s
-                                              #:conversion to-rem
-                                              #:multiplier (rounded-multiplier)))
-                                       (append numeric-sizes tshirt-sizes)))
+                          (css-rule-variants ".rounded-bl-~a"
+                                             #:property 'border-end-start-radius
+                                             #:variants (map (lambda (s)
+                                                               (css-size s
+                                                                #:conversion
+                                                                to-rem
+                                                                #:multiplier (rounded-multiplier)))
+                                                             (append
+                                                              numeric-sizes
+                                                              tshirt-sizes)))
 
-                 (rulv ".rounded-br-~a"
-                       #:property 'border-end-end-radius
-                       #:variants (map (lambda (s)
-                                         (siz s
-                                              #:conversion to-rem
-                                              #:multiplier (rounded-multiplier)))
-                                       (append numeric-sizes tshirt-sizes))))))
+                          (css-rule-variants ".rounded-br-~a"
+                                             #:property 'border-end-end-radius
+                                             #:variants (map (lambda (s)
+                                                               (css-size s
+                                                                #:conversion
+                                                                to-rem
+                                                                #:multiplier (rounded-multiplier)))
+                                                             (append
+                                                              numeric-sizes
+                                                              tshirt-sizes))))))
 
 (define border-style
-  (param 'solid))
+  (make-parameter 'solid))
 
 (define borders
-  (param (rulv ".border-~a"
-               #:property 'border-width
-               #:other-properties `((border-style ,(border-style)))
-               #:variants (map (lambda (s)
-                                 (siz s
-                                      #:conversion to-px)) numeric-sizes))))
+  (make-parameter (css-rule-variants ".border-~a"
+                                     #:property 'border-width
+                                     #:other-properties `((border-style ,(border-style)))
+                                     #:variants (map (lambda (s)
+                                                       (css-size s
+                                                                 #:conversion
+                                                                 to-px))
+                                                     numeric-sizes))))
 
 (define license-header
-  (param
+  (make-parameter
    "olive-css - Utility-class CSS framework that is easy to learn and hack
 
   Copyright © Josep Bigorra <jjbigorra@gmail.com>
@@ -387,79 +410,79 @@
 ;; ============ Stylesheet Generation Entry-point =========================
 
 (define responsive-classes
-  (param (append (layout-classes)
-                 (filter-classes)
-                 (flexbox-classes)
-                 (spacing-classes)
-                 (sizing-classes)
-                 (typography-classes)
-                 (border-radius)
-                 (scroll-snap-aligns)
-                 (scroll-snap-types)
-                 (font-family))))
+  (make-parameter (append (layout-classes)
+                          (filter-classes)
+                          (flexbox-classes)
+                          (spacing-classes)
+                          (sizing-classes)
+                          (typography-classes)
+                          (border-radius)
+                          (scroll-snap-aligns)
+                          (scroll-snap-types)
+                          (font-family))))
 
 (define sm-responsive
-  (param (map (lambda (r)
-                (addmq 'sm r))
-              (responsive-classes))))
+  (make-parameter (map (lambda (r)
+                         (add-media-query-prefix 'sm r))
+                       (responsive-classes))))
 
 (define md-responsive
-  (param (map (lambda (r)
-                (addmq 'md r))
-              (responsive-classes))))
+  (make-parameter (map (lambda (r)
+                         (add-media-query-prefix 'md r))
+                       (responsive-classes))))
 
 (define lg-responsive
-  (param (map (lambda (r)
-                (addmq 'lg r))
-              (responsive-classes))))
+  (make-parameter (map (lambda (r)
+                         (add-media-query-prefix 'lg r))
+                       (responsive-classes))))
 
 (define xl-responsive
-  (param (map (lambda (r)
-                (addmq 'xl r))
-              (responsive-classes))))
+  (make-parameter (map (lambda (r)
+                         (add-media-query-prefix 'xl r))
+                       (responsive-classes))))
 
 (define 2xl-responsive
-  (param (map (lambda (r)
-                (addmq "2xl" r))
-              (responsive-classes))))
+  (make-parameter (map (lambda (r)
+                         (add-media-query-prefix "2xl" r))
+                       (responsive-classes))))
 
 (define all-responsive
-  (append (mq "width >= 40rem"
-              (sm-responsive))
-          (mq "width >= 48rem"
-              (md-responsive))
-          (mq "width >= 64rem"
-              (lg-responsive))
-          (mq "width >= 80rem"
-              (xl-responsive))
-          (mq "width >= 96rem"
-              (2xl-responsive))))
+  (append (media-query "width >= 40rem"
+                       (sm-responsive))
+          (media-query "width >= 48rem"
+                       (md-responsive))
+          (media-query "width >= 64rem"
+                       (lg-responsive))
+          (media-query "width >= 80rem"
+                       (xl-responsive))
+          (media-query "width >= 96rem"
+                       (2xl-responsive))))
 
 (define reduced-responsive
-  (append (mq "width >= 40rem"
-              (sm-responsive))
-          (mq "width >= 48rem"
-              (md-responsive))
-          (mq "width >= 64rem"
-              (lg-responsive))
-          (mq "width >= 80rem"
-              (xl-responsive))))
+  (append (media-query "width >= 40rem"
+                       (sm-responsive))
+          (media-query "width >= 48rem"
+                       (md-responsive))
+          (media-query "width >= 64rem"
+                       (lg-responsive))
+          (media-query "width >= 80rem"
+                       (xl-responsive))))
 
 (define responsive
-  (param all-responsive))
+  (make-parameter all-responsive))
 
 (define with-dark-mode?
-  (param #t))
+  (make-parameter #t))
 
 (define* (olive-css-gen)
-  (append (rulc (license-header))
+  (append (css-comment (license-header))
           '("")
-          (rulc "Load CSS browser reset - should be first")
+          (css-comment "Load CSS browser reset - should be first")
           (reset-css)
           '("")
-          (rulc "Load Olive CSS Hygge Style Sheets")
+          (css-comment "Load Olive CSS Hygge Style Sheets")
           (font-family)
-          (addhover 'hover
+          (add-hover-variant 'hover
                     (font-family))
           (layout-classes)
           (filter-classes)
@@ -467,7 +490,7 @@
           (spacing-classes)
           (sizing-classes)
           (typography-classes)
-          (addhover 'hover
+          (add-hover-variant 'hover
                     (typography-classes))
           ;;
           (borders)
@@ -479,16 +502,16 @@
           (scroll-snap-types)
           (shadows)
           '("")
-          (rulc "Load Olive CSS colors")
+          (css-comment "Load Olive CSS colors")
           (colors (palettes))
           '("")
-          (rulc "Load Olive CSS hover colors")
+          (css-comment "Load Olive CSS hover colors")
           (hover-colors (palettes))
           (if (with-dark-mode?)
               (dark-mode)
               '())
           '("")
-          (rulc "Load responsive classes")
+          (css-comment "Load responsive classes")
           (responsive)))
 
 (define* (write-css-to-file #:key file css-lines)

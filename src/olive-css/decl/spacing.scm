@@ -25,54 +25,67 @@
                             padding-multiplier))
 
 (define margin-multiplier
-  (param 0.28))
+  (make-parameter 0.28))
 (define padding-multiplier
-  (param 0.28))
+  (make-parameter 0.28))
 
 (define padding
-  (param (map (lambda (d)
-                (map (lambda (p)
-                       (rulv (string-append "."
-                                            (format #f "~a"
-                                                    (car d)) "-" "~a")
-                             #:property p
-                             #:variants (map (lambda (s)
-                                               (siz s
-                                                    #:conversion to-rem
-                                                    #:multiplier (padding-multiplier)))
-                                             (append numeric-sizes
-                                                     tshirt-sizes))))
-                     (cdr d)))
-              '((p padding-top padding-bottom padding-left padding-right)
-                (px padding-left padding-right)
-                (py padding-top padding-bottom)
-                (pt padding-top)
-                (pb padding-bottom)
-                (pl padding-left)
-                (pr padding-right)))))
+  (make-parameter (map (lambda (d)
+                         (map (lambda (p)
+                                (css-rule-variants (string-append "."
+                                                                  (format #f
+                                                                   "~a"
+                                                                   (car d))
+                                                                  "-" "~a")
+                                                   #:property p
+                                                   #:variants (map (lambda (s)
+                                                                     (css-size
+                                                                      s
+                                                                      #:conversion
+                                                                      to-rem
+                                                                      #:multiplier
+                                                                      (padding-multiplier)))
+                                                                   (append
+                                                                    numeric-sizes
+                                                                    tshirt-sizes))))
+                              (cdr d)))
+                       '((p padding-top padding-bottom padding-left
+                            padding-right)
+                         (px padding-left padding-right)
+                         (py padding-top padding-bottom)
+                         (pt padding-top)
+                         (pb padding-bottom)
+                         (pl padding-left)
+                         (pr padding-right)))))
 
 (define margin
-  (param (map (lambda (d)
-                (map (lambda (p)
-                       (rulv (string-append "."
-                                            (format #f "~a"
-                                                    (car d)) "-" "~a")
-                             #:property p
-                             #:variants (map (lambda (s)
-                                               (siz s
-                                                    #:conversion to-rem
-                                                    #:multiplier (margin-multiplier)))
-                                             (append numeric-sizes
-                                                     tshirt-sizes))))
-                     (cdr d)))
-              '((m margin-top margin-bottom margin-left margin-right)
-                (mx margin-left margin-right)
-                (my margin-top margin-bottom)
-                (mt margin-top)
-                (mb margin-bottom)
-                (ml margin-left)
-                (mr margin-right)))))
+  (make-parameter (map (lambda (d)
+                         (map (lambda (p)
+                                (css-rule-variants (string-append "."
+                                                                  (format #f
+                                                                   "~a"
+                                                                   (car d))
+                                                                  "-" "~a")
+                                                   #:property p
+                                                   #:variants (map (lambda (s)
+                                                                     (css-size
+                                                                      s
+                                                                      #:conversion
+                                                                      to-rem
+                                                                      #:multiplier
+                                                                      (margin-multiplier)))
+                                                                   (append
+                                                                    numeric-sizes
+                                                                    tshirt-sizes))))
+                              (cdr d)))
+                       '((m margin-top margin-bottom margin-left margin-right)
+                         (mx margin-left margin-right)
+                         (my margin-top margin-bottom)
+                         (mt margin-top)
+                         (mb margin-bottom)
+                         (ml margin-left)
+                         (mr margin-right)))))
 
 (define spacing-classes
-  (param (list (margin)
-               (padding))))
+  (make-parameter (list (margin)
+                        (padding))))

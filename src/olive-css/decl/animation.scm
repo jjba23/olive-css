@@ -24,98 +24,104 @@
   #:export (animations animation-duration))
 
 (define animation-duration
-  (param "0.8s"))
+  (make-parameter "0.8s"))
 
 (define fade-in-page-transition
-  (param (list (rul "@view-transition"
-                    (dec 'navigation
-                         'auto))
-               (rul (string-join '("::view-transition-old(root)"
-                                   "::view-transition-new(root)") ", ")
-                    (dec 'animation "fade 0.1s ease both"))
-               (rul "@keyframes fade"
-                    (rul 'from
-                         (dec 'opacity 0.2))
-                    (rul 'to
-                         (dec 'opacity 1))))))
+  (make-parameter (list (css-rule "@view-transition"
+                                  (css-declaration 'navigation
+                                                   'auto))
+                        (css-rule (string-join '("::view-transition-old(root)"
+                                                 "::view-transition-new(root)")
+                                               ", ")
+                                  (css-declaration 'animation
+                                                   "fade 0.1s ease both"))
+                        (css-rule "@keyframes fade"
+                                  (css-rule 'from
+                                            (css-declaration 'opacity 0.2))
+                                  (css-rule 'to
+                                            (css-declaration 'opacity 1))))))
 
 (define slide-from-top-element-animation
-  (param (list (rul "@keyframes slide-from-top-element"
-                    (rul "from"
-                         (dec 'translate "0 -150vh")
-                         (dec 'scale "1 200%"))
-                    (rul "to"
-                         (dec 'translate "0 0")
-                         (dec 'scale "1 100%"))))))
+  (make-parameter (list (css-rule "@keyframes slide-from-top-element"
+                                  (css-rule "from"
+                                            (css-declaration 'translate
+                                                             "0 -150vh")
+                                            (css-declaration 'scale "1 200%"))
+                                  (css-rule "to"
+                                            (css-declaration 'translate "0 0")
+                                            (css-declaration 'scale "1 100%"))))))
 
 (define slide-from-top
-  (param (list (rul ".slide-from-top"
-                    (dec 'animation-duration
-                         (animation-duration))
-                    (dec 'animation-name
-                         'slide-from-top-element)))))
+  (make-parameter (list (css-rule ".slide-from-top"
+                                  (css-declaration 'animation-duration
+                                                   (animation-duration))
+                                  (css-declaration 'animation-name
+                                                   'slide-from-top-element)))))
 
 (define slide-from-bottom-element-animation
-  (param (list (rul "@keyframes slide-from-bottom-element"
-                    (rul "from"
-                         (dec 'translate "0 150vh")
-                         (dec 'scale "1 200%"))
-                    (rul "to"
-                         (dec 'translate "0 0")
-                         (dec 'scale "1 100%"))))))
+  (make-parameter (list (css-rule "@keyframes slide-from-bottom-element"
+                                  (css-rule "from"
+                                            (css-declaration 'translate
+                                                             "0 150vh")
+                                            (css-declaration 'scale "1 200%"))
+                                  (css-rule "to"
+                                            (css-declaration 'translate "0 0")
+                                            (css-declaration 'scale "1 100%"))))))
 
 (define slide-from-bottom
-  (param (list (rul ".slide-from-bottom"
-                    (dec 'animation-duration
-                         (animation-duration))
-                    (dec 'animation-name
-                         'slide-from-bottom-element)))))
+  (make-parameter (list (css-rule ".slide-from-bottom"
+                                  (css-declaration 'animation-duration
+                                                   (animation-duration))
+                                  (css-declaration 'animation-name
+                                                   'slide-from-bottom-element)))))
 
 (define slide-from-right-element-animation
-  (param (list (rul "@keyframes slide-from-right-element"
-                    (rul "from"
-                         (dec 'translate "150vw 0")
-                         (dec 'scale "200% 1"))
-                    (rul "to"
-                         (dec 'translate "0 0")
-                         (dec 'scale "100% 1"))))))
+  (make-parameter (list (css-rule "@keyframes slide-from-right-element"
+                                  (css-rule "from"
+                                            (css-declaration 'translate
+                                                             "150vw 0")
+                                            (css-declaration 'scale "200% 1"))
+                                  (css-rule "to"
+                                            (css-declaration 'translate "0 0")
+                                            (css-declaration 'scale "100% 1"))))))
 
 (define slide-from-right
-  (param (list (rul ".slide-from-right"
-                    (dec 'animation-duration
-                         (animation-duration))
-                    (dec 'animation-name
-                         'slide-from-right-element)))))
+  (make-parameter (list (css-rule ".slide-from-right"
+                                  (css-declaration 'animation-duration
+                                                   (animation-duration))
+                                  (css-declaration 'animation-name
+                                                   'slide-from-right-element)))))
 
 (define slide-from-left-element-animation
-  (param (list (rul "@keyframes slide-from-left-element"
-                    (rul "from"
-                         (dec 'translate "-150vw 0")
-                         (dec 'scale "200% 1"))
-                    (rul "to"
-                         (dec 'translate "0 0")
-                         (dec 'scale "100% 1"))))))
+  (make-parameter (list (css-rule "@keyframes slide-from-left-element"
+                                  (css-rule "from"
+                                            (css-declaration 'translate
+                                                             "-150vw 0")
+                                            (css-declaration 'scale "200% 1"))
+                                  (css-rule "to"
+                                            (css-declaration 'translate "0 0")
+                                            (css-declaration 'scale "100% 1"))))))
 
 (define slide-from-left
-  (param (list (rul ".slide-from-left"
-                    (dec 'animation-duration
-                         (animation-duration))
-                    (dec 'animation-name
-                         'slide-from-left-element)))))
+  (make-parameter (list (css-rule ".slide-from-left"
+                                  (css-declaration 'animation-duration
+                                                   (animation-duration))
+                                  (css-declaration 'animation-name
+                                                   'slide-from-left-element)))))
 
 (define active-scale
-  (param (list (rul ".active\\:scale-95"
-                    (rul "&:active"
-                         (dec 'scale "95% 95%"))))))
+  (make-parameter (list (css-rule ".active\\:scale-95"
+                                  (css-rule "&:active"
+                                            (css-declaration 'scale "95% 95%"))))))
 
 (define animations
-  (param (list (fade-in-page-transition)
-               (slide-from-right-element-animation)
-               (slide-from-right)
-               (slide-from-left-element-animation)
-               (slide-from-left)
-               (slide-from-top-element-animation)
-               (slide-from-top)
-               (slide-from-bottom-element-animation)
-               (slide-from-bottom)
-               (active-scale))))
+  (make-parameter (list (fade-in-page-transition)
+                        (slide-from-right-element-animation)
+                        (slide-from-right)
+                        (slide-from-left-element-animation)
+                        (slide-from-left)
+                        (slide-from-top-element-animation)
+                        (slide-from-top)
+                        (slide-from-bottom-element-animation)
+                        (slide-from-bottom)
+                        (active-scale))))

@@ -48,226 +48,242 @@
                                text-align))
 
 (define font-size-multiplier
-  (param 0.25))
+  (make-parameter 0.25))
 
 (define line-height-multiplier
-  (param 0.25))
+  (make-parameter 0.25))
 
 (define weight-multiplier
-  (param 1))
+  (make-parameter 1))
 
 (define font-weight
-  (param (rulv ".font-~a"
-               #:property 'font-weight
-               #:variants weights)))
+  (make-parameter (css-rule-variants ".font-~a"
+                                     #:property 'font-weight
+                                     #:variants weights)))
 
 (define font-size
-  (param (rulv ".text-~a"
-               #:property 'font-size
-               #:variants (map (lambda (s)
-                                 (siz s
-                                      #:conversion to-rem
-                                      #:multiplier (font-size-multiplier)))
-                               (append tshirt-sizes numeric-sizes)))))
+  (make-parameter (css-rule-variants ".text-~a"
+                                     #:property 'font-size
+                                     #:variants (map (lambda (s)
+                                                       (css-size s
+                                                                 #:conversion
+                                                                 to-rem
+                                                                 #:multiplier (font-size-multiplier)))
+                                                     (append tshirt-sizes
+                                                             numeric-sizes)))))
 
 (define text-align
-  (param (rulv ".text-~a"
-               #:property 'text-align
-               #:variants '((center center)
-                            (left left)
-                            (right right)
-                            (justify justify)
-                            (start start)
-                            (end end)))))
+  (make-parameter (css-rule-variants ".text-~a"
+                                     #:property 'text-align
+                                     #:variants '((center center)
+                                                  (left left)
+                                                  (right right)
+                                                  (justify justify)
+                                                  (start start)
+                                                  (end end)))))
 
 (define letter-spacing
-  (param (rulv ".tracking-~a"
-               #:property 'letter-spacing
-               #:variants trackings)))
+  (make-parameter (css-rule-variants ".tracking-~a"
+                                     #:property 'letter-spacing
+                                     #:variants trackings)))
 
 (define font-style
-  (param (list (rul ".italic"
-                    (dec 'font-style
-                         'italic))
-               (rul ".not-italic"
-                    (dec 'font-style
-                         'normal)))))
+  (make-parameter (list (css-rule ".italic"
+                                  (css-declaration 'font-style
+                                                   'italic))
+                        (css-rule ".not-italic"
+                                  (css-declaration 'font-style
+                                                   'normal)))))
 
 (define font-smoothing
-  (param (list (rul ".antialiased"
-                    (dec "-webkit-font-smoothing" "antialiased")
-                    (dec "-moz-osx-font-smoothing" "grayscale"))
-               (rul ".subpixel-antialiased"
-                    (dec "-webkit-font-smoothing" "auto")
-                    (dec "-moz-osx-font-smoothing" "auto")))))
+  (make-parameter (list (css-rule ".antialiased"
+                                  (css-declaration "-webkit-font-smoothing"
+                                                   "antialiased")
+                                  (css-declaration "-moz-osx-font-smoothing"
+                                                   "grayscale"))
+                        (css-rule ".subpixel-antialiased"
+                                  (css-declaration "-webkit-font-smoothing"
+                                                   "auto")
+                                  (css-declaration "-moz-osx-font-smoothing"
+                                                   "auto")))))
 
 (define font-stretch
-  (param (rulv ".font-stretch-~a"
-               #:property 'font-stretch
-               #:variants stretches)))
+  (make-parameter (css-rule-variants ".font-stretch-~a"
+                                     #:property 'font-stretch
+                                     #:variants stretches)))
 
 (define font-variant-numeric
-  (param (rulv ".~a"
-               #:property 'font-variant-numeric
-               #:variants numeric-variants)))
+  (make-parameter (css-rule-variants ".~a"
+                                     #:property 'font-variant-numeric
+                                     #:variants numeric-variants)))
 
 (define line-clamp
-  (param (rulv ".line-clamp-~a"
-               #:property "-webkit-line-clamp"
-               #:other-properties '((overflow hidden)
-                                    (display "-webkit-box")
-                                    ("-webkit-box-orient" vertical))
-               #:variants numeric-sizes)))
+  (make-parameter (css-rule-variants ".line-clamp-~a"
+                                     #:property "-webkit-line-clamp"
+                                     #:other-properties '((overflow hidden)
+                                                          (display
+                                                           "-webkit-box")
+                                                          ("-webkit-box-orient"
+                                                           vertical))
+                                     #:variants numeric-sizes)))
 
 (define leading
-  (param (list (rul ".leading-none"
-                    (dec 'line-height 1))
-               (rulv ".leading-~a"
-                     #:property 'line-height
-                     #:variants (map (lambda (s)
-                                       (siz s
-                                            #:conversion to-rem
-                                            #:multiplier (line-height-multiplier)))
-                                     (append tshirt-sizes numeric-sizes))))))
+  (make-parameter (list (css-rule ".leading-none"
+                                  (css-declaration 'line-height 1))
+                        (css-rule-variants ".leading-~a"
+                                           #:property 'line-height
+                                           #:variants (map (lambda (s)
+                                                             (css-size s
+                                                                       #:conversion
+                                                                       to-rem
+                                                                       #:multiplier
+                                                                       (line-height-multiplier)))
+                                                           (append
+                                                            tshirt-sizes
+                                                            numeric-sizes))))))
 
 (define list-style-type
-  (param (list (rulv ".list-~a"
-                     #:property 'list-style-type
-                     #:variants '((disc disc)
-                                  (decimal decimal)
-                                  (none none))))))
+  (make-parameter (list (css-rule-variants ".list-~a"
+                                           #:property 'list-style-type
+                                           #:variants '((disc disc)
+                                                        (decimal decimal)
+                                                        (none none))))))
 
 (define list-style-position
-  (param (list (rulv ".list-~a"
-                     #:property 'list-style-position
-                     #:variants '((inside inside)
-                                  (outside outside))))))
+  (make-parameter (list (css-rule-variants ".list-~a"
+                                           #:property 'list-style-position
+                                           #:variants '((inside inside)
+                                                        (outside outside))))))
 
 (define text-decoration-line
-  (param (rulv ".~a"
-               #:property 'text-decoration-line
-               #:variants '((underline underline)
-                            (overline overline)
-                            (line-through line-through)
-                            (no-underline none)))))
+  (make-parameter (css-rule-variants ".~a"
+                                     #:property 'text-decoration-line
+                                     #:variants '((underline underline)
+                                                  (overline overline)
+                                                  (line-through line-through)
+                                                  (no-underline none)))))
 
 (define text-decoration-style
-  (param (rulv ".decoration-~a"
-               #:property 'text-decoration-style
-               #:variants '((solid solid)
-                            (double double)
-                            (dotted dotted)
-                            (dashed dashed)
-                            (wavy wavy)))))
+  (make-parameter (css-rule-variants ".decoration-~a"
+                                     #:property 'text-decoration-style
+                                     #:variants '((solid solid)
+                                                  (double double)
+                                                  (dotted dotted)
+                                                  (dashed dashed)
+                                                  (wavy wavy)))))
 
 (define text-underline-offset
-  (param (list (rul ".underline-offset-auto"
-                    (dec 'text-underline-offset
-                         'auto))
-               (rulv ".underline-offset-~a"
-                     #:property 'text-underline-offset
-                     #:variants (map (lambda (s)
-                                       (siz s
-                                            #:conversion to-rem
-                                            #:multiplier (line-height-multiplier)))
-                                     (append tshirt-sizes numeric-sizes))))))
+  (make-parameter (list (css-rule ".underline-offset-auto"
+                                  (css-declaration 'text-underline-offset
+                                                   'auto))
+                        (css-rule-variants ".underline-offset-~a"
+                                           #:property 'text-underline-offset
+                                           #:variants (map (lambda (s)
+                                                             (css-size s
+                                                                       #:conversion
+                                                                       to-rem
+                                                                       #:multiplier
+                                                                       (line-height-multiplier)))
+                                                           (append
+                                                            tshirt-sizes
+                                                            numeric-sizes))))))
 
 (define text-transform
-  (param (rulv ".~a"
-               #:property 'text-transform
-               #:variants '((uppercase uppercase)
-                            (lowercase lowercase)
-                            (capitalize capitalize)
-                            (normal-case none)))))
+  (make-parameter (css-rule-variants ".~a"
+                                     #:property 'text-transform
+                                     #:variants '((uppercase uppercase)
+                                                  (lowercase lowercase)
+                                                  (capitalize capitalize)
+                                                  (normal-case none)))))
 
 (define text-overflow
-  (param (list (rul ".truncate"
-                    (dec 'overflow
-                         'hidden)
-                    (dec 'text-overflow
-                         'ellipsis)
-                    (dec 'white-space
-                         'nowrap))
-               (rul ".text-ellipsis"
-                    (dec 'text-overflow
-                         'ellipsis))
-               (rul ".text-clip"
-                    (dec 'text-overflow
-                         'clip)))))
+  (make-parameter (list (css-rule ".truncate"
+                                  (css-declaration 'overflow
+                                                   'hidden)
+                                  (css-declaration 'text-overflow
+                                                   'ellipsis)
+                                  (css-declaration 'white-space
+                                                   'nowrap))
+                        (css-rule ".text-ellipsis"
+                                  (css-declaration 'text-overflow
+                                                   'ellipsis))
+                        (css-rule ".text-clip"
+                                  (css-declaration 'text-overflow
+                                                   'clip)))))
 
 (define text-wrap
-  (param (rulv ".text-~a"
-               #:property 'text-wrap
-               #:variants '((wrap wrap)
-                            (nowrap nowrap)
-                            (balance balance)
-                            (pretty pretty)))))
+  (make-parameter (css-rule-variants ".text-~a"
+                                     #:property 'text-wrap
+                                     #:variants '((wrap wrap)
+                                                  (nowrap nowrap)
+                                                  (balance balance)
+                                                  (pretty pretty)))))
 
 (define white-space
-  (param (rulv ".whitespace-~a"
-               #:property 'white-space
-               #:variants '((normal normal)
-                            (nowrap nowrap)
-                            (pre pre)
-                            (pre-line pre-line)
-                            (pre-wrap pre-wrap)
-                            (break-spaces break-spaces)))))
+  (make-parameter (css-rule-variants ".whitespace-~a"
+                                     #:property 'white-space
+                                     #:variants '((normal normal)
+                                                  (nowrap nowrap)
+                                                  (pre pre)
+                                                  (pre-line pre-line)
+                                                  (pre-wrap pre-wrap)
+                                                  (break-spaces break-spaces)))))
 
 (define word-break
-  (param (rulv ".break-~a"
-               #:property 'word-break
-               #:variants '((normal normal)
-                            (all break-all)
-                            (keep keep-all)))))
+  (make-parameter (css-rule-variants ".break-~a"
+                                     #:property 'word-break
+                                     #:variants '((normal normal)
+                                                  (all break-all)
+                                                  (keep keep-all)))))
 
 (define overflow-wrap
-  (param (rulv ".wrap-~a"
-               #:property 'overflow-wrap
-               #:variants '((break-word break-word)
-                            (anywhere anywhere)
-                            (normal normal)))))
+  (make-parameter (css-rule-variants ".wrap-~a"
+                                     #:property 'overflow-wrap
+                                     #:variants '((break-word break-word)
+                                                  (anywhere anywhere)
+                                                  (normal normal)))))
 
 (define hyphens
-  (param (rulv ".hyphens-~a"
-               #:property 'hyphens
-               #:variants '((none none)
-                            (manual manual)
-                            (auto auto)))))
+  (make-parameter (css-rule-variants ".hyphens-~a"
+                                     #:property 'hyphens
+                                     #:variants '((none none)
+                                                  (manual manual)
+                                                  (auto auto)))))
 
 (define vertical-align
-  (param (rulv ".align-~a"
-               #:property 'vertical-align
-               #:variants '((baseline baseline)
-                            (top top)
-                            (middle middle)
-                            (bottom bottom)
-                            (text-top text-top)
-                            (text-bottom text-bottom)
-                            (sub sub)
-                            (super super)))))
+  (make-parameter (css-rule-variants ".align-~a"
+                                     #:property 'vertical-align
+                                     #:variants '((baseline baseline)
+                                                  (top top)
+                                                  (middle middle)
+                                                  (bottom bottom)
+                                                  (text-top text-top)
+                                                  (text-bottom text-bottom)
+                                                  (sub sub)
+                                                  (super super)))))
 
 (define typography-classes
-  (param (list (font-weight)
-               (font-size)
-               (font-style)
-               (text-align)
-               (font-stretch)
-               (font-smoothing)
-               (line-clamp)
-               (leading)
-               (list-style-type)
-               (list-style-position)
-               (font-variant-numeric)
-               (list-style-type)
-               (text-decoration-line)
-               (text-decoration-style)
-               (text-underline-offset)
-               (text-transform)
-               (text-overflow)
-               (text-wrap)
-               (white-space)
-               (word-break)
-               (overflow-wrap)
-               (hyphens)
-               (vertical-align)
-               (letter-spacing))))
+  (make-parameter (list (font-weight)
+                        (font-size)
+                        (font-style)
+                        (text-align)
+                        (font-stretch)
+                        (font-smoothing)
+                        (line-clamp)
+                        (leading)
+                        (list-style-type)
+                        (list-style-position)
+                        (font-variant-numeric)
+                        (list-style-type)
+                        (text-decoration-line)
+                        (text-decoration-style)
+                        (text-underline-offset)
+                        (text-transform)
+                        (text-overflow)
+                        (text-wrap)
+                        (white-space)
+                        (word-break)
+                        (overflow-wrap)
+                        (hyphens)
+                        (vertical-align)
+                        (letter-spacing))))
