@@ -59,14 +59,26 @@
               ;;
               ))
 
+;; An alias for @code{make-parameter} used to establish dynamic context parameters.
 (define param
   make-parameter)
 
-(define* (~ #:rest args)
+(define* (~ #:key (output-port #f)
+            #:rest args)
+  "Format a string with arguments. This is an alias for @code{format} with a destination.
+
+@example
+(~ \"color: ~a;\" \"red\") @result{} \"color: red;\"
+@end example"
   (apply format
-         (append '(#f) args)))
+         (append `(,output-port) args)))
 
 (define (flatten-list xs)
+  "Recursively flatten a deeply nested list @var{xs} into a single flat list.
+
+@example
+(flatten-list '(1 (2 3) 4)) @result{} '(1 2 3 4)
+@end example"
   (cond
     ((null? xs)
      '())
@@ -76,12 +88,16 @@
     (else (list xs))))
 
 (define (darken-oklch xs n)
+  "Darken an OKLCH color by subtracting value @var{n} from its lightness component.
+@var{xs} is a list representing OKLCH color components where the @code{car} is lightness."
   (append (list (let* ((comp (- (car xs) n)))
                   (if (< comp 0) 0
                       (string->number (format #f "~,5f" comp)))))
           (cdr xs)))
 
 (define (lighten-oklch xs n)
+  "Lighten an OKLCH color by adding value @var{n} to its lightness component.
+@var{xs} is a list representing OKLCH color components where the @code{car} is lightness."
   (append (list (let* ((comp (+ n
                                 (car xs))))
                   (if (>= comp 1) 1
@@ -89,6 +105,7 @@
           (cdr xs)))
 
 (define (identity-oklch oklch some)
+  "Return the original @var{oklch} components completely unmodified, ignoring @var{some}."
   oklch)
 
 (define* (make-palette oklch
@@ -97,6 +114,8 @@
                                                  (list 500 identity-oklch 0)
                                                  (list 700 darken-oklch 0.05)
                                                  (list 900 darken-oklch 0.1))))
+  "Generate a tiered color palette mapping variant weights (e.g., 100, 500, 900) to transformed
+variations of a base @var{oklch} configuration."
   (map (lambda (t)
          (list (car t)
                (apply (cadr t)
@@ -109,6 +128,7 @@
   (declarations rule-declarations))
 
 (define* (rul selector . args)
+  "Construct a new CSS @code{rule} object containing a target @var{selector} and flattened @var{args} declarations."
   (make-rule selector
              (flatten-list args)))
 
@@ -117,12 +137,14 @@
   (property declaration-property)
   (value declaration-value))
 
+;; An alias for @code{make-declaration} used to create individual property-value combinations.
 (define dec
   make-declaration)
 
 (define* (rulv selector
                #:key property variants
                (other-properties '()))
+  "Generate a list of CSS rules from a template @var{selector} across multiple string value @var{variants}."
   (map (lambda (v)
          (rul (format #f selector
                       (car v))
@@ -136,10 +158,11 @@
               )) variants))
 
 (define* (rulc msg)
+  "Format a given string message @var{msg} inside a CSS multi-line block comment wrapper."
   (list (format #f "/*\n  ~a\n*/" msg)))
 
 (define (addmq sel args)
-  
+  "Prefix utility class selectors within @var{args} to incorporate a specific media query screen size token @var{sel}."
   (cond
     ((rule? args)
      (let* ((a args)
@@ -156,6 +179,7 @@
     (else args)))
 
 (define (addhover sel args)
+  "Transform utility rules in @var{args} into nested interactive pseudo-classes matching @code{&:hover} targets prefixed by @var{sel}."
   (cond
     ((rule? args)
      (let* ((a args)
@@ -177,6 +201,7 @@
                  variants
                  (other-properties '())
                  (palettes '()))
+  "Construct color-specific utility rules mapping across specified @var{palettes}, configurations, and opacity @var{variants}."
   (map (lambda (palette)
          (map (lambda (alpha-weight)
                 (rul (format #f selector
@@ -207,6 +232,7 @@
 (define* (siz s
               #:key (conversion identity)
               (multiplier 1))
+  "Process a sizing pair @var{s} by modifying numeric values via a @var{multiplier} and formatting output with @var{conversion}."
   (list (car s)
         (conversion (cond
                       ((number? (cadr s))
@@ -216,28 +242,34 @@
                       (else (cadr s))))))
 
 (define (to-rem x)
+  "Convert a primitive numeric measurement value @var{x} into a standard CSS CSS @code{rem} string value."
   (format #f "~,2frem" x))
 
 (define (to-px x)
+  "Convert a primitive numeric measurement value @var{x} into a standard CSS @code{px} string value."
   (format #f "~,2fpx" x))
 
 (define (to-percent x)
+  "Convert a decimal numeric ratio or number @var{x} into a standard CSS percentage @code{%} string token."
   (format #f "~,2f%" x))
 
 (define (to-rem-blur x)
+  "Wrap a native numeric measurement value @var{x} within a valid CSS standard @code{blur(...)} layout definition."
   (format #f "blur(~,2frem)" x))
 
 (define (to-percent-f f)
+  "Return a higher-order closure function transforming numbers into CSS functional notations @var{f} scaling values in percentage terms."
   (lambda (x)
     (format #f "~a(~,2f%)" f x)))
 
 (define (list-combinations list1 list2)
-  "Computes all combinations (Cartesian product) of elements from two lists."
+  "Compute all combinations (Cartesian product) of elements present between @var{list1} and @var{list2}."
   (append-map (lambda (x)
                 (map (lambda (y)
                        (list x y)) list2)) list1))
 
 (define* (format-css xs)
+  "Recursively transform an arbitrarily structured hierarchy of @code{rule} records, lists, or declarations @var{xs} into valid CSS text format strings."
   (cond
     ((list? xs)
      (map format-css xs))
@@ -265,13 +297,20 @@
     (else (format #f "~a" xs))))
 
 (define (format-declaration xs)
+  "Serialize an individual @code{declaration} record @var{xs} directly to a string representation matching standard CSS notation."
   (format #f "~a:~a;"
           (declaration-property xs)
           (declaration-value xs)))
 
+;; CSS pseudo-class selector target sequence scoping system configurations targeting user-activated dark mode settings.
 (define where-dark
   "&:where([data-theme=dark], [data-theme=dark] *)")
 
 (define* (mq query . args)
+  "Wrap an evaluated set of stylesheet components inside a CSS modern media query expression container block.
+
+@example
+(mq \"min-width: 768px\" \".container { display: block; }\")
+@end example"
   (append (list (format #f "@media (~a) {" query)) args
           '("}")))
