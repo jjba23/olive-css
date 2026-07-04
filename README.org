@@ -82,7 +82,7 @@ Key customization points:
 - Enable or disable dark mode with parameterize
 - Customize your color palette and choose some colors for your project
 
-You can also generate your own responsive or hover-based variants with ~addmq~ and ~addhover~
+You can also easily generate your own responsive or hover-based variants with ~add-media-query-prefix~ and ~add-hover-variant~
 
 See ~scripts/olive-css-gen.scm~ and ~src/olive-css/main.scm~ and the API docs for more.
 
