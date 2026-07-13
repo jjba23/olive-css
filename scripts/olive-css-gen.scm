@@ -21,6 +21,16 @@
              (ice-9 popen)
              (olive-css main)
              (olive-css dsl)
+             (olive-css sizes)
+             (olive-css decl colors)
+             (olive-css decl layout)
+             (olive-css decl flexbox)
+             (olive-css decl spacing)
+             (olive-css decl sizing)
+             (olive-css decl filters)
+             (olive-css decl typography)
+             (olive-css decl animation)
+             (olive-css decl reset)
              (olive-css decl colors))
 
 (define (log-info msg)
@@ -175,16 +185,6 @@
               (lapis-lazuli))
         (cons 'prussian-blue
               (prussian-blue))
-        (cons 'naples-yellow
-              (naples-yellow))
-        (cons 'mikado-yellow
-              (mikado-yellow))
-        (cons 'orange
-              (orange))
-        (cons 'tawny
-              (tawny))
-        (cons 'papaya-whip
-              (papaya-whip))
         (cons 'white-smoke
               (white-smoke))
         (cons 'onyx
@@ -348,6 +348,19 @@
           (write-css-to-file #:file "./resources/css/fatum.olive.min.css"
                              #:css-lines (parameterize ((responsive
                                                          reduced-responsive)
+                                                        (responsive-classes (append
+                                                                             (layout-classes)
+                                                                             (filter-classes)
+                                                                             (flexbox-classes)
+                                                                             (spacing-classes)
+                                                                             (sizing-classes)
+                                                                             (typography-classes)
+                                                                             (border-radius)
+                                                                             (scroll-snap-aligns)
+                                                                             (scroll-snap-types)
+                                                                             (colors
+                                                                              fatum-palettes)
+                                                                             (font-family)))
                                                         (serif-font-family '("'DejaVu Serif'"
                                                                              "ui-serif"
                                                                              "serif"

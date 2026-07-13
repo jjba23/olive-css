@@ -35,6 +35,12 @@
                                reduced-responsive
                                palettes
                                responsive
+                               border-radius
+                               scroll-snap-aligns
+                               scroll-snap-types
+                               colors
+                               font-family
+                               responsive-classes
                                with-dark-mode?
                                mono-font-family
                                sans-font-family
@@ -272,9 +278,9 @@
                                           (transparent transparent)))
 
           (css-color-rules ".bg-~a-~a~a"
-                  #:property 'background
-                  #:variants (list-combinations alphas color-weights)
-                  #:palettes palettes)
+                           #:property 'background
+                           #:variants (list-combinations alphas color-weights)
+                           #:palettes palettes)
           (css-color-rules ".text-~a-~a~a"
                            #:property 'color
                            #:variants (list-combinations alphas color-weights)
@@ -301,12 +307,12 @@
         '("")
         (css-comment "Load Olive CSS Dark mode hover colors")
         (add-hover-variant "hover\\:dark"
-                  (colors (palettes)))
+                           (colors (palettes)))
         '("}")))
 
 (define (hover-colors palettes)
   (add-hover-variant 'hover
-            (colors palettes)))
+                     (colors palettes)))
 
 (define display-utilities
   (make-parameter (list (css-rule ".overflow-x-scroll"
@@ -409,64 +415,47 @@
 
 ;; ============ Stylesheet Generation Entry-point =========================
 
+(define (get-responsive-classes)
+  "Helper to safely get current or default responsive classes dynamically."
+  (or (responsive-classes)
+      (append (layout-classes)
+              (filter-classes)
+              (flexbox-classes)
+              (spacing-classes)
+              (sizing-classes)
+              (typography-classes)
+              (border-radius)
+              (scroll-snap-aligns)
+              (scroll-snap-types)
+              (font-family))))
+
 (define responsive-classes
-  (make-parameter (append (layout-classes)
-                          (filter-classes)
-                          (flexbox-classes)
-                          (spacing-classes)
-                          (sizing-classes)
-                          (typography-classes)
-                          (border-radius)
-                          (scroll-snap-aligns)
-                          (scroll-snap-types)
-                          (font-family))))
+  (make-parameter #f))
 
-(define sm-responsive
-  (make-parameter (map (lambda (r)
-                         (add-media-query-prefix 'sm r))
-                       (responsive-classes))))
-
-(define md-responsive
-  (make-parameter (map (lambda (r)
-                         (add-media-query-prefix 'md r))
-                       (responsive-classes))))
-
-(define lg-responsive
-  (make-parameter (map (lambda (r)
-                         (add-media-query-prefix 'lg r))
-                       (responsive-classes))))
-
-(define xl-responsive
-  (make-parameter (map (lambda (r)
-                         (add-media-query-prefix 'xl r))
-                       (responsive-classes))))
-
-(define 2xl-responsive
-  (make-parameter (map (lambda (r)
-                         (add-media-query-prefix "2xl" r))
-                       (responsive-classes))))
-
-(define all-responsive
+(define (reduced-responsive)
   (append (media-query "width >= 40rem"
-                       (sm-responsive))
+                       (map (lambda (r)
+                              (add-media-query-prefix 'sm r))
+                            (get-responsive-classes)))
           (media-query "width >= 48rem"
-                       (md-responsive))
+                       (map (lambda (r)
+                              (add-media-query-prefix 'md r))
+                            (get-responsive-classes)))
           (media-query "width >= 64rem"
-                       (lg-responsive))
+                       (map (lambda (r)
+                              (add-media-query-prefix 'lg r))
+                            (get-responsive-classes)))
           (media-query "width >= 80rem"
-                       (xl-responsive))
+                       (map (lambda (r)
+                              (add-media-query-prefix 'xl r))
+                            (get-responsive-classes)))))
+
+(define (all-responsive)
+  (append (reduced-responsive)
           (media-query "width >= 96rem"
-                       (2xl-responsive))))
-
-(define reduced-responsive
-  (append (media-query "width >= 40rem"
-                       (sm-responsive))
-          (media-query "width >= 48rem"
-                       (md-responsive))
-          (media-query "width >= 64rem"
-                       (lg-responsive))
-          (media-query "width >= 80rem"
-                       (xl-responsive))))
+                       (map (lambda (r)
+                              (add-media-query-prefix "2xl" r))
+                            (get-responsive-classes)))))
 
 (define responsive
   (make-parameter all-responsive))
@@ -483,7 +472,7 @@
           (css-comment "Load Olive CSS Hygge Style Sheets")
           (font-family)
           (add-hover-variant 'hover
-                    (font-family))
+                             (font-family))
           (layout-classes)
           (filter-classes)
           (flexbox-classes)
@@ -491,7 +480,7 @@
           (sizing-classes)
           (typography-classes)
           (add-hover-variant 'hover
-                    (typography-classes))
+                             (typography-classes))
           ;;
           (borders)
           (display-utilities)
@@ -512,7 +501,7 @@
               '())
           '("")
           (css-comment "Load responsive classes")
-          (responsive)))
+          ((responsive))))
 
 (define* (write-css-to-file #:key file css-lines)
   (catch #t
