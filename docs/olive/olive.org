@@ -5,7 +5,7 @@ Olive CSS is a utility-class CSS framework designed for rapid, flexible web deve
 
 Some of its uniqueness comes from beingwritten entirely in Lisp (Guile Scheme), making it exceptionally *hackable, transparent and flexible*, aligned with Free Software principles.
 
-Here you'll find the resources here to build fast, beautiful, and freedom-respecting web projects with utility-class CSS. 
+Here you'll find the resources here to build fast, beautiful, and freedom-respecting web projects with utility-class CSS.
 
 * *Numeric and Size Ranges*
 Olive CSS uses three primary scaling systems for utility classes like
@@ -13,8 +13,8 @@ spacing, sizing, positioning, and radius:
 
 - *Numeric Scale:* Classes often range from *0 to 512*. The specific
   increments used across the framework are: *0, 1, 2, 3, 4, 5, 6, 7, 8,
-  9, 10, 12, 14, 16, 20, 24, 28, 32, 48, 64, 72, 90, 96, 100, 128, 196,
-  256, and 512*.
+  9, 10, 12, 14, 16, 20, 24, 28, 32, 48, 64, 72, 90, 96, 100, 128, 196, 212,
+  256, 312, 360, 420 and 512*.
 - *Size Scale:* For classes like text size, shadows, and blurs, the
   scale typically runs from *2xs to 5xl*.
 - *Fractional Scale:* Sizing and positioning (such as =w-= or =top-=)
