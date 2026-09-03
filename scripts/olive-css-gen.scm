@@ -218,7 +218,8 @@
                                                                              "ui-serif"
                                                                              "serif"
                                                                              "'Times New Roman'"))
-                                                        (sans-font-family '("'Plus Jakarta Sans'"
+                                                        (sans-font-family '("'Lucida Sans'"
+                                                                            "'Plus Jakarta Sans'"
                                                                             "ui-sans-serif"
                                                                             "system-ui"
                                                                             "sans-serif"
@@ -241,7 +242,8 @@
                                                                              "'Times New Roman'"))
                                                         (mono-font-family '("'Intel One Mono'"
                                                                             "monospace"))
-                                                        (sans-font-family '("'Plus Jakarta Sans'"
+                                                        (sans-font-family '("'Lucida Sans'"
+                                                                            "'Plus Jakarta Sans'"
                                                                             "ui-sans-serif"
                                                                             "system-ui"
                                                                             "sans-serif"
@@ -264,7 +266,8 @@
                                                                              "'Times New Roman'"))
                                                         (mono-font-family '("'Intel One Mono'"
                                                                             "monospace"))
-                                                        (sans-font-family '("'Plus Jakarta Sans'"
+                                                        (sans-font-family '("'Lucida Sans'"
+                                                                            "'Plus Jakarta Sans'"
                                                                             "ui-sans-serif"
                                                                             "system-ui"
                                                                             "sans-serif"
@@ -308,7 +311,8 @@
                                                                              "'Times New Roman'"))
                                                         (mono-font-family '("'IBM Plex Mono'"
                                                                             "monospace"))
-                                                        (sans-font-family '("'IBM Plex Sans'"
+                                                        (sans-font-family '("'Lucida Sans'"
+                                                                            "'IBM Plex Sans'"
                                                                             "ui-sans-serif"
                                                                             "system-ui"
                                                                             "sans-serif"
@@ -367,7 +371,8 @@
                                                                              "'Times New Roman'"))
                                                         (mono-font-family '("'Intel One Mono'"
                                                                             "monospace"))
-                                                        (sans-font-family '("'Plus Jakarta Sans'"
+                                                        (sans-font-family '("'Lucida Sans'"
+                                                                            "'Plus Jakarta Sans'"
                                                                             "ui-sans-serif"
                                                                             "system-ui"
                                                                             "sans-serif"
@@ -390,7 +395,8 @@
                                                                              "'Times New Roman'"))
                                                         (mono-font-family '("'Intel One Mono'"
                                                                             "monospace"))
-                                                        (sans-font-family '("'Plus Jakarta Sans'"
+                                                        (sans-font-family '("'Lucida Sans'"
+                                                                            "'Plus Jakarta Sans'"
                                                                             "ui-sans-serif"
                                                                             "system-ui"
                                                                             "sans-serif"

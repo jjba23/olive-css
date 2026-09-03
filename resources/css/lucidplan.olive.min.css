@@ -33,10 +33,10 @@ ol, ul {list-style:none;}
 /*
   Load Olive CSS Hygge Style Sheets
 */
-.font-sans {font-family:'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}
+.font-sans {font-family:'Lucida Sans', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}
 .font-mono {font-family:'Intel One Mono', monospace;}
 .font-serif {font-family:'DejaVu Serif', ui-serif, serif, 'Times New Roman';}
-.hover\:font-sans {&:hover {font-family:'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}}
+.hover\:font-sans {&:hover {font-family:'Lucida Sans', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}}
 .hover\:font-mono {&:hover {font-family:'Intel One Mono', monospace;}}
 .hover\:font-serif {&:hover {font-family:'DejaVu Serif', ui-serif, serif, 'Times New Roman';}}
 .aspect-square {aspect-ratio:1 / 1;}
@@ -5798,7 +5798,7 @@ ol, ul {list-style:none;}
 */
 &:where([data-theme=dark], [data-theme=dark] *)
  {
-.dark\:font-sans {font-family:'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}
+.dark\:font-sans {font-family:'Lucida Sans', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}
 .dark\:font-mono {font-family:'Intel One Mono', monospace;}
 .dark\:font-serif {font-family:'DejaVu Serif', ui-serif, serif, 'Times New Roman';}
 .dark\:bg-inherit {background:inherit;}
@@ -11649,7 +11649,7 @@ ol, ul {list-style:none;}
 .sm\:snap-x {scroll-snap-type:x proximity;}
 .sm\:snap-y {scroll-snap-type:y proximity;}
 .sm\:snap-both {scroll-snap-type:both proximity;}
-.sm\:font-sans {font-family:'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}
+.sm\:font-sans {font-family:'Lucida Sans', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}
 .sm\:font-mono {font-family:'Intel One Mono', monospace;}
 .sm\:font-serif {font-family:'DejaVu Serif', ui-serif, serif, 'Times New Roman';}
 }
@@ -14540,7 +14540,7 @@ ol, ul {list-style:none;}
 .md\:snap-x {scroll-snap-type:x proximity;}
 .md\:snap-y {scroll-snap-type:y proximity;}
 .md\:snap-both {scroll-snap-type:both proximity;}
-.md\:font-sans {font-family:'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}
+.md\:font-sans {font-family:'Lucida Sans', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}
 .md\:font-mono {font-family:'Intel One Mono', monospace;}
 .md\:font-serif {font-family:'DejaVu Serif', ui-serif, serif, 'Times New Roman';}
 }
@@ -17431,7 +17431,7 @@ ol, ul {list-style:none;}
 .lg\:snap-x {scroll-snap-type:x proximity;}
 .lg\:snap-y {scroll-snap-type:y proximity;}
 .lg\:snap-both {scroll-snap-type:both proximity;}
-.lg\:font-sans {font-family:'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}
+.lg\:font-sans {font-family:'Lucida Sans', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}
 .lg\:font-mono {font-family:'Intel One Mono', monospace;}
 .lg\:font-serif {font-family:'DejaVu Serif', ui-serif, serif, 'Times New Roman';}
 }
@@ -20322,7 +20322,7 @@ ol, ul {list-style:none;}
 .xl\:snap-x {scroll-snap-type:x proximity;}
 .xl\:snap-y {scroll-snap-type:y proximity;}
 .xl\:snap-both {scroll-snap-type:both proximity;}
-.xl\:font-sans {font-family:'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}
+.xl\:font-sans {font-family:'Lucida Sans', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}
 .xl\:font-mono {font-family:'Intel One Mono', monospace;}
 .xl\:font-serif {font-family:'DejaVu Serif', ui-serif, serif, 'Times New Roman';}
 }
