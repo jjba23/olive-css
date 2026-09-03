@@ -56,7 +56,9 @@
                     "'Times New Roman'")))
 
 (define sans-font-family
-  (make-parameter '("'Plus Jakarta Sans'" "'IBM Plex Sans'"
+  (make-parameter '("'Lucida Sans'"
+                    "'Plus Jakarta Sans'"
+                    "'IBM Plex Sans'"
                     "ui-sans-serif"
                     "system-ui"
                     "sans-serif"
