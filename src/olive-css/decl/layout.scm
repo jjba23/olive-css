@@ -99,10 +99,8 @@
   "Numeric, zero and fractional offset values shared by inset utilities."
   (append (map (lambda (s)
                  (css-size s
-                           #:conversion
-                           to-rem
-                           #:multiplier
-                           (absolute-positions-multiplier)))
+                           #:conversion to-rem
+                           #:multiplier (absolute-positions-multiplier)))
                numeric-sizes)
           '((0 0))
           (map css-size fractions)))
@@ -167,24 +165,31 @@
 
 (define accessibility
   (make-parameter (list (css-rule ".sr-only"
-                                  (css-declaration 'position 'absolute)
+                                  (css-declaration 'position
+                                                   'absolute)
                                   (css-declaration 'width "1px")
                                   (css-declaration 'height "1px")
                                   (css-declaration 'padding 0)
                                   (css-declaration 'margin "-1px")
-                                  (css-declaration 'overflow 'hidden)
-                                  (css-declaration 'clip
-                                                   "rect(0, 0, 0, 0)")
-                                  (css-declaration 'white-space 'nowrap)
+                                  (css-declaration 'overflow
+                                                   'hidden)
+                                  (css-declaration 'clip "rect(0, 0, 0, 0)")
+                                  (css-declaration 'white-space
+                                                   'nowrap)
                                   (css-declaration 'border-width 0))
                         (css-rule ".not-sr-only"
-                                  (css-declaration 'position 'static)
-                                  (css-declaration 'width 'auto)
-                                  (css-declaration 'height 'auto)
+                                  (css-declaration 'position
+                                                   'static)
+                                  (css-declaration 'width
+                                                   'auto)
+                                  (css-declaration 'height
+                                                   'auto)
                                   (css-declaration 'padding 0)
                                   (css-declaration 'margin 0)
-                                  (css-declaration 'overflow 'visible)
-                                  (css-declaration 'clip 'auto)
+                                  (css-declaration 'overflow
+                                                   'visible)
+                                  (css-declaration 'clip
+                                                   'auto)
                                   (css-declaration 'white-space
                                                    'normal)))))
 

@@ -54,8 +54,10 @@
 ;; The character CSS escapes inside a class name, and the newline used to check
 ;; that output is minified.  Both are built from character codes so the tests
 ;; never depend on how a backslash is spelled in source.
-(define backslash (integer->char 92))
-(define newline-char (integer->char 10))
+(define backslash
+  (integer->char 92))
+(define newline-char
+  (integer->char 10))
 
 (define (escaped suffix)
   "The backslash CSS puts in front of SUFFIX inside a class name."
@@ -64,13 +66,15 @@
 (define (remove-tree path)
   "Best-effort recursive removal of PATH, files and directories alike."
   (when (file-exists? path)
-    (if (eq? 'directory (stat:type (stat path)))
+    (if (eq? 'directory
+             (stat:type (stat path)))
         (begin
           (for-each (lambda (entry)
                       (remove-tree (string-append path "/" entry)))
                     (scandir path
                              (lambda (name)
-                               (not (member name '("." ".."))))))
+                               (not (member name
+                                            '("." ".."))))))
           (rmdir path))
         (delete-file path))))
 
@@ -88,7 +92,8 @@
       (display text port))))
 
 (define (read-text-file path)
-  (call-with-input-file path get-string-all))
+  (call-with-input-file path
+    get-string-all))
 
 (define (mentions? haystack needle)
   "True when HAYSTACK contains NEEDLE."
@@ -101,35 +106,52 @@ assert-false compare with eq?."
 
 (define (count-occurrences haystack needle)
   "How many times NEEDLE appears in HAYSTACK."
-  (let loop ((from 0) (found 0))
+  (let loop
+    ((from 0)
+     (found 0))
     (let ((hit (string-contains haystack needle from)))
       (if hit
-          (loop (+ hit (string-length needle)) (+ found 1))
-          found))))
+          (loop (+ hit
+                   (string-length needle))
+                (+ found 1)) found))))
 
 (define (class-name-end selector start)
   "Exclusive end index of the class name beginning at START in SELECTOR, where
 an escaped character belongs to the name."
-  (let loop ((i start))
-    (cond ((>= i (string-length selector)) i)
-          ((char=? (string-ref selector i) backslash) (loop (+ i 2)))
-          ((or (char-alphabetic? (string-ref selector i))
-               (char-numeric? (string-ref selector i))
-               (char=? (string-ref selector i) #\-)
-               (char=? (string-ref selector i) #\_))
-           (loop (+ i 1)))
-          (else i))))
+  (let loop
+    ((i start))
+    (cond
+      ((>= i
+           (string-length selector))
+       i)
+      ((char=? (string-ref selector i) backslash)
+       (loop (+ i 2)))
+      ((or (char-alphabetic? (string-ref selector i))
+           (char-numeric? (string-ref selector i))
+           (char=? (string-ref selector i) #\-)
+           (char=? (string-ref selector i) #\_))
+       (loop (+ i 1)))
+      (else i))))
 
 (define (class-names-in-selector selector)
   "The class names SELECTOR references.  Because escaped characters belong to
 the name, `md:hover:bg-x/50' is one name rather than three."
-  (let loop ((i 0) (acc '()))
-    (cond ((>= i (string-length selector)) (reverse acc))
-          ((char=? (string-ref selector i) backslash) (loop (+ i 2) acc))
-          ((char=? (string-ref selector i) #\.)
-           (let ((end (class-name-end selector (+ i 1))))
-             (loop end (cons (substring selector (+ i 1) end) acc))))
-          (else (loop (+ i 1) acc)))))
+  (let loop
+    ((i 0)
+     (acc '()))
+    (cond
+      ((>= i
+           (string-length selector))
+       (reverse acc))
+      ((char=? (string-ref selector i) backslash)
+       (loop (+ i 2) acc))
+      ((char=? (string-ref selector i) #\.)
+       (let ((end (class-name-end selector
+                                  (+ i 1))))
+         (loop end
+               (cons (substring selector
+                                (+ i 1) end) acc))))
+      (else (loop (+ i 1) acc)))))
 
 (define (selector-preludes css)
   "Every selector or at-rule prelude in CSS, descending into grouping rules so
@@ -137,15 +159,18 @@ the rules nested in media queries and the dark-mode scope are visited too."
   (append-map (lambda (block)
                 (let ((prelude (car block))
                       (body (cdr block)))
-                  (cond ((not body) (list prelude))
-                        ((mentions? body "{") (selector-preludes body))
-                        (else (list prelude)))))
+                  (cond
+                    ((not body)
+                     (list prelude))
+                    ((mentions? body "{")
+                     (selector-preludes body))
+                    (else (list prelude)))))
               (parse-css-blocks css)))
 
 (define (class-names-in-stylesheet css)
   "The distinct class names the selectors of CSS reference."
-  (delete-duplicates
-   (append-map class-names-in-selector (selector-preludes css))))
+  (delete-duplicates (append-map class-names-in-selector
+                                 (selector-preludes css))))
 
 ;;; ---------------------------------------------------------------------------
 ;;; A small stylesheet that exercises every pruning rule
@@ -165,7 +190,8 @@ the rules nested in media queries and the dark-mode scope are visited too."
                  "@view-transition{navigation:auto}"
                  "@layer base;"))
 
-(define fixture-used-classes '("used" "used-md" "dark-used" "kept-list"))
+(define fixture-used-classes
+  '("used" "used-md" "dark-used" "kept-list"))
 
 (define fixture-pruned
   (tree-shake-css fixture-css fixture-used-classes))
@@ -174,8 +200,10 @@ the rules nested in media queries and the dark-mode scope are visited too."
 ;;; Fixture trees
 ;;; ---------------------------------------------------------------------------
 
-(define scan-root "/tmp/olive-css-veritas-scan")
-(define scan-site (string-append scan-root "/site"))
+(define scan-root
+  "/tmp/olive-css-veritas-scan")
+(define scan-site
+  (string-append scan-root "/site"))
 
 (define (build-scan-fixture!)
   (remove-tree scan-root)
@@ -216,43 +244,50 @@ the rules nested in media queries and the dark-mode scope are visited too."
                  (scanned-file-types '(".txt")))
     (scan-used-classes scan-site)))
 
-(define e2e-root "/tmp/olive-css-veritas-e2e")
-(define e2e-site (string-append e2e-root "/site"))
-(define e2e-stylesheet (string-append e2e-root "/style.css"))
+(define e2e-root
+  "/tmp/olive-css-veritas-e2e")
+(define e2e-site
+  (string-append e2e-root "/site"))
+(define e2e-stylesheet
+  (string-append e2e-root "/style.css"))
 
 (define (build-e2e-fixture!)
   (remove-tree e2e-root)
   (write-text-file! (string-append e2e-site "/index.html")
                     "<div class=\"bg-jeans-blue-500 hover:bg-white\">hi</div>")
-  (write-text-file!
-   e2e-stylesheet
-   (string-append ".bg-jeans-blue-500{color:red}"
-                  "." (escape-class-name "hover:bg-white")
-                  ":hover{color:blue}"
-                  ".never-used{color:green}")))
+  (write-text-file! e2e-stylesheet
+                    (string-append ".bg-jeans-blue-500{color:red}" "."
+                                   (escape-class-name "hover:bg-white")
+                                   ":hover{color:blue}"
+                                   ".never-used{color:green}")))
 
 (define e2e-result
-  (begin (build-e2e-fixture!)
-         (parameterize ((artifact-path e2e-site)
-                        (base-stylesheet-path e2e-stylesheet)
-                        (output-css-target "app.min.css"))
-           (tree-shake))))
+  (begin
+    (build-e2e-fixture!)
+    (parameterize ((artifact-path e2e-site)
+                   (base-stylesheet-path e2e-stylesheet)
+                   (output-css-target "app.min.css"))
+      (tree-shake))))
 
-(define e2e-destination (assoc-ref e2e-result 'destination))
+(define e2e-destination
+  (assoc-ref e2e-result
+             'destination))
 
 ;;; ---------------------------------------------------------------------------
 ;;; The real build, pruned once for the no-leakage tests
 ;;; ---------------------------------------------------------------------------
 
-(define sample-stylesheet "resources/css/olive.min.css")
+(define sample-stylesheet
+  "resources/css/olive.min.css")
 
 (define sample-css-length
   (string-length (read-text-file sample-stylesheet)))
 
-(define sample-used (scan-used-classes "public"))
+(define sample-used
+  (scan-used-classes "public"))
 
-(define sample-pruned (tree-shake-css (read-text-file sample-stylesheet)
-                                      sample-used))
+(define sample-pruned
+  (tree-shake-css (read-text-file sample-stylesheet) sample-used))
 
 (define sample-classes-in-output
   (class-names-in-stylesheet sample-pruned))
@@ -264,17 +299,21 @@ the rules nested in media queries and the dark-mode scope are visited too."
 (define escaping-suite
   (suite "class-name escaping"
          (test "state variants and opacity modifiers are escaped"
-               (assert-equal #:expect (string-append "hover" (escaped ":bg-x"))
+               (assert-equal #:expect (string-append "hover"
+                                                     (escaped ":bg-x"))
                              #:got (escape-class-name "hover:bg-x")
                              #:name "hover:bg-x")
-               (assert-equal #:expect (string-append "bg-x" (escaped "/50"))
+               (assert-equal #:expect (string-append "bg-x"
+                                                     (escaped "/50"))
                              #:got (escape-class-name "bg-x/50")
                              #:name "bg-x/50")
-               (assert-equal
-                #:expect (string-append "md" (escaped ":hover")
-                                        (escaped ":bg-x") (escaped "/50"))
-                #:got (escape-class-name "md:hover:bg-x/50")
-                #:name "stacked variant carrying an opacity modifier"))
+               (assert-equal #:expect (string-append "md"
+                                                     (escaped ":hover")
+                                                     (escaped ":bg-x")
+                                                     (escaped "/50"))
+                             #:got (escape-class-name "md:hover:bg-x/50")
+                             #:name
+                             "stacked variant carrying an opacity modifier"))
          (test "ordinary names pass through untouched"
                (assert-equal #:expect "bg-jeans-blue-500"
                              #:got (escape-class-name "bg-jeans-blue-500")
@@ -289,28 +328,30 @@ the rules nested in media queries and the dark-mode scope are visited too."
 
 (define scanning-suite
   (suite "HTML scanning and options"
-         #:after-all (lambda (vc) (remove-tree scan-root))
+         #:after-all (lambda (vc)
+                       (remove-tree scan-root))
          (test "recurses into subdirectories for .html and .htm files"
-               (assert-equal #:expect 3 #:got (length scan-used)
+               (assert-equal #:expect 3
+                             #:got (length scan-used)
                              #:name "three classes across two files")
                (assert-true (contains? scan-used "bg-jeans-blue-500")
                             #:name "the .html file is scanned")
                (assert-true (contains? scan-used "text-onyx-500")
                             #:name "the nested .htm file is scanned"))
          (test "reads every class attribute and de-duplicates"
-               (assert-equal
-                #:expect 1
+               (assert-equal #:expect 1
                 #:got (length (filter (lambda (name)
                                         (string=? name "bg-jeans-blue-500"))
                                       scan-used))
                 #:name "a class repeated in one attribute is reported once")
-               (assert-true
-                (contains? scan-used (escape-class-name "hover:bg-white"))
-                #:name "variant names are escaped when scanned"))
+               (assert-true (contains? scan-used
+                                       (escape-class-name "hover:bg-white"))
+                            #:name "variant names are escaped when scanned"))
          (test "skipped-directories keeps version control contents out"
                (assert-false (contains? scan-used "bg-onyx-900")
                              #:name "nothing under .git is scanned by default")
-               (assert-true (contains? scan-used-skipping-nothing "bg-onyx-900")
+               (assert-true (contains? scan-used-skipping-nothing
+                                       "bg-onyx-900")
                             #:name "clearing the option does reach .git"))
          (test "scanned-file-types selects which files are read"
                (assert-false (contains? scan-used "bg-mantis-900")
@@ -343,14 +384,17 @@ the rules nested in media queries and the dark-mode scope are visited too."
                (assert-false (mentions? fixture-pruned ".unused-xl{")
                              #:name "the rule of the 80rem query is gone")
                (assert-false (mentions? fixture-pruned "80rem")
-                             #:name "a media query whose every rule was dropped"))
+                             #:name
+                             "a media query whose every rule was dropped"))
          (test "keeps only the used part of a selector list"
                (assert-true (mentions? fixture-pruned ".kept-list{")
                             #:name "the used selector of the list survives")
                (assert-false (mentions? fixture-pruned ".unused-list")
-                             #:name "the unused selector of the list is dropped"))
+                             #:name
+                             "the unused selector of the list is dropped"))
          (test "prunes inside the dark-mode scope"
-               (assert-true (mentions? fixture-pruned ":where([data-theme=dark]")
+               (assert-true (mentions? fixture-pruned
+                                       ":where([data-theme=dark]")
                             #:name "the dark scope itself survives")
                (assert-true (mentions? fixture-pruned ".dark-used{")
                             #:name "the used rule inside it survives")
@@ -366,19 +410,21 @@ the rules nested in media queries and the dark-mode scope are visited too."
                (assert-true (mentions? fixture-pruned "@layer base;")
                             #:name "an at-rule without a block survives"))
          (test "writes minified output"
-               (assert-false (mentions? fixture-pruned (string newline-char))
+               (assert-false (mentions? fixture-pruned
+                                        (string newline-char))
                              #:name "no newlines in the pruned stylesheet")
                (assert-true (string-prefix? "/*" fixture-pruned)
                             #:name "the stylesheet opens with a comment"))
          (test "the license header is a parameter"
                (assert-true (> (string-length (license-header)) 0)
                             #:name "the header has a default value")
-               (assert-true (mentions? fixture-pruned "olive-css - Utility-class")
+               (assert-true (mentions? fixture-pruned
+                                       "olive-css - Utility-class")
                             #:name "the header is written by default")
-               (assert-false
-                (mentions? (parameterize ((license-header ""))
-                             (tree-shake-css fixture-css fixture-used-classes))
-                           "olive-css - Utility-class")
+               (assert-false (mentions? (parameterize ((license-header ""))
+                                          (tree-shake-css fixture-css
+                                           fixture-used-classes))
+                                        "olive-css - Utility-class")
                 #:name "binding the header to the empty string omits it"))))
 
 ;;; ---------------------------------------------------------------------------
@@ -387,11 +433,13 @@ the rules nested in media queries and the dark-mode scope are visited too."
 
 (define end-to-end-suite
   (suite "tree-shake through its parameters"
-         #:after-all (lambda (vc) (remove-tree e2e-root))
+         #:after-all (lambda (vc)
+                       (remove-tree e2e-root))
          (test "writes to the configured directory and target"
                (assert-equal #:expect (string-append e2e-site "/app.min.css")
                              #:got e2e-destination
-                             #:name "the destination resolves inside artifact-path")
+                             #:name
+                             "the destination resolves inside artifact-path")
                (assert-true (file-exists? e2e-destination)
                             #:name "the pruned stylesheet was written")
                (assert-true (mentions? (read-text-file e2e-destination)
@@ -402,13 +450,19 @@ the rules nested in media queries and the dark-mode scope are visited too."
                              #:name "the unused rule was dropped"))
          (test "reports what it did"
                (assert-equal #:expect 2
-                             #:got (assoc-ref e2e-result 'used-classes)
+                             #:got (assoc-ref e2e-result
+                                              'used-classes)
                              #:name "two classes are in use")
-               (assert-equal #:expect (string-length (read-text-file e2e-stylesheet))
-                             #:got (assoc-ref e2e-result 'input-bytes)
-                             #:name "input-bytes reports the source stylesheet")
-               (assert-equal #:expect (string-length (read-text-file e2e-destination))
-                             #:got (assoc-ref e2e-result 'output-bytes)
+               (assert-equal #:expect (string-length (read-text-file
+                                                      e2e-stylesheet))
+                             #:got (assoc-ref e2e-result
+                                              'input-bytes)
+                             #:name
+                             "input-bytes reports the source stylesheet")
+               (assert-equal #:expect (string-length (read-text-file
+                                                      e2e-destination))
+                             #:got (assoc-ref e2e-result
+                                              'output-bytes)
                              #:name "output-bytes reports what was written"))))
 
 ;;; ---------------------------------------------------------------------------
@@ -423,22 +477,22 @@ the rules nested in media queries and the dark-mode scope are visited too."
                (assert-true (< (string-length sample-pruned)
                                (/ sample-css-length 100))
                             #:name "the pruned stylesheet is a tiny fraction")
-               (assert-false (mentions? sample-pruned (string newline-char))
+               (assert-false (mentions? sample-pruned
+                                        (string newline-char))
                              #:name "the pruned stylesheet is minified"))
          (test "exactly the classes the sample uses survive"
                ;; Passed as separate cases on purpose: a Veritas test keeps only the
                ;; assertions that are direct arguments, so wrapping these in a
                ;; `let' would silently drop all but the last one.
-               (assert-equal
-                #:expect '()
-                #:got (lset-difference string=? sample-classes-in-output
-                                       sample-used)
-                #:name "no unused class is left in the output")
-               (assert-equal
-                #:expect '()
-                #:got (lset-difference string=? sample-used
-                                       sample-classes-in-output)
-                #:name "every used class is in the output")
+               (assert-equal #:expect '()
+                             #:got (lset-difference string=?
+                                                    sample-classes-in-output
+                                                    sample-used)
+                             #:name "no unused class is left in the output")
+               (assert-equal #:expect '()
+                             #:got (lset-difference string=? sample-used
+                                                    sample-classes-in-output)
+                             #:name "every used class is in the output")
                (assert-equal #:expect (length sample-used)
                              #:got (length sample-classes-in-output)
                              #:name "the output references no other class"))))
@@ -448,8 +502,5 @@ the rules nested in media queries and the dark-mode scope are visited too."
 ;;; ---------------------------------------------------------------------------
 
 (define (spec)
-  (veritas-run escaping-suite
-               scanning-suite
-               pruning-suite
-               end-to-end-suite
+  (veritas-run escaping-suite scanning-suite pruning-suite end-to-end-suite
                no-leakage-suite))

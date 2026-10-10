@@ -44,18 +44,17 @@
   #:use-module (ice-9 string-fun)
   #:use-module (ice-9 textual-ports)
   #:use-module (olive-css license)
-  #:export (base-stylesheet-path
-            artifact-path
-            output-css-target
-            scanned-file-types
-            skipped-directories
-            escape-class-name
-            extract-classes-from-html
-            scan-used-classes
-            parse-css-blocks
-            serialize-css-blocks
-            tree-shake-css
-            tree-shake))
+  #:export (base-stylesheet-path artifact-path
+                                 output-css-target
+                                 scanned-file-types
+                                 skipped-directories
+                                 escape-class-name
+                                 extract-classes-from-html
+                                 scan-used-classes
+                                 parse-css-blocks
+                                 serialize-css-blocks
+                                 tree-shake-css
+                                 tree-shake))
 
 ;;; ---------------------------------------------------------------------------
 ;;; Options
@@ -98,43 +97,59 @@
   "Escape NAME the way a CSS selector escapes it, e.g. \"hover:bg-white\"
 becomes \"hover\\:bg-white\"."
   (fold (lambda (replacement acc)
-          (string-replace-substring acc (car replacement) (cdr replacement)))
-        name
+          (string-replace-substring acc
+                                    (car replacement)
+                                    (cdr replacement))) name
         '((":" . "\\:") ("/" . "\\/"))))
 
 (define (extract-classes-from-html file-path)
   "Return the (escaped) class names referenced by the `class' attributes of the
 HTML file at FILE-PATH."
-  (let ((content (call-with-input-file file-path get-string-all))
+  (let ((content (call-with-input-file file-path
+                   get-string-all))
         (class-re (make-regexp "class=[\"']([^\"']+)[\"']" regexp/extended)))
-    (let loop ((start 0) (acc '()))
+    (let loop
+      ((start 0)
+       (acc '()))
       (let ((matched (regexp-exec class-re content start)))
         (if matched
             (let ((current (map escape-class-name
                                 (string-tokenize (match:substring matched 1)))))
-              (loop (match:end matched) (append current acc)))
-            acc)))))
+              (loop (match:end matched)
+                    (append current acc))) acc)))))
 
 (define (scan-used-classes base-dir)
   "Recursively traverse BASE-DIR to find every unique CSS class name used in
 the files matching `scanned-file-types'.  Returns a list of escaped class names,
 e.g. 'bg-apple-green-100\\/50' or 'hover\\:bg-white'."
   (define (enter? path stat result)
-    (not (member (basename path) (skipped-directories))))
+    (not (member (basename path)
+                 (skipped-directories))))
   (define (leaf path stat result)
-    (if (any (lambda (extension) (string-suffix? extension path))
+    (if (any (lambda (extension)
+               (string-suffix? extension path))
              (scanned-file-types))
         (append (extract-classes-from-html path) result) result))
-  (define (down path stat result) result)
-  (define (up path stat result) result)
-  (define (skip path stat result) result)
-  (define (error name stat errno result)
-    (format (current-error-port) "warning: ~a: ~a~%" name (strerror errno))
+  (define (down path stat result)
     result)
-  (let ((raw (file-system-fold enter? leaf down up skip error '() base-dir)))
+  (define (up path stat result)
+    result)
+  (define (skip path stat result)
+    result)
+  (define (error name stat errno result)
+    (format (current-error-port) "warning: ~a: ~a~%" name
+            (strerror errno)) result)
+  (let ((raw (file-system-fold enter?
+                               leaf
+                               down
+                               up
+                               skip
+                               error
+                               '()
+                               base-dir)))
     (delete-duplicates (filter (lambda (s)
-                                 (not (or (string-null? s) (string=? s "\n"))))
-                               raw))))
+                                 (not (or (string-null? s)
+                                          (string=? s "\n")))) raw))))
 
 ;;; ---------------------------------------------------------------------------
 ;;; Minimal CSS block parser
@@ -146,46 +161,69 @@ e.g. 'bg-apple-green-100\\/50' or 'hover\\:bg-white'."
 
 (define (matching-brace s open-idx)
   "Return the index of the `}' matching the `{' at OPEN-IDX in S."
-  (let loop ((i (+ open-idx 1)) (depth 1))
-    (cond ((>= i (string-length s)) (string-length s))
-          ((char=? (string-ref s i) #\{) (loop (+ i 1) (+ depth 1)))
-          ((char=? (string-ref s i) #\})
-           (if (= depth 1) i (loop (+ i 1) (- depth 1))))
-          (else (loop (+ i 1) depth)))))
+  (let loop
+    ((i (+ open-idx 1))
+     (depth 1))
+    (cond
+      ((>= i
+           (string-length s))
+       (string-length s))
+      ((char=? (string-ref s i) #\{)
+       (loop (+ i 1)
+             (+ depth 1)))
+      ((char=? (string-ref s i) #\})
+       (if (= depth 1) i
+           (loop (+ i 1)
+                 (- depth 1))))
+      (else (loop (+ i 1) depth)))))
 
 (define (parse-css-blocks s)
   "Parse the sequence of blocks at one nesting level of S."
-  (let loop ((i 0) (acc '()))
+  (let loop
+    ((i 0)
+     (acc '()))
     (let ((n (string-length s)))
       (cond
-        ((>= i n) (reverse acc))
-        ((char-whitespace? (string-ref s i)) (loop (+ i 1) acc))
+        ((>= i n)
+         (reverse acc))
+        ((char-whitespace? (string-ref s i))
+         (loop (+ i 1) acc))
         ((and (< (+ i 1) n)
               (char=? (string-ref s i) #\/)
-              (char=? (string-ref s (+ i 1)) #\*))
-         (let ((end (string-contains s "*/" (+ i 2))))
-           (loop (if end (+ end 2) n) acc)))
-        (else
-         (let* ((brace (string-index s #\{ i))
-                (semi (string-index s #\; i))
-                (has-block (and brace (or (not semi) (< brace semi))))
-                (end (if has-block brace (if semi semi n))))
-           (if (not has-block)
-               (loop (if semi (+ semi 1) n)
-                     (cons (cons (string-trim-both (substring s i end)) #f) acc))
-               (let* ((sel (string-trim-both (substring s i brace)))
-                      (close (matching-brace s brace))
-                      (inner (substring s (+ brace 1) close)))
-                 (loop (+ close 1) (cons (cons sel inner) acc))))))))))
+              (char=? (string-ref s
+                                  (+ i 1)) #\*))
+         (let ((end (string-contains s "*/"
+                                     (+ i 2))))
+           (loop (if end
+                     (+ end 2) n) acc)))
+        (else (let* ((brace (string-index s #\{ i))
+                     (semi (string-index s #\; i))
+                     (has-block (and brace
+                                     (or (not semi)
+                                         (< brace semi))))
+                     (end (if has-block brace
+                              (if semi semi n))))
+                (if (not has-block)
+                    (loop (if semi
+                              (+ semi 1) n)
+                          (cons (cons (string-trim-both (substring s i end))
+                                      #f) acc))
+                    (let* ((sel (string-trim-both (substring s i brace)))
+                           (close (matching-brace s brace))
+                           (inner (substring s
+                                             (+ brace 1) close)))
+                      (loop (+ close 1)
+                            (cons (cons sel inner) acc))))))))))
 
 (define (serialize-css-blocks nodes)
   "Serialize a list of parsed blocks back into minified CSS text."
   (string-join (map (lambda (node)
                       (if (cdr node)
-                          (format #f "~a{~a}" (car node) (cdr node))
-                          (format #f "~a;" (car node))))
-                    nodes)
-               ""))
+                          (format #f "~a{~a}"
+                                  (car node)
+                                  (cdr node))
+                          (format #f "~a;"
+                                  (car node)))) nodes) ""))
 
 ;;; ---------------------------------------------------------------------------
 ;;; Selector analysis
@@ -193,44 +231,73 @@ e.g. 'bg-apple-green-100\\/50' or 'hover\\:bg-white'."
 
 (define (split-selectors sel)
   "Split a selector list SEL on top-level commas (ignoring :where(a, b))."
-  (let loop ((chars (string->list sel)) (depth 0) (cur '()) (acc '()))
-    (cond ((null? chars)
-           (reverse (cons (list->string (reverse cur)) acc)))
-          ((char=? (car chars) #\() (loop (cdr chars) (+ depth 1)
-                                          (cons (car chars) cur) acc))
-          ((char=? (car chars) #\)) (loop (cdr chars) (max 0 (- depth 1))
-                                          (cons (car chars) cur) acc))
-          ((and (char=? (car chars) #\,) (= depth 0))
-           (loop (cdr chars) depth '() (cons (list->string (reverse cur)) acc)))
-          (else (loop (cdr chars) depth (cons (car chars) cur) acc)))))
+  (let loop
+    ((chars (string->list sel))
+     (depth 0)
+     (cur '())
+     (acc '()))
+    (cond
+      ((null? chars)
+       (reverse (cons (list->string (reverse cur)) acc)))
+      ((char=? (car chars) #\()
+       (loop (cdr chars)
+             (+ depth 1)
+             (cons (car chars) cur) acc))
+      ((char=? (car chars) #\))
+       (loop (cdr chars)
+             (max 0
+                  (- depth 1))
+             (cons (car chars) cur) acc))
+      ((and (char=? (car chars) #\,)
+            (= depth 0))
+       (loop (cdr chars) depth
+             '()
+             (cons (list->string (reverse cur)) acc)))
+      (else (loop (cdr chars) depth
+                  (cons (car chars) cur) acc)))))
 
 (define (read-class-name sel j)
   "Return the exclusive end index of the class name starting at J in SEL."
-  (cond ((>= j (string-length sel)) j)
-        ((char=? (string-ref sel j) #\\)
-         (if (< (+ j 1) (string-length sel))
-             (read-class-name sel (+ j 2)) (+ j 1)))
-        ((or (char-alphabetic? (string-ref sel j))
-             (char-numeric? (string-ref sel j))
-             (memv (string-ref sel j) '(#\- #\_)))
-         (read-class-name sel (+ j 1)))
-        (else j)))
+  (cond
+    ((>= j
+         (string-length sel))
+     j)
+    ((char=? (string-ref sel j) #\\)
+     (if (< (+ j 1)
+            (string-length sel))
+         (read-class-name sel
+                          (+ j 2))
+         (+ j 1)))
+    ((or (char-alphabetic? (string-ref sel j))
+         (char-numeric? (string-ref sel j))
+         (memv (string-ref sel j)
+               '(#\- #\_)))
+     (read-class-name sel
+                      (+ j 1)))
+    (else j)))
 
 (define (class-tokens sel)
   "Return the (escaped) class names referenced in a simple selector SEL."
-  (let loop ((i 0) (acc '()))
-    (if (>= i (string-length sel))
+  (let loop
+    ((i 0)
+     (acc '()))
+    (if (>= i
+            (string-length sel))
         (reverse acc)
         (if (char=? (string-ref sel i) #\.)
-            (let ((end (read-class-name sel (+ i 1))))
-              (loop end (cons (substring sel (+ i 1) end) acc)))
+            (let ((end (read-class-name sel
+                                        (+ i 1))))
+              (loop end
+                    (cons (substring sel
+                                     (+ i 1) end) acc)))
             (loop (+ i 1) acc)))))
 
 (define (part-used? part used)
   "True when PART is classless (reset/structural) or references a used class."
   (let ((tokens (class-tokens part)))
     (or (null? tokens)
-        (any (lambda (token) (member token used)) tokens))))
+        (any (lambda (token)
+               (member token used)) tokens))))
 
 ;;; ---------------------------------------------------------------------------
 ;;; Filtering
@@ -238,14 +305,16 @@ e.g. 'bg-apple-green-100\\/50' or 'hover\\:bg-white'."
 
 (define (filter-blocks nodes used)
   "Keep only nodes of NODES that are relevant to USED class names."
-  (filter-map (lambda (node) (filter-block node used)) nodes))
+  (filter-map (lambda (node)
+                (filter-block node used)) nodes))
 
 (define (filter-block node used)
   (let ((sel (car node))
         (inner (cdr node)))
     (cond
       ;; at-rules without a block are always kept.
-      ((not inner) node)
+      ((not inner)
+       node)
       ;; keyframes and view transitions are tiny and referenced indirectly.
       ((or (string-prefix? "@keyframes" sel)
            (string-prefix? "@view-transition" sel))
@@ -257,28 +326,27 @@ e.g. 'bg-apple-green-100\\/50' or 'hover\\:bg-white'."
            (string-prefix? ":where" sel)
            (string-prefix? ":is" sel))
        (let ((kept (filter-blocks (parse-css-blocks inner) used)))
-         (if (null? kept)
-             #f
-             (cons sel (serialize-css-blocks kept)))))
-      (else
-       (let ((parts (filter (lambda (part) (part-used? part used))
-                            (split-selectors sel))))
-         (if (null? parts)
-             #f
-             (cons (string-join parts ",") inner)))))))
+         (if (null? kept) #f
+             (cons sel
+                   (serialize-css-blocks kept)))))
+      (else (let ((parts (filter (lambda (part)
+                                   (part-used? part used))
+                                 (split-selectors sel))))
+              (if (null? parts) #f
+                  (cons (string-join parts ",") inner)))))))
 
 (define (license-comment)
   "Return the pruned stylesheet's license comment, or the empty string when the
 `license-header' parameter is empty."
   (let ((header (string-join (string-tokenize (license-header)) " ")))
-    (if (string-null? header)
-        ""
+    (if (string-null? header) ""
         (format #f "/*~a*/" header))))
 
 (define (tree-shake-css css used)
   "Return a minified stylesheet containing only the rules relevant to USED."
   (let ((kept (filter-blocks (parse-css-blocks css) used)))
-    (string-append (license-comment) (serialize-css-blocks kept))))
+    (string-append (license-comment)
+                   (serialize-css-blocks kept))))
 
 ;;; ---------------------------------------------------------------------------
 ;;; Entry-point
@@ -292,18 +360,25 @@ to TARGET (default: `output-css-target') inside that directory.
 Returns an association list describing the run: the input stylesheet, the
 destination written, the number of used classes and the byte sizes before and
 after pruning."
-  (let* ((stylesheet (or stylesheet (base-stylesheet-path)))
-         (directory (or directory (artifact-path)))
-         (target (or target (output-css-target)))
-         (css (call-with-input-file stylesheet get-string-all))
+  (let* ((stylesheet (or stylesheet
+                         (base-stylesheet-path)))
+         (directory (or directory
+                        (artifact-path)))
+         (target (or target
+                     (output-css-target)))
+         (css (call-with-input-file stylesheet
+                get-string-all))
          (used-classes (scan-used-classes directory))
          (output (tree-shake-css css used-classes))
          (destination (in-vicinity directory target)))
     (call-with-output-file destination
       (lambda (out-port)
         (display output out-port)))
-    `((stylesheet . ,stylesheet)
-      (destination . ,destination)
-      (used-classes . ,(length used-classes))
-      (input-bytes . ,(string-length css))
-      (output-bytes . ,(string-length output)))))
+    `((stylesheet unquote stylesheet)
+      (destination unquote destination)
+      (used-classes unquote
+                    (length used-classes))
+      (input-bytes unquote
+                   (string-length css))
+      (output-bytes unquote
+                    (string-length output)))))

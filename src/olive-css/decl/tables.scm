@@ -22,7 +22,7 @@
   #:use-module (olive-css dsl)
   #:use-module (olive-css sizes)
   #:export (table-classes table-layout table-collapse border-spacing
-                         caption-side))
+                          caption-side))
 
 (define table-layout
   (make-parameter (css-rule-variants ".table-~a"
@@ -43,26 +43,30 @@
                                              #:property 'border-spacing
                                              #:variants (map (lambda (s)
                                                                (css-size s
-                                                                         #:conversion
-                                                                         to-rem))
+                                                                #:conversion
+                                                                to-rem))
                                                              numeric-sizes))
                           (css-rule-variants ".border-spacing-x-~a"
                                              #:property 'border-spacing
                                              #:variants (map (lambda (s)
                                                                (list (car s)
-                                                                     (format #f
+                                                                     (format
+                                                                             #f
                                                                              "~a 0"
                                                                              (to-rem
-                                                                              (cadr s)))))
+                                                                              (cadr
+                                                                               s)))))
                                                              numeric-sizes))
                           (css-rule-variants ".border-spacing-y-~a"
                                              #:property 'border-spacing
                                              #:variants (map (lambda (s)
                                                                (list (car s)
-                                                                     (format #f
+                                                                     (format
+                                                                             #f
                                                                              "0 ~a"
                                                                              (to-rem
-                                                                              (cadr s)))))
+                                                                              (cadr
+                                                                               s)))))
                                                              numeric-sizes)))))
 
 (define caption-side

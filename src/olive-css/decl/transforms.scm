@@ -21,8 +21,14 @@
   #:use-module (ice-9 string-fun)
   #:use-module (olive-css dsl)
   #:use-module (olive-css sizes)
-  #:export (transform-classes transform translate rotate scale skew
-                         transform-origin will-change translate-multiplier))
+  #:export (transform-classes transform
+                              translate
+                              rotate
+                              scale
+                              skew
+                              transform-origin
+                              will-change
+                              translate-multiplier))
 
 (define translate-multiplier
   (make-parameter 0.28))
@@ -33,137 +39,181 @@
   "var(--olive-tx, 0) var(--olive-ty, 0)")
 
 (define (axis-translate axis)
-  (let ((var (if (equal? axis 'x) "--olive-tx" "--olive-ty")))
-    (append
-     (css-rule-variants (format #f ".translate-~a-~a" axis "~a")
-                        #:property var
-                        #:other-properties `((translate
-                                              ,translate-composition))
-                        #:variants (append (map (lambda (s)
-                                                  (css-size s
-                                                            #:conversion
-                                                            to-rem
-                                                            #:multiplier
-                                                            (translate-multiplier)))
-                                                (append '((0 0))
-                                                        numeric-sizes
-                                                        tshirt-sizes))
-                                          (map css-size fractions)))
-     (css-rule-variants (format #f ".-translate-~a-~a" axis "~a")
-                        #:property var
-                        #:other-properties `((translate
-                                              ,translate-composition))
-                        #:variants (append (map (lambda (s)
-                                                  (list (car s)
-                                                        (format #f "-~a"
-                                                                (to-rem
-                                                                 (cadr s)))))
-                                                numeric-sizes)
-                                          (map (lambda (s)
-                                                 (list (car s)
-                                                       (format #f "-~a"
-                                                               (cadr s))))
-                                               fractions))))))
+  (let ((var (if (equal? axis
+                         'x) "--olive-tx" "--olive-ty")))
+    (append (css-rule-variants (format #f ".translate-~a-~a" axis "~a")
+                               #:property var
+                               #:other-properties `((translate ,translate-composition))
+                               #:variants (append (map (lambda (s)
+                                                         (css-size s
+                                                                   #:conversion
+                                                                   to-rem
+                                                                   #:multiplier
+                                                                   (translate-multiplier)))
+                                                       (append '((0 0))
+                                                               numeric-sizes
+                                                               tshirt-sizes))
+                                                  (map css-size fractions)))
+            (css-rule-variants (format #f ".-translate-~a-~a" axis "~a")
+                               #:property var
+                               #:other-properties `((translate ,translate-composition))
+                               #:variants (append (map (lambda (s)
+                                                         (list (car s)
+                                                               (format #f
+                                                                       "-~a"
+                                                                       (to-rem
+                                                                        (cadr
+                                                                         s)))))
+                                                       numeric-sizes)
+                                                  (map (lambda (s)
+                                                         (list (car s)
+                                                               (format #f
+                                                                       "-~a"
+                                                                       (cadr s))))
+                                                       fractions))))))
 
 (define translate
   (make-parameter (append (axis-translate 'x)
                           (axis-translate 'y))))
 
 (define degree-scale
-  '((0 0) (1 1) (2 2) (3 3) (6 6) (12 12) (45 45) (90 90) (180 180)))
+  '((0 0)
+    (1 1)
+    (2 2)
+    (3 3)
+    (6 6)
+    (12 12)
+    (45 45)
+    (90 90)
+    (180 180)))
 
 (define scale-scale
-  '((0 0) (50 50) (75 75) (90 90) (95 95) (100 100) (105 105) (110 110)
-    (125 125) (150 150)))
+  '((0 0)
+    (50 50)
+    (75 75)
+    (90 90)
+    (95 95)
+    (100 100)
+    (105 105)
+    (110 110)
+    (125 125)
+    (150 150)))
 
 (define rotate
-  (make-parameter (append
-                   (css-rule-variants ".rotate-~a"
-                                      #:property 'rotate
-                                      #:variants (map (lambda (s)
-                                                        (list (car s)
-                                                              (format #f "~adeg"
-                                                                      (cadr s))))
-                                                      degree-scale))
-                   (css-rule-variants ".-rotate-~a"
-                                      #:property 'rotate
-                                      #:variants (map (lambda (s)
-                                                        (list (car s)
-                                                              (format #f "-~adeg"
-                                                                      (cadr s))))
-                                                      (cdr degree-scale))))))
+  (make-parameter (append (css-rule-variants ".rotate-~a"
+                                             #:property 'rotate
+                                             #:variants (map (lambda (s)
+                                                               (list (car s)
+                                                                     (format
+                                                                             #f
+                                                                             "~adeg"
+                                                                             (cadr
+                                                                              s))))
+                                                             degree-scale))
+                          (css-rule-variants ".-rotate-~a"
+                                             #:property 'rotate
+                                             #:variants (map (lambda (s)
+                                                               (list (car s)
+                                                                     (format
+                                                                             #f
+                                                                             "-~adeg"
+                                                                             (cadr
+                                                                              s))))
+                                                             (cdr degree-scale))))))
 
 (define (percent x)
-  (format #f "~a" (/ x 100.0)))
+  (format #f "~a"
+          (/ x 100.0)))
 
 (define scale
-  (make-parameter (append
-                   (css-rule-variants ".scale-~a"
-                                      #:property 'scale
-                                      #:variants (map (lambda (s)
-                                                        (list (car s)
-                                                              (percent (cadr s))))
-                                                      scale-scale))
-                   (css-rule-variants ".scale-x-~a"
-                                      #:property 'scale
-                                      #:variants (map (lambda (s)
-                                                        (list (car s)
-                                                              (format #f "~a 1"
-                                                                      (percent
-                                                                       (cadr s)))))
-                                                      scale-scale))
-                   (css-rule-variants ".scale-y-~a"
-                                      #:property 'scale
-                                      #:variants (map (lambda (s)
-                                                        (list (car s)
-                                                              (format #f "1 ~a"
-                                                                      (percent
-                                                                       (cadr s)))))
-                                                      scale-scale)))))
+  (make-parameter (append (css-rule-variants ".scale-~a"
+                                             #:property 'scale
+                                             #:variants (map (lambda (s)
+                                                               (list (car s)
+                                                                     (percent (cadr
+                                                                               s))))
+                                                             scale-scale))
+                          (css-rule-variants ".scale-x-~a"
+                                             #:property 'scale
+                                             #:variants (map (lambda (s)
+                                                               (list (car s)
+                                                                     (format
+                                                                             #f
+                                                                             "~a 1"
+                                                                             (percent
+                                                                              (cadr
+                                                                               s)))))
+                                                             scale-scale))
+                          (css-rule-variants ".scale-y-~a"
+                                             #:property 'scale
+                                             #:variants (map (lambda (s)
+                                                               (list (car s)
+                                                                     (format
+                                                                             #f
+                                                                             "1 ~a"
+                                                                             (percent
+                                                                              (cadr
+                                                                               s)))))
+                                                             scale-scale)))))
 
 (define skew-degrees
-  '((0 0) (1 1) (2 2) (3 3) (6 6) (12 12)))
+  '((0 0)
+    (1 1)
+    (2 2)
+    (3 3)
+    (6 6)
+    (12 12)))
 
 (define skew
-  (make-parameter (append
-                   (css-rule-variants ".skew-x-~a"
-                                      #:property 'transform
-                                      #:variants (map (lambda (s)
-                                                        (list (car s)
-                                                              (format #f "skewX(~adeg)"
-                                                                      (cadr s))))
-                                                      skew-degrees))
-                   (css-rule-variants ".skew-y-~a"
-                                      #:property 'transform
-                                      #:variants (map (lambda (s)
-                                                        (list (car s)
-                                                              (format #f "skewY(~adeg)"
-                                                                      (cadr s))))
-                                                      skew-degrees))
-                   (css-rule-variants ".-skew-x-~a"
-                                      #:property 'transform
-                                      #:variants (map (lambda (s)
-                                                        (list (car s)
-                                                              (format #f "skewX(-~adeg)"
-                                                                      (cadr s))))
-                                                      (cdr skew-degrees)))
-                   (css-rule-variants ".-skew-y-~a"
-                                      #:property 'transform
-                                      #:variants (map (lambda (s)
-                                                        (list (car s)
-                                                              (format #f "skewY(-~adeg)"
-                                                                      (cadr s))))
-                                                      (cdr skew-degrees))))))
+  (make-parameter (append (css-rule-variants ".skew-x-~a"
+                                             #:property 'transform
+                                             #:variants (map (lambda (s)
+                                                               (list (car s)
+                                                                     (format
+                                                                             #f
+                                                                             "skewX(~adeg)"
+                                                                             (cadr
+                                                                              s))))
+                                                             skew-degrees))
+                          (css-rule-variants ".skew-y-~a"
+                                             #:property 'transform
+                                             #:variants (map (lambda (s)
+                                                               (list (car s)
+                                                                     (format
+                                                                             #f
+                                                                             "skewY(~adeg)"
+                                                                             (cadr
+                                                                              s))))
+                                                             skew-degrees))
+                          (css-rule-variants ".-skew-x-~a"
+                                             #:property 'transform
+                                             #:variants (map (lambda (s)
+                                                               (list (car s)
+                                                                     (format
+                                                                             #f
+                                                                             "skewX(-~adeg)"
+                                                                             (cadr
+                                                                              s))))
+                                                             (cdr skew-degrees)))
+                          (css-rule-variants ".-skew-y-~a"
+                                             #:property 'transform
+                                             #:variants (map (lambda (s)
+                                                               (list (car s)
+                                                                     (format
+                                                                             #f
+                                                                             "skewY(-~adeg)"
+                                                                             (cadr
+                                                                              s))))
+                                                             (cdr skew-degrees))))))
 
 (define transform
   (make-parameter (list (css-rule ".transform-none"
-                                  (css-declaration 'transform 'none))
+                                  (css-declaration 'transform
+                                                   'none))
                         (css-rule ".transform-gpu"
-                                  (css-declaration 'transform
-                                                   "translateZ(0)"))
+                                  (css-declaration 'transform "translateZ(0)"))
                         (css-rule ".transform-cpu"
-                                  (css-declaration 'transform
-                                                   "translateZ(0)")))))
+                                  (css-declaration 'transform "translateZ(0)")))))
 
 (define transform-origin
   (make-parameter (css-rule-variants ".origin-~a"

@@ -216,8 +216,7 @@ under a single @code{dark-selector-prefix} scope to avoid repeating the scope
 selector on every rule, which keeps the large dark color section compact."
   (cond
     ((rule? args)
-     (css-rule (format #f "~a ~a"
-                       dark-selector-prefix
+     (css-rule (format #f "~a ~a" dark-selector-prefix
                        (rule-selector args))
                (rule-declarations args)))
     ((list? args)
@@ -288,18 +287,19 @@ caret) affordable.  @var{selector} is a format template with two arguments:
 the palette name and the shade weight, e.g. @code{\".ring-~a-~a\"}."
   (append-map (lambda (palette)
                 (map (lambda (shade)
-                       (css-rule (format #f selector (car palette) (car shade))
+                       (css-rule (format #f selector
+                                         (car palette)
+                                         (car shade))
                                  (append (map (lambda (p)
                                                 (css-declaration (car p)
                                                                  (cadr p)))
                                               other-properties)
-                                         (list (css-declaration
-                                                property
-                                                (apply format #f
-                                                       "oklch(~a ~a ~a / 1)"
-                                                       (cadr shade)))))))
-                     (cdr palette)))
-              palettes))
+                                         (list (css-declaration property
+                                                                (apply format
+                                                                 #f
+                                                                 "oklch(~a ~a ~a / 1)"
+                                                                 (cadr shade)))))))
+                     (cdr palette))) palettes))
 
 (define* (css-size s
                    #:key (conversion identity)

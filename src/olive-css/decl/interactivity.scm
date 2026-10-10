@@ -21,10 +21,16 @@
   #:use-module (ice-9 string-fun)
   #:use-module (olive-css dsl)
   #:use-module (olive-css sizes)
-  #:export (interactivity-classes interactivity-core-classes cursor
-                         user-select pointer-events resize appearance
-                         field-sizing touch-action scroll-behavior
-                         interactivity-colors))
+  #:export (interactivity-classes interactivity-core-classes
+                                  cursor
+                                  user-select
+                                  pointer-events
+                                  resize
+                                  appearance
+                                  field-sizing
+                                  touch-action
+                                  scroll-behavior
+                                  interactivity-colors))
 
 (define cursor
   (make-parameter (css-rule-variants ".cursor-~a"
@@ -82,13 +88,17 @@
 
 (define resize
   (make-parameter (list (css-rule ".resize"
-                                  (css-declaration 'resize 'both))
+                                  (css-declaration 'resize
+                                                   'both))
                         (css-rule ".resize-none"
-                                  (css-declaration 'resize 'none))
+                                  (css-declaration 'resize
+                                                   'none))
                         (css-rule ".resize-x"
-                                  (css-declaration 'resize 'horizontal))
+                                  (css-declaration 'resize
+                                                   'horizontal))
                         (css-rule ".resize-y"
-                                  (css-declaration 'resize 'vertical)))))
+                                  (css-declaration 'resize
+                                                   'vertical)))))
 
 (define appearance
   (make-parameter (css-rule-variants ".appearance-~a"

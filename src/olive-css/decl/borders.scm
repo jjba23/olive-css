@@ -22,7 +22,7 @@
   #:use-module (olive-css dsl)
   #:use-module (olive-css sizes)
   #:export (border-extras-classes border-styles border-width-sides
-                         divide-classes divide-multiplier))
+                                  divide-classes divide-multiplier))
 
 (define divide-multiplier
   (make-parameter 0.28))
@@ -41,18 +41,16 @@
   "Build @code{.border-<side>-<n>} width rules for each (name property) pair."
   (map (lambda (d)
          (css-rule-variants (string-append "."
-                                           (symbol->string (car d))
-                                           "-~a")
+                                           (symbol->string (car d)) "-~a")
                             #:property (cadr d)
                             #:variants (map (lambda (s)
-                                              (css-size s #:conversion to-px))
-                                            numeric-sizes)))
-       prefixes))
+                                              (css-size s
+                                                        #:conversion to-px))
+                                            numeric-sizes))) prefixes))
 
 (define border-width-sides
   (make-parameter (append (list (css-rule ".border"
-                                          (css-declaration 'border-width
-                                                           "1px"))
+                                          (css-declaration 'border-width "1px"))
                                 (css-rule ".border-t"
                                           (css-declaration 'border-top-width
                                                            "1px"))
@@ -82,12 +80,13 @@
   "Build child-divider rules for @var{axis} (`x' or `y')."
   (map (lambda (s)
          (css-rule (format #f ".divide-~a-~a > :not([hidden])~~:not([hidden])"
-                           axis (car s))
-                   (css-declaration (if (equal? axis 'x)
+                           axis
+                           (car s))
+                   (css-declaration (if (equal? axis
+                                                'x)
                                         'border-inline-start-width
                                         'border-block-start-width)
-                                    (to-px (cadr s)))))
-       numeric-sizes))
+                                    (to-px (cadr s))))) numeric-sizes))
 
 (define divide-classes
   (make-parameter (append (divide-rules 'x)

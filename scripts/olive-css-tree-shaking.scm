@@ -37,10 +37,17 @@
 
 (define (report result)
   (format #t "Tree-shaking: ~a used classes~%"
-          (assoc-ref result 'used-classes))
+          (assoc-ref result
+                     'used-classes))
   (format #t "  ~a: ~a bytes~%"
-          (assoc-ref result 'stylesheet) (assoc-ref result 'input-bytes))
+          (assoc-ref result
+                     'stylesheet)
+          (assoc-ref result
+                     'input-bytes))
   (format #t "  ~a: ~a bytes~%"
-          (assoc-ref result 'destination) (assoc-ref result 'output-bytes)))
+          (assoc-ref result
+                     'destination)
+          (assoc-ref result
+                     'output-bytes)))
 
 (report (tree-shake))

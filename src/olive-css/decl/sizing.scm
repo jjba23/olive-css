@@ -21,8 +21,12 @@
   #:use-module (ice-9 string-fun)
   #:use-module (olive-css dsl)
   #:use-module (olive-css sizes)
-  #:export (sizing-classes width height size height-multiplier
-                           width-multiplier prose-size))
+  #:export (sizing-classes width
+                           height
+                           size
+                           height-multiplier
+                           width-multiplier
+                           prose-size))
 
 (define width-multiplier
   (make-parameter 0.24))
@@ -53,11 +57,14 @@
                                           (css-declaration 'max-width
                                                            (prose-size)))
                                 (css-rule ".w-auto"
-                                          (css-declaration 'width 'auto))
+                                          (css-declaration 'width
+                                                           'auto))
                                 (css-rule ".min-w-auto"
-                                          (css-declaration 'min-width 'auto))
+                                          (css-declaration 'min-width
+                                                           'auto))
                                 (css-rule ".max-w-none"
-                                          (css-declaration 'max-width 'none))
+                                          (css-declaration 'max-width
+                                                           'none))
                                 (css-rule ".w-fit"
                                           (css-declaration 'width
                                                            'fit-content))
@@ -124,15 +131,18 @@
                                 (css-rule ".h-full"
                                           (css-declaration 'height "100%"))
                                 (css-rule ".min-h-full"
-                                          (css-declaration 'min-height "100%"))                                (css-rule ".max-h-full"
-                                          (css-declaration 'max-height
-                                                           "100%"))
+                                          (css-declaration 'min-height "100%"))
+                                (css-rule ".max-h-full"
+                                          (css-declaration 'max-height "100%"))
                                 (css-rule ".h-auto"
-                                          (css-declaration 'height 'auto))
+                                          (css-declaration 'height
+                                                           'auto))
                                 (css-rule ".min-h-auto"
-                                          (css-declaration 'min-height 'auto))
+                                          (css-declaration 'min-height
+                                                           'auto))
                                 (css-rule ".max-h-none"
-                                          (css-declaration 'max-height 'none))
+                                          (css-declaration 'max-height
+                                                           'none))
                                 (css-rule ".h-fit"
                                           (css-declaration 'height
                                                            'fit-content))
@@ -208,33 +218,41 @@
                                  (max-h max-height))))))
 
 (define size
-  (make-parameter (append
-                   (list (css-rule ".size-full"
-                                   (css-declaration 'width "100%")
-                                   (css-declaration 'height "100%"))
-                         (css-rule ".size-auto"
-                                   (css-declaration 'width 'auto)
-                                   (css-declaration 'height 'auto))
-                         (css-rule ".size-fit"
-                                   (css-declaration 'width 'fit-content)
-                                   (css-declaration 'height 'fit-content))
-                         (css-rule ".size-screen"
-                                   (css-declaration 'width "100vw")
-                                   (css-declaration 'height "100vh")))
-                   (map (lambda (s)
-                          (css-rule (format #f ".size-~a" (car s))
-                                    (css-declaration 'width (cadr s))
-                                    (css-declaration 'height (cadr s))))
-                        (delete-duplicates (append (map (lambda (s)
-                                                          (css-size s
-                                                                    #:conversion
-                                                                    to-rem
-                                                                    #:multiplier
-                                                                    (width-multiplier)))
-                                                        (append numeric-sizes
+  (make-parameter (append (list (css-rule ".size-full"
+                                          (css-declaration 'width "100%")
+                                          (css-declaration 'height "100%"))
+                                (css-rule ".size-auto"
+                                          (css-declaration 'width
+                                                           'auto)
+                                          (css-declaration 'height
+                                                           'auto))
+                                (css-rule ".size-fit"
+                                          (css-declaration 'width
+                                                           'fit-content)
+                                          (css-declaration 'height
+                                                           'fit-content))
+                                (css-rule ".size-screen"
+                                          (css-declaration 'width "100vw")
+                                          (css-declaration 'height "100vh")))
+                          (map (lambda (s)
+                                 (css-rule (format #f ".size-~a"
+                                                   (car s))
+                                           (css-declaration 'width
+                                                            (cadr s))
+                                           (css-declaration 'height
+                                                            (cadr s))))
+                               (delete-duplicates (append (map (lambda (s)
+                                                                 (css-size s
+                                                                  #:conversion
+                                                                  to-rem
+                                                                  #:multiplier
+                                                                  (width-multiplier)))
+                                                               (append
+                                                                numeric-sizes
                                                                 tshirt-sizes))
-                                                  (map css-size fractions))
-                                                equal?)))))
+                                                          (map css-size
+                                                               fractions))
+                                                  equal?)))))
 
 (define sizing-classes
   (make-parameter (list (width)

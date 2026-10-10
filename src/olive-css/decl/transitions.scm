@@ -22,8 +22,8 @@
   #:use-module (olive-css dsl)
   #:use-module (olive-css sizes)
   #:export (transition-classes transition-property transition-duration
-                         transition-delay transition-timing
-                         animation-classes))
+                               transition-delay transition-timing
+                               animation-classes))
 
 (define default-ease
   "cubic-bezier(0.4, 0, 0.2, 1)")
@@ -38,20 +38,31 @@
             (css-declaration 'transition-duration default-duration)))
 
 (define transition-property
-  (make-parameter (list (transition-rule ".transition-none" 'none)
-                        (transition-rule ".transition-all" 'all)
+  (make-parameter (list (transition-rule ".transition-none"
+                                         'none)
+                        (transition-rule ".transition-all"
+                                         'all)
                         (transition-rule ".transition"
-                                         "color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, translate, scale, rotate, filter, backdrop-filter")
+                         "color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, translate, scale, rotate, filter, backdrop-filter")
                         (transition-rule ".transition-colors"
-                                         "color, background-color, border-color, text-decoration-color, fill, stroke")
-                        (transition-rule ".transition-opacity" 'opacity)
-                        (transition-rule ".transition-shadow" 'box-shadow)
+                         "color, background-color, border-color, text-decoration-color, fill, stroke")
+                        (transition-rule ".transition-opacity"
+                                         'opacity)
+                        (transition-rule ".transition-shadow"
+                                         'box-shadow)
                         (transition-rule ".transition-transform"
-                                         "transform, translate, scale, rotate"))))
+                         "transform, translate, scale, rotate"))))
 
 (define duration-scale
-  '((0 0) (75 75) (100 100) (150 150) (200 200) (300 300) (500 500)
-    (700 700) (1000 1000)))
+  '((0 0)
+    (75 75)
+    (100 100)
+    (150 150)
+    (200 200)
+    (300 300)
+    (500 500)
+    (700 700)
+    (1000 1000)))
 
 (define transition-duration
   (make-parameter (css-rule-variants ".duration-~a"
@@ -75,8 +86,10 @@
   (make-parameter (css-rule-variants ".ease-~a"
                                      #:property 'transition-timing-function
                                      #:variants `((linear linear)
-                                                  (in "cubic-bezier(0.4, 0, 1, 1)")
-                                                  (out "cubic-bezier(0, 0, 0.2, 1)")
+                                                  (in
+                                                   "cubic-bezier(0.4, 0, 1, 1)")
+                                                  (out
+                                                   "cubic-bezier(0, 0, 0.2, 1)")
                                                   (in-out ,default-ease)))))
 
 (define (keyframes name stops)
@@ -84,40 +97,37 @@
             (map (lambda (stop)
                    (css-rule (car stop)
                              (map (lambda (decl)
-                                    (css-declaration (car decl) (cadr decl)))
-                                  (cdr stop))))
-                 stops)))
+                                    (css-declaration (car decl)
+                                                     (cadr decl)))
+                                  (cdr stop)))) stops)))
 
 (define animation-classes
   (make-parameter (list (keyframes 'spin
                                    '(("to" (transform "rotate(360deg)"))))
                         (keyframes 'ping
-                                   '(("75%, 100%"
-                                      (transform "scale(2)")
+                                   '(("75%, 100%" (transform "scale(2)")
                                       (opacity 0))))
                         (keyframes 'pulse
                                    '(("50%" (opacity 0.5))))
                         (keyframes 'bounce
-                                   '(("0%, 100%"
-                                      (transform
-                                       "translateY(-25%)")
+                                   '(("0%, 100%" (transform "translateY(-25%)")
                                       (animation-timing-function
                                        "cubic-bezier(0.8, 0, 1, 1)"))
-                                     ("50%"
-                                      (transform "translateY(0)")
+                                     ("50%" (transform "translateY(0)")
                                       (animation-timing-function
                                        "cubic-bezier(0, 0, 0.2, 1)"))))
                         (css-rule ".animate-none"
-                                  (css-declaration 'animation 'none))
+                                  (css-declaration 'animation
+                                                   'none))
                         (css-rule ".animate-spin"
                                   (css-declaration 'animation
                                                    "spin 1s linear infinite"))
                         (css-rule ".animate-ping"
                                   (css-declaration 'animation
-                                                   "ping 1s cubic-bezier(0, 0, 0.2, 1) infinite"))
+                                   "ping 1s cubic-bezier(0, 0, 0.2, 1) infinite"))
                         (css-rule ".animate-pulse"
                                   (css-declaration 'animation
-                                                   "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"))
+                                   "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"))
                         (css-rule ".animate-bounce"
                                   (css-declaration 'animation
                                                    "bounce 1s infinite")))))

@@ -21,8 +21,8 @@
   #:use-module (ice-9 string-fun)
   #:use-module (olive-css dsl)
   #:use-module (olive-css sizes)
-  #:export (spacing-classes margin padding space-between
-                            margin-multiplier padding-multiplier))
+  #:export (spacing-classes margin padding space-between margin-multiplier
+                            padding-multiplier))
 
 (define margin-multiplier
   (make-parameter 0.28))
@@ -61,8 +61,8 @@
   "Generate the =*-auto= margin utilities (e.g. =.mx-auto= center-alignment)."
   (map (lambda (d)
          (css-rule-variants (string-append "."
-                                           (format #f "~a" (car d))
-                                           "-~a")
+                                           (format #f "~a"
+                                                   (car d)) "-~a")
                             #:property (cadr d)
                             #:variants '((auto auto))))
        '((m margin)
@@ -78,12 +78,12 @@
                           (map (lambda (d)
                                  (map (lambda (p)
                                         (css-rule-variants (string-append "."
-                                                                          (format #f
-                                                                           "~a"
-                                                                           (car d))
-                                                                          "-" "~a")
+                                                            (format #f "~a"
+                                                                    (car d))
+                                                            "-" "~a")
                                                            #:property p
-                                                           #:variants (map (lambda (s)
+                                                           #:variants (map (lambda 
+                                                                                   (s)
                                                                              (css-size
                                                                               s
                                                                               #:conversion
@@ -110,8 +110,10 @@ because the general-sibling combinator `~' would otherwise collide with a
 format directive."
   (map (lambda (s)
          (css-rule (format #f ".space-~a-~a > :not([hidden])~~:not([hidden])"
-                           axis (car s))
-                   (css-declaration (if (equal? axis 'x)
+                           axis
+                           (car s))
+                   (css-declaration (if (equal? axis
+                                                'x)
                                         'margin-inline-start
                                         'margin-block-start)
                                     (to-rem (* (cadr s)

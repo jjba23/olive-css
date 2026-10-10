@@ -25,13 +25,15 @@
 
 (define fill
   (make-parameter (list (css-rule ".fill-none"
-                                  (css-declaration 'fill 'none))
+                                  (css-declaration 'fill
+                                                   'none))
                         (css-rule ".fill-current"
                                   (css-declaration 'fill "currentColor")))))
 
 (define stroke-basics
   (list (css-rule ".stroke-none"
-                  (css-declaration 'stroke 'none))
+                  (css-declaration 'stroke
+                                   'none))
         (css-rule ".stroke-current"
                   (css-declaration 'stroke "currentColor"))))
 
@@ -41,8 +43,8 @@
                                              #:property 'stroke-width
                                              #:variants (map (lambda (s)
                                                                (css-size s
-                                                                         #:conversion
-                                                                         to-px))
+                                                                #:conversion
+                                                                to-px))
                                                              numeric-sizes)))))
 
 (define (svg-colors palettes)

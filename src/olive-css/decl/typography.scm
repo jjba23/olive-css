@@ -174,22 +174,23 @@
                                              #:property 'text-decoration-thickness
                                              #:variants (map (lambda (s)
                                                                (css-size s
-                                                                         #:conversion
-                                                                         to-px))
-                                                             '((0 0) (1 1)
-                                                               (2 2) (4 4)
+                                                                #:conversion
+                                                                to-px))
+                                                             '((0 0)
+                                                               (1 1)
+                                                               (2 2)
+                                                               (4 4)
                                                                (8 8)))))))
 
 (define text-indent
   (make-parameter (append (list (css-rule ".indent-px"
-                                          (css-declaration 'text-indent
-                                                           "1px")))
+                                          (css-declaration 'text-indent "1px")))
                           (css-rule-variants ".indent-~a"
                                              #:property 'text-indent
                                              #:variants (map (lambda (s)
                                                                (css-size s
-                                                                         #:conversion
-                                                                         to-rem))
+                                                                #:conversion
+                                                                to-rem))
                                                              (append
                                                               numeric-sizes
                                                               tshirt-sizes))))))

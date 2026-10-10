@@ -77,8 +77,7 @@
                     "'Times New Roman'")))
 
 (define sans-font-family
-  (make-parameter '("'Lucida Sans'"
-                    "'Plus Jakarta Sans'"
+  (make-parameter '("'Lucida Sans'" "'Plus Jakarta Sans'"
                     "'IBM Plex Sans'"
                     "ui-sans-serif"
                     "system-ui"
@@ -492,8 +491,7 @@ only once by @code{colors}."
 
 ;; State variants (pseudo-classes) that can be enabled via `state-variants'.
 (define state-pseudos
-  '((hover . ":hover")
-    (focus . ":focus")
+  '((hover . ":hover") (focus . ":focus")
     (focus-within . ":focus-within")
     (focus-visible . ":focus-visible")
     (active . ":active")
@@ -549,8 +547,7 @@ only once by @code{colors}."
                   (if pseudo
                       (add-state-variant (symbol->string state)
                                          (cdr pseudo) targets)
-                      '())))
-              states))
+                      '()))) states))
 
 (define (state-variant-classes)
   "Generate one rule per enabled state variant over the configured targets."
@@ -654,8 +651,7 @@ parity (this is what the complete build does)."
            (delete-file file))
          (lambda _
            (display "")))
-  (let ((css (string-join (flatten-list (map format-css css-lines))
-                          "\n")))
+  (let ((css (string-join (flatten-list (map format-css css-lines)) "\n")))
     (with-output-to-file file
       (lambda ()
         (display (if (minified?)

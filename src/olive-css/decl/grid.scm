@@ -28,59 +28,78 @@
 (define grid-track-scale
   (map (lambda (n)
          (list n n))
-       '(1 2 3 4 5 6 7 8 9 10 11 12)))
+       '(1 2
+         3
+         4
+         5
+         6
+         7
+         8
+         9
+         10
+         11
+         12)))
 
 (define col-span
   (make-parameter (append (css-rule-variants ".col-span-~a"
                                              #:property 'grid-column
                                              #:variants (map (lambda (s)
                                                                (list (car s)
-                                                                     (format #f
+                                                                     (format
+                                                                             #f
                                                                              "span ~a / span ~a"
-                                                                             (cadr s)
-                                                                             (cadr s))))
+                                                                             (cadr
+                                                                              s)
+                                                                             (cadr
+                                                                              s))))
                                                              grid-track-scale))
-                         (list (css-rule ".col-span-full"
-                                         (css-declaration 'grid-column
-                                                          "1 / -1"))
-                               (css-rule ".col-auto"
-                                         (css-declaration 'grid-column
-                                                          'auto))))))
+                          (list (css-rule ".col-span-full"
+                                          (css-declaration 'grid-column
+                                                           "1 / -1"))
+                                (css-rule ".col-auto"
+                                          (css-declaration 'grid-column
+                                                           'auto))))))
 
 (define row-span
   (make-parameter (append (css-rule-variants ".row-span-~a"
                                              #:property 'grid-row
                                              #:variants (map (lambda (s)
                                                                (list (car s)
-                                                                     (format #f
+                                                                     (format
+                                                                             #f
                                                                              "span ~a / span ~a"
-                                                                             (cadr s)
-                                                                             (cadr s))))
+                                                                             (cadr
+                                                                              s)
+                                                                             (cadr
+                                                                              s))))
                                                              grid-track-scale))
-                         (list (css-rule ".row-span-full"
-                                         (css-declaration 'grid-row
-                                                          "1 / -1"))
-                               (css-rule ".row-auto"
-                                         (css-declaration 'grid-row
-                                                          'auto))))))
+                          (list (css-rule ".row-span-full"
+                                          (css-declaration 'grid-row "1 / -1"))
+                                (css-rule ".row-auto"
+                                          (css-declaration 'grid-row
+                                                           'auto))))))
 
 (define grid-column-lines
   (make-parameter (append (css-rule-variants ".col-start-~a"
                                              #:property 'grid-column-start
-                                             #:variants (append grid-track-scale
-                                                                '((auto auto))))
+                                             #:variants (append
+                                                         grid-track-scale
+                                                         '((auto auto))))
                           (css-rule-variants ".col-end-~a"
                                              #:property 'grid-column-end
-                                             #:variants (append grid-track-scale
-                                                                '((auto auto))))
+                                             #:variants (append
+                                                         grid-track-scale
+                                                         '((auto auto))))
                           (css-rule-variants ".row-start-~a"
                                              #:property 'grid-row-start
-                                             #:variants (append grid-track-scale
-                                                                '((auto auto))))
+                                             #:variants (append
+                                                         grid-track-scale
+                                                         '((auto auto))))
                           (css-rule-variants ".row-end-~a"
                                              #:property 'grid-row-end
-                                             #:variants (append grid-track-scale
-                                                                '((auto auto)))))))
+                                             #:variants (append
+                                                         grid-track-scale
+                                                         '((auto auto)))))))
 
 (define column-gap
   (make-parameter (css-rule-variants ".gap-x-~a"
@@ -89,8 +108,7 @@
                                                        (css-size s
                                                                  #:conversion
                                                                  to-rem
-                                                                 #:multiplier
-                                                                 (gap-multiplier)))
+                                                                 #:multiplier (gap-multiplier)))
                                                      (append numeric-sizes
                                                              tshirt-sizes)))))
 
@@ -101,14 +119,14 @@
                                                        (css-size s
                                                                  #:conversion
                                                                  to-rem
-                                                                 #:multiplier
-                                                                 (gap-multiplier)))
+                                                                 #:multiplier (gap-multiplier)))
                                                      (append numeric-sizes
                                                              tshirt-sizes)))))
 
 (define auto-rows
   (make-parameter (list (css-rule ".auto-rows-auto"
-                                  (css-declaration 'grid-auto-rows 'auto))
+                                  (css-declaration 'grid-auto-rows
+                                                   'auto))
                         (css-rule ".auto-rows-min"
                                   (css-declaration 'grid-auto-rows
                                                    'min-content))
