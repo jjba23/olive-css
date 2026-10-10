@@ -82,6 +82,15 @@
   (time-machine-manifest-shell '("guile -L ./src"
                                  "./scripts/olive-css-tree-shaking.scm")))
 
+;; Veritas looks for unit tests by default and reports with emoji-reporter, so
+;; the environment needs nothing else.  Variable assignments cannot be prefixed
+;; to the command here: `guix shell ... -- VAR=value guile' would take the
+;; assignment for the program name.
+(define (test)
+  "Run the unit test suite with the Veritas testing framework."
+  (time-machine-manifest-shell '("guile --fresh-auto-compile -L ./src -L ./test"
+                                 "-c '((@ (veritas runner) run-tests))'")))
+
 (define (hot-reload)
   "Hot-reloading developer's setup."
   (fmt)

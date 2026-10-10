@@ -38,6 +38,7 @@
   #:use-module (olive-css decl transforms)
   #:use-module (olive-css decl transitions)
   #:use-module (olive-css decl interactivity)
+  #:use-module (olive-css license)
   #:export (rounded-multiplier olive-css-gen
                                all-responsive
                                reduced-responsive
@@ -65,7 +66,8 @@
                                state-variant-targets
                                interactive-state-variants
                                interactive-state-targets
-                               state-variant-classes))
+                               state-variant-classes)
+  #:re-export (license-header))
 
 (define mono-font-family
   (make-parameter '("'Intel One Mono'" "'IBM Plex Mono'" "monospace")))
@@ -420,25 +422,6 @@
                                                                  #:conversion
                                                                  to-px))
                                                      numeric-sizes))))
-
-(define license-header
-  (make-parameter
-   "olive-css - Utility-class CSS framework that is easy to learn and hack
-
-  Copyright © Josep Bigorra <jjbigorra@gmail.com>
-
-  olive-css is free software: you can redistribute it and/or modify
-  it under the terms of the Lesser GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  olive-css is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  Lesser GNU General Public License for more details.
-
-  You should have received a copy of the Lesser GNU General Public License
-  along with olive-css.  If not, see <https://www.gnu.org/licenses/>."))
 
 ;; ============ Stylesheet Generation Entry-point =========================
 

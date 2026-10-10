@@ -1,0 +1,134 @@
+#+title: Olive CSS Changelog 🫒
+#+author: Josep Bigorra
+#+email: jjbigorra@gmail.com
+#+language: en
+
+All notable changes to olive-css are recorded in this file, in the spirit of
+[[https://keepachangelog.com/en/1.1.0][Keep a Changelog]].  Entries are grouped
+by the release they belong to, and releases correspond to the repository's git
+tags.  See [[file:README.org][the README]] for installation, usage and the
+feature reference.
+
+* Unreleased
+
+Nothing yet.  Work that lands after =v0.6.0= is recorded here until it is
+tagged.
+
+* v0.6.0 - 2026-10-11
+
+The first release recorded in this file, and a large one: the utility set grew
+from a core of layout, flexbox, spacing, typography and colour into grids,
+positioning and sizing, effects, transforms, transitions, interactivity, tables,
+SVG and accessibility; state variants became two-tier so =focus:=,
+=focus-visible:= and =active:= reach more than colours; and tree shaking moved
+out of a standalone script into the library, where it is now covered by a test
+suite.  Everything below landed after =v0.4.6= (2026-09-03).
+
+** Added
+
+*** Broader utility coverage
+
+- *Grid:* =col/row-span=, =col/row-start=, =col/row-end=, =auto-rows=, =gap-x/y=.
+- *Spacing:* =space-x/y= child spacing, =divide-x/y= child borders and =*-auto= margins such as =mx-auto=.
+- *Positioning and sizing:* =inset-x/y=, =start/end=, =size-*=, =dvh/svh/lvh=,
+  =w-auto=, =w-fit=, =min/max-content=.
+- *Effects:* =opacity-*=, =mix-blend-*=, =bg-blend-*=, =text-shadow-*=,
+  =ring-*=/=inset-ring-*= (with colors) and =outline-*=/=outline-offset-*=.
+- *Transforms:* =translate-*=, =rotate-*=, =scale-*=, =skew-*=, =origin-*=,
+  =will-change-*=.
+- *Transitions and animation:* =transition-*=, =duration-*=, =delay-*=, =ease-*=,
+  =animate-spin/ping/pulse/bounce=.
+- *Interactivity:* the full =cursor-*= set, =select-*=, =pointer-events-*=,
+  =resize-*=, =appearance-*=, =field-sizing-*=, =touch-*=, =scroll-smooth=,
+  =accent-*= and =caret-*=.
+- *Tables and SVG:* =table-*=, =border-collapse/separate=, =border-spacing-*=,
+  =caption-*=; =fill-*= and =stroke-*=.
+- *Accessibility:* =sr-only= / =not-sr-only=.
+- *Borders and radii:* per-side and logical widths (=border-t/r/b/l/x/y=, with
+  =border= as the 1px default), =rounded-none= and =rounded-full=.
+
+*** State and responsive variants
+
+- =focus:=, =focus-visible:= and =active:= are generated in two tiers, so the
+  interactive states reach typography, transforms and effects while colors stay
+  hover-only.  Widen or narrow the coverage with ~state-variants~,
+  ~interactive-state-variants~, ~state-variant-targets~ and
+  ~interactive-state-targets~.
+- =hover:shadow-*= is generated as a state variant.
+- Responsive variants now cover the new families: binding ~responsive-classes~ to
+  ~core-utility-classes~ gives full structural parity, and adding
+  ~color-base-classes~ brings responsive colors such as =md:bg-jeans-blue-700= and
+  =lg:text-onyx-500= (both are enabled in the complete prebuilt stylesheets).
+- The canonical =dark:hover:= variant order is emitted.
+
+*** Tree shaking
+
+- The pruner now lives in the library module ~(olive-css tree-shaking)~ rather
+  than in a standalone script, so it can be driven and extended like the rest of
+  the framework.  ~scripts/olive-css-tree-shaking.scm~ is a thin command-line
+  front-end over it.
+- Every path and search option is a Guile parameter: ~artifact-path~,
+  ~base-stylesheet-path~, ~output-css-target~, ~scanned-file-types~ and
+  ~skipped-directories~.
+- ~(tree-shake)~ returns an association list carrying the destination and byte
+  counts, so a build can report the result without parsing console output.  The
+  lower-level entry points are exported too: ~scan-used-classes~,
+  ~tree-shake-css~, ~parse-css-blocks~, ~serialize-css-blocks~ and
+  ~escape-class-name~.
+- ~public/sample.html~ is checked in as a fixture, so ~maak tree-shake~ works out
+  of the box: it prunes a 4.88 MB build to about 6.6 KB for its 89 classes.
+
+*** Tests
+
+- A [[https://codeberg.org/jjba23/veritas][Veritas]] suite for the tree-shaker lives at
+  ~test/veritas/unit/tree-shaking.scm~ and is wired into a new ~maak test~
+  task.  It covers class-name escaping, HTML scanning and its options
+  (~scanned-file-types~, ~skipped-directories~), de-duplication of repeated
+  classes, every pruning rule (media queries, the dark-mode scope, grouping
+  rules that become empty, class-free structural rules and selector lists),
+  minified output, the ~license-header~ parameter, a parameterized end-to-end
+  prune driven by ~artifact-path~ and ~output-css-target~, and a no-leakage
+  invariant against ~public/sample.html~: the pruned stylesheet references
+  exactly the 89 classes that fixture uses, none leaked and none missing.
+- The suite builds its fixtures under ~/tmp~ and removes them afterwards, so
+  running it leaves no untracked files behind.  It reads the checked-in
+  ~resources/css/olive.min.css~ and the ~public/sample.html~ fixture, and every
+  assertion is derived from them, so regenerating the prebuilt stylesheets with
+  a narrower feature set does not invalidate it.
+
+** Changed
+
+- Generated stylesheets are *minified by default*: no indentation, no newlines
+  between rules and no whitespace after separators.  Bind ~(minified? #f)~ while
+  debugging to get readable output back.
+- State variants are emitted as plain, flat CSS (=.hover\:bg-x:hover=,
+  =.focus\:ring-2:focus=) instead of nested =&:hover= rules, so the output no
+  longer depends on CSS nesting.  The dark-mode scope is a single
+  =:where([data-theme=dark], [data-theme=dark] *)= group.
+- The tree-shaker *parses* the stylesheet into nested blocks rather than matching
+  lines, so it prunes inside media queries and the dark-mode scope, keeps the
+  structural rules (reset, =@keyframes=, =@view-transition=) that carry no class,
+  and drops grouping rules that become empty.
+- The license header now lives in its own dependency-free module,
+  ~(olive-css license)~, which ~(olive-css main)~ re-exports for compatibility.
+  The tree-shaker imports only that module, so pruning no longer loads the
+  generator or the ~decl~ modules, and the pruned stylesheet still carries the
+  same full header instead of a second, shorter copy.
+
+** Fixed
+
+- Repaired the reset's =border-collapse= (a typo meant tables never collapsed).
+- Removed a dead duplicate =content= declaration and a duplicated
+  =list-style-type= generation.
+- =m-*=, =p-*=, =mx/my/px/py= now use single logical-shorthand rules instead of
+  four redundant rules per class.
+
+* Earlier releases
+
+Releases up to =v0.4.6= predate this changelog, which =v0.6.0= opens, so the
+repository's git tags and commit history record them (for example
+~git tag --sort=creatordate~).
+
+--------
+
+[[file:README.org][Back to the README]]

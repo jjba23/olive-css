@@ -191,5 +191,42 @@ its background, text, and border classes:
 - *Animations:* Built-in slide animations (=slide-from-right=,
   =slide-from-left=, etc.) and basic fade transitions.
 
+* *Tree Shaking*
+
+A production stylesheet can be pruned down to the classes a project actually
+uses.  The logic lives in the ~(olive-css tree-shaking)~ module and is driven by
+Guile parameters, so a build declares its layout instead of editing code:
+
+- ~artifact-path~ :: the directory of built HTML to scan (default ~"public"~),
+  searched recursively.
+- ~base-stylesheet-path~ :: the compiled stylesheet to prune (default
+  ~"resources/css/olive.min.css"~).
+- ~output-css-target~ :: the output file name, resolved inside ~artifact-path~
+  (default ~"olive.min.css"~).
+- ~scanned-file-types~ :: the file suffixes considered while scanning (default
+  ~(".html" ".htm")~).
+- ~skipped-directories~ :: directories that are never descended into (default
+  ~(".git")~).
+
+Calling ~(tree-shake)~ scans the artifacts, prunes the stylesheet and writes the
+minified result, returning an association list with the paths and byte counts:
+
+#+begin_src scheme
+(parameterize ((artifact-path "_site")
+               (base-stylesheet-path "resources/css/olive.min.css")
+               (output-css-target "app.min.css"))
+  (tree-shake))
+#+end_src
+
+The ~maak tree-shake~ task runs exactly this, and ~public/sample.html~ in the
+repository is a fixture you can try it on right away.  Because the pruner parses
+the stylesheet into nested blocks rather than matching lines, it also prunes
+inside media queries and the dark-mode scope while keeping the structural rules
+(reset, ~@keyframes~, ~@view-transition~) that carry no class.
+
+The ~maak test~ task runs the ~(veritas unit tree-shaking)~ suite, which covers
+escaping, scanning and its options, the pruning rules, a parameterized
+end-to-end prune and the no-leakage invariant against the sample fixture.
+
 * Browser Reset
- Includes a standard CSS reset for uniform rendering  across browsers.
+Includes a standard CSS reset for uniform rendering  across browsers.
