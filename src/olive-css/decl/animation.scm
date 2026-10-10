@@ -109,11 +109,6 @@
                                   (css-declaration 'animation-name
                                                    'slide-from-left-element)))))
 
-(define active-scale
-  (make-parameter (list (css-rule ".active\\:scale-95"
-                                  (css-rule "&:active"
-                                            (css-declaration 'scale "95% 95%"))))))
-
 (define animations
   (make-parameter (list (fade-in-page-transition)
                         (slide-from-right-element-animation)
@@ -123,5 +118,4 @@
                         (slide-from-top-element-animation)
                         (slide-from-top)
                         (slide-from-bottom-element-animation)
-                        (slide-from-bottom)
-                        (active-scale))))
+                        (slide-from-bottom))))

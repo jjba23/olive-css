@@ -201,11 +201,16 @@
               (asparagus))))
 
 (define css-gen-tasks
-  (list (lambda ()
-          (let* ((css-lines (olive-css-gen)))
-            (log-info "Generate framework style sheet with ALL features")
-            (write-css-to-file #:file "./resources/css/olive.min.css"
-                               #:css-lines css-lines)))
+  (list        (lambda ()
+          (log-info "Generate framework style sheet with ALL features")
+          (write-css-to-file #:file
+                             "./resources/css/olive.min.css"
+                             #:css-lines (parameterize ((responsive-classes
+                                                         (append
+                                                          (core-utility-classes)
+                                                          (color-base-classes
+                                                           (palettes)))))
+                                           (olive-css-gen))))
 
         (lambda ()
           (log-info "Generate RC Huidkliniek framework style sheet")

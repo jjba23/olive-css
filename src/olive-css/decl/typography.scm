@@ -36,6 +36,8 @@
                                font-stretch
                                weight-multiplier
                                text-decoration-line
+                               text-decoration-thickness
+                               text-indent
                                letter-spacing
                                line-clamp
                                font-size-multiplier
@@ -163,6 +165,35 @@
                                                   (line-through line-through)
                                                   (no-underline none)))))
 
+(define text-decoration-thickness
+  (make-parameter (append (css-rule-variants ".decoration-~a"
+                                             #:property 'text-decoration-thickness
+                                             #:variants '((auto auto)
+                                                          (from-font from-font)))
+                          (css-rule-variants ".decoration-~a"
+                                             #:property 'text-decoration-thickness
+                                             #:variants (map (lambda (s)
+                                                               (css-size s
+                                                                         #:conversion
+                                                                         to-px))
+                                                             '((0 0) (1 1)
+                                                               (2 2) (4 4)
+                                                               (8 8)))))))
+
+(define text-indent
+  (make-parameter (append (list (css-rule ".indent-px"
+                                          (css-declaration 'text-indent
+                                                           "1px")))
+                          (css-rule-variants ".indent-~a"
+                                             #:property 'text-indent
+                                             #:variants (map (lambda (s)
+                                                               (css-size s
+                                                                         #:conversion
+                                                                         to-rem))
+                                                             (append
+                                                              numeric-sizes
+                                                              tshirt-sizes))))))
+
 (define text-decoration-style
   (make-parameter (css-rule-variants ".decoration-~a"
                                      #:property 'text-decoration-style
@@ -274,8 +305,9 @@
                         (list-style-type)
                         (list-style-position)
                         (font-variant-numeric)
-                        (list-style-type)
                         (text-decoration-line)
+                        (text-decoration-thickness)
+                        (text-indent)
                         (text-decoration-style)
                         (text-underline-offset)
                         (text-transform)

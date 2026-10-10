@@ -43,6 +43,66 @@ ___  _ _             ___  ___ ___
 
 --------
 
+* Why the name Olive?
+
+The author is Spanish, and Spain is the world's largest producer of olive oil,
+so naming a libre, hackable, home-grown CSS framework after the olive tree felt
+only natural.  It is a small taste of Spain in your stylesheets - and yes, you
+may call it olive, oliva or aceituna, it compiles either way. 🫒
+
+--------
+
+* What's new
+
+** Leaner production CSS
+
+- Generated stylesheets are *minified by default*: no indentation, no newlines
+  between rules and no whitespace after separators. Bind ~(minified? #f)~ while
+  debugging to get readable output back.
+- State variants are emitted as plain, flat CSS (~.hover\:bg-x:hover~,
+  ~.focus\:ring-2:focus~) instead of nested ~&:hover~ rules, so the output no
+  longer depends on CSS nesting (the dark-mode scope uses a single
+  ~:where([data-theme=dark], [data-theme=dark] *)~ group).
+- The tree-shaker was rewritten to *parse* the stylesheet into nested blocks,
+  so it prunes inside media queries and the dark scope, keeps structural rules
+  (reset, ~@keyframes~, ~@view-transition~) and emits minified CSS. A whole
+  full build (several MiB) collapses to a few KiB - e.g. 96 used classes
+  produced ~6.6 KiB, and the checked-in ~public/sample.html~ fixture yields
+  ~6 KiB.
+
+** Broader Tailwind-style coverage
+
+- *Grid:* =col/row-span=, =col/row-start=, =col/row-end=, =auto-rows=, =gap-x/y=.
+- *Spacing:* =space-x/y= child spacing, =divide-x/y= child borders and =*-auto= margins such as =mx-auto=.
+- *Positioning/Sizing:* =inset-x/y=, =start/end=, =size-*=, =dvh/svh/lvh=,
+  =w-auto=, =w-fit=, =min/max-content=.
+- *Effects:* =opacity-*=, =mix-blend-*=, =bg-blend-*=, =text-shadow-*=,
+  =ring-*=/=inset-ring-*= (with colors) and =outline-*=/=outline-offset-*=.
+- *Transforms:* =translate-*=, =rotate-*=, =scale-*=, =skew-*=, =origin-*=,
+  =will-change-*=.
+- *Transitions & animation:* =transition-*=, =duration-*=, =delay-*=, =ease-*=,
+  =animate-spin/ping/pulse/bounce=.
+- *Interactivity:* the full =cursor-*= set, =select-*=, =pointer-events-*=,
+  =resize-*=, =appearance-*=, =field-sizing-*=, =touch-*=, =scroll-smooth=,
+  =accent-*= and =caret-*=.
+- *Tables and SVG:* =table-*=, =border-collapse/separate=, =border-spacing-*=,
+  =caption-*=; =fill-*= and =stroke-*=.
+- *Accessibility:* =sr-only= / =not-sr-only=.
+- *Variants:* =focus:=, =focus-visible:= and =active:= (two-tier so colors stay
+  hover-only), responsive variants for the new families, and the canonical
+  =dark:hover:= order. Everything is tunable via =state-variants= and
+  =responsive-classes=.
+
+** Correctness fixes
+
+- Repaired the reset's =border-collapse= (a typo meant tables never collapsed).
+- Removed a dead duplicate =content= declaration and a duplicated
+  =list-style-type= generation.
+- =m-*=, =p-*=, =mx/my/px/py= now use single logical-shorthand rules instead of
+  four redundant rules per class.
+
+--------
+
 * Licensing
 
 olive-css and all of its source code are free software, licensed under the GNU Lesser General Public License v3 (or newer at your convenience).
@@ -64,11 +124,11 @@ https://www.gnu.org/licenses/fdl-1.3.html
 
 Installing and using Olive CSS is as simple as downloading a pre-built version from ~resources/css/~ directory, or building your own, and serving it via HTTP (of course also loading it in a ~<link>~ tag in your HTML.
 
-About bundle size: Keep in mind that the default ~olive.min.css~ is pretty large, since it contains all classes and variants and media queries of classes. It is recommended before going to production, to create your own custom optimized build of Olive CSS, by disabling certain features.
+About bundle size: Keep in mind that the default ~olive.min.css~ is large, since it contains every class, state variant and media-query copy of classes and is now minified. For production you should *not* ship it as-is: either create a custom optimized build (disabling unneeded features) and/or run the tree-shaker, which keeps only the classes your HTML actually uses and typically produces a few KiB.
 
-Some factors that can drastically affect the size of the production CSS style sheet are the amount of colors you enable and amount of media queries/breakpoints.
+Some factors that can drastically affect the size of a build are the amount of colors you enable, how many state variants you generate, and how many media queries/breakpoints you support.
 
-A rule of thumb is to disable ~xl~ and/or ~2xl~ queries if you won't use them, and only choose some colors. This is made easy thanks to Guile Scheme's powerful ~parameterize~ syntax and helpers, allowing you to override pretty much anything. It can also be useful to disable dark mode since that will save a lot of complexity. See ~scripts/olive-css-gen.scm~ for more.
+A rule of thumb is to disable ~xl~ and/or ~2xl~ queries if you won't use them, and only choose the colors your project needs. This is made easy thanks to Guile Scheme's powerful ~parameterize~ syntax and helpers, allowing you to override pretty much anything. It can also be useful to disable dark mode, to trim the generated state variants (~state-variants~ / ~interactive-state-variants~) or to keep the lean responsive set (~responsive-classes~). See ~scripts/olive-css-gen.scm~ and *Customizing Olive CSS* below for more.
 
 It's also important to ensure that your web server efficiently caches CSS files and compresses them with GZIP or Brotli.
 
@@ -81,8 +141,38 @@ Key customization points:
 - Choose which screen breakpoints to include (~sm~, ~md~, ~lg~, ~xl~, ~2xl~)
 - Enable or disable dark mode with parameterize
 - Customize your color palette and choose some colors for your project
+- Choose which state variants are generated (~hover~, ~focus~, ~focus-visible~, ~active~, ...)
+- Choose which families get responsive variants (lean by default, full parity on demand)
+- Emit minified or readable CSS
 
-You can also easily generate your own responsive or hover-based variants with ~add-media-query-prefix~ and ~add-hover-variant~
+You can also easily generate your own responsive or state-based variants with ~add-media-query-prefix~ and ~add-state-variant~.
+
+#+begin_src scheme
+(parameterize ((with-dark-mode? #f)                 ; drop the dark-mode rules
+               (minified? #t)                       ; minified output (default)
+               (state-variants '(hover focus active)) ; states for fonts/type/colors
+               (interactive-state-variants '(focus focus-visible active))
+               ;; full responsive parity (every family under each breakpoint):
+               (responsive-classes (core-utility-classes))
+               (palettes my-project-palettes))
+  (write-css-to-file #:file "my-build.css" #:css-lines (olive-css-gen)))
+#+end_src
+
+State variants are generated in two tiers so that builds stay small: ~hover~
+(plus what you add to ~state-variants~) applies to fonts, typography,
+transforms, effects and colors, while ~interactive-state-variants~
+(~focus~, ~focus-visible~, ~active~ by default) only apply to the interactive
+families (typography, transforms and effects) rather than the whole color
+system.  Bind ~state-variant-targets~ / ~interactive-state-targets~ to widen or
+narrow the coverage.
+
+Responsive variants default to the lean set (~lean-responsive-classes~, the
+historical families).  Bind ~responsive-classes~ to ~core-utility-classes~ to
+get responsive variants for every structural family, or to any list of rules of
+your choosing.  The complete build additionally includes ~color-base-classes~,
+which enables responsive color utilities such as ~md:bg-jeans-blue-700~ and
+~lg:text-onyx-500~ without expanding the full opacity cross-product under every
+breakpoint.
 
 See ~scripts/olive-css-gen.scm~ and ~src/olive-css/main.scm~ and the API docs for more.
 
@@ -147,29 +237,86 @@ Find here the Backlog and Kanban boards for olive-css: https://lucidplan.jointhe
 
 * Comparison with Tailwind CSS
 
-| Feature        | Tailwind CSS                              | Olive CSS                                   |
-| Written in     | JavaScript                                | λ Guile Scheme                              |
-| Customization  | - average (via CSS config)                | ✔️ extensive (via code and expressive DSL) |
-| Functional API | ❌                                       | ✔️                                         |
-| Output control | Limited, JIT compiler is restricting      | Full (generate exactly what you want)       |
-| Free Software  | - (MIT, not copyleft)                     | ✔️ (LGPL v3 + FDL)                         |
-| Paid features  | ❌ Enterprise/Tailwind UI behind paywall | ✔️ All included in the source code for everyone |
+| Feature          | Tailwind CSS                              | Olive CSS                                                        |
+|------------------+-------------------------------------------+------------------------------------------------------------------|
+| Written in       | JavaScript                                | λ Guile Scheme                                                   |
+| License          | MIT (permissive, not copyleft)            | ✔️ LGPL v3+ (code) and FDL 1.3+ (docs)                           |
+| Customization    | Average (via CSS/JS config)               | ✔️ Extensive (via code and an expressive DSL)                    |
+| Functional API   | ❌                                         | ✔️                                                                |
+| Utility coverage | Broad                                     | ✔️ Broad (see the parity estimate below)                         |
+| State variants   | A fixed set, JIT-generated                | ✔️ Tunable (hover, focus, active, ... via parameters)            |
+| Responsive       | All utilities, on demand                  | ✔️ All utilities (full set is opt-in to keep builds lean)        |
+| Output control   | Limited; the JIT constrains what you get  | ✔️ Full (generate exactly what you want)                         |
+| Output size      | Small (JIT emits only used utilities)     | ✔️ Minified + content-aware tree-shaking (a few KiB)             |
+| Reproducibility  | Node/npm toolchain                        | ✔️ GNU Guix, bit-for-bit reproducible builds                      |
+| Paid features    | ❌ Enterprise/Tailwind UI behind a paywall | ✔️ Everything in the source code, for everyone                    |
 
 Olive CSS is especially appealing if you want a completely libre, hackable, expressive and transparent alternative to Tailwind.
+
+** Estimated feature parity with Tailwind CSS
+
+How close is Olive CSS to Tailwind's utility surface?  The figure below is an
+_estimate_ based on the Tailwind v4 core utility families - an unweighted
+average of the category coverage underneath.  It is a useful gauge of where the
+gaps are, not a formal audit:
+
+#+begin_example
+Estimated feature parity with Tailwind CSS: ~79%
+#+end_example
+
+| Category                | Coverage | Main gaps                                                        |
+|-------------------------+----------+------------------------------------------------------------------|
+| Layout                  | ~95%     | -                                                                |
+| Flexbox & grid          | ~90%     | space/divide `reverse', logical (ms/me) spacing                  |
+| Spacing                 | ~70%     | negative (-m-*) and logical padding/margin                       |
+| Sizing                  | ~85%     | named container widths (max-w-sm ... max-w-7xl)                  |
+| Typography              | ~90%     | content-* / list-image-* pseudo utilities                        |
+| Backgrounds             | ~35%     | gradients and bg-position/repeat/size/clip/origin/attachment     |
+| Borders                 | ~90%     | logical border-s/e, divide colors/reverse                        |
+| Effects                 | ~65%     | shadow-color, mask-*, color-scheme                               |
+| Filters                 | ~70%     | hue-rotate, drop-shadow, filter-none, backdrop-opacity           |
+| Tables                  | ~100%    | -                                                                |
+| Transitions & animation | ~100%    | -                                                                |
+| Transforms              | ~65%     | 3D (perspective, backface, per-axis rotate/translate)            |
+| Interactivity           | ~75%     | scroll-m/scroll-p, color-scheme, forced-color-adjust             |
+| SVG                     | ~90%     | stroke-dasharray and friends                                     |
+| Accessibility           | ~100%    | -                                                                |
+| Variants                | ~40%     | group/peer/has/not, aria/data, container queries, motion/print/rtl |
+
+_Overall: ~79% (unweighted average of the category estimates above)._
+
+The fastest ways to close the gap are background gradients and image utilities,
+extra variants (group/peer, aria/data, container queries) and negative/logical
+spacing.  Everything already available is documented in [[file:docs/olive/olive.org][the documentation]].
 
 ------------------------
 
 * Tree Shaking
 
-One of the interesting things about modern tooling and frameworks like Tailwind is indeed its ability to "tree-shake" and get rid of classes which are not used in the project.
+One of the interesting things about modern tooling and frameworks like Tailwind (and OliveCSS) is indeed its ability to "tree-shake" and get rid of classes which are not used in the project.
 
 This is something really useful and interesting for Olive CSS.
 
 The mindset is that the developer should first of all, before creating an optimized production build, make some optimization choices (like what media queries to support, dark mode or not, which colors to support). That already helps a lot and leads to better and more performant project.
 
-Currently the tree shaking in Olive CSS then scans all the ~.html~ files in ~./public/~, and compares matches to the contents of your optimized build (~.css~ file, for now ~base-stylesheet-path~ set to ~"resources/css/olive.min.css"~) and remove lines with rules/selectors that are not used, producing a new optimized one (you might see amazing gains, like 3MiB going to 13KiB!). So actually it is a "targeted deletion" of things.
+Olive CSS then can scan for example all the ~.html~ files in ~./public/~ for the classes that
+are actually used and keeps only the matching rules from your build (~base-stylesheet-path~, by default ~"resources/css/olive.min.css"~).
+
+Unlike a naive line/regex filter, the tree-shaker parses the stylesheet into nested
+blocks, so it prunes *inside* media queries and the dark-mode scope, keeps
+structural rules (the reset, ~@keyframes~, ~@view-transition~) that carry no
+class, and drops grouping rules that become empty.
+
+The result is written minified, so the savings are large (a multi-MiB full build becomes a few KiB of
+production CSS - for example 96 used classes produced ~6.6 KiB).
 
 There is a [[https://codeberg.org/jjba23/maak][Maak]] task to do tree-shaking, so it's as easy as ~maak tree-shake~.
+
+The repository ships a fixture at ~public/sample.html~ so you can try it
+immediately: running ~maak tree-shake~ scans it and writes the pruned,
+minified result to ~public/olive.min.css~ (git-ignored).  For a real project,
+point ~artifact-path~ at your generated site (e.g. ~./public~) and drop or
+exclude the sample so its classes do not end up in production CSS.
 
 ------------------------
 
@@ -178,11 +325,13 @@ There is a [[https://codeberg.org/jjba23/maak][Maak]] task to do tree-shaking, s
 
 Common issues and solutions:
 
-*Output is too large*: Disable unused breakpoints, variants, or colors in your build script.
+*Output is too large*: Run ~maak tree-shake~ and/or disable unused breakpoints, state variants, or colors in your build script. The default output is minified; bind ~(minified? #f)~ only while debugging.
 
-*Class not found*: Make sure you generated the build after adding the class logic.
+*Class not found*: Make sure you generated the build after adding the class logic. Note that some families are only responsive if you opt in via ~responsive-classes~.
 
-*Dark mode not working*: Ensure you are using the correct ~data-theme="dark"~ in the HTML element, and that dark mode queries were included in your build.
+*Responsive variant not generated*: The default responsive set is the lean ~lean-responsive-classes~. Bind ~responsive-classes~ to ~core-utility-classes~ (and include ~color-base-classes~ for =md:bg-x=) for full responsive parity.
+
+*Dark mode not working*: Ensure you are using the correct ~data-theme="dark"~ on an ancestor element, that dark mode was enabled in your build, and use the canonical variant order (e.g. ~dark:hover:bg-x~).
 
 *Invalid CSS*: Double-check your custom rule definitions, especially when formatting oklch colors.
 

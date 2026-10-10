@@ -101,8 +101,10 @@ its background, text, and border classes:
 
 * *Visual Effects and Borders*
 
-- *Borders:* Widths from =border-1= to =border-512= and radius utilities
-  from =rounded-1= to =rounded-512=.
+- *Borders:* Widths from =border-1= to =border-512= (plus the =border=
+  default), per-side widths, border styles, and radius utilities from
+  =rounded-1= to =rounded-512=.
+- *Child dividers:* =divide-x-*= and =divide-y-*=.
 
 - *Shadows:* Presets from =shadow-2xs= to =shadow-2xl=.
 
@@ -119,10 +121,72 @@ its background, text, and border classes:
 - *Opacity:* Most colors support fractional opacity variants (e.g.,
   =bg-color-100/10=, =text-color-500/50=).
 
+* *Grid Placement, Gaps and Child Spacing*
+
+- *Placement:* =col-span-1..12=, =col-span-full=, =col-auto=, =col-start-*=/=col-end-*=,
+  =row-span-1..12=, =row-span-full=, =row-auto=, =row-start-*=/=row-end-*=,
+  =auto-rows-auto/min/max/fr=.
+- *Axis gaps:* =gap-x-*= and =gap-y-*=.
+- *Child spacing:* =space-x-*= and =space-y-*= add space between children
+  without touching the outer edges, and =divide-x-*=/=divide-y-*= add
+  borders between children.
+
+* *Positioning and Sizing*
+
+- *Inset:* =inset-*=, =inset-x-*=, =inset-y-*=, =start-*=, =end-*= (including
+  fractions such as =inset-x-1/2=), plus =inset-auto=/=start-auto=/=end-auto=.
+- *Z-index:* =z-auto= alongside =z-1= ... =z-512=.
+- *Breaks:* =break-before-*=, =break-after-*=, =break-inside-*=.
+- *Sizing:* =size-*= (width and height together), =size-full=, =w-auto=,
+  =h-auto=, =w-fit=/=h-fit=, =w-min=/=w-max=, =min-w-prose=, and dynamic
+  viewport units (=w-dvw=, =h-dvh=, =h-svh=, =h-lvh=, =min-h-dvh=, ...).
+
+* *Elements and Effects*
+
+- *Opacity and blending:* =opacity-0= ... =opacity-100=, =mix-blend-*=,
+  =bg-blend-*=.
+- *Text shadow:* =text-shadow-2xs/xs/sm/md/lg/none=.
+- *Rings:* =ring=, =ring-0/1/2/4/8=, =ring-inset=, =ring-<color>-<shade>=
+  and =inset-ring-*= / =inset-ring-<color>-<shade>=.
+- *Outline:* =outline=, =outline-0/1/2/4/8=, =outline-<style>=
+  (=solid/dashed/dotted/double=), =outline-offset-*=, =outline-none=,
+  =outline-hidden= and =outline-<color>-<shade>=.
+- *Borders:* the =border= default width, per-side widths
+  (=border-t/r/b/l/x/y-*=), border styles (=border-solid/dashed/dotted/double/hidden/none=).
+
+* *Transforms, Transitions and Animation*
+
+- *Transforms:* =translate-x-*=/=translate-y-*= (and negative =\-translate-*= and
+  fractional =translate-x-1/2=), =rotate-*= and =-rotate-*=, =scale-*=,
+  =scale-x-*=, =scale-y-*=, =skew-x-*=/=skew-y-*=, =origin-*=,
+  =transform-none=, =will-change-*=.
+- *Transitions:* =transition=, =transition-all=, =transition-colors=,
+  =transition-opacity=, =transition-shadow=, =transition-transform=,
+  =transition-none=, =duration-*=, =delay-*= and =ease-*=.
+- *Animation:* =animate-spin=, =animate-ping=, =animate-pulse=, =animate-bounce=
+  and =animate-none=.
+
+* *Interactivity, Tables and SVG*
+
+- *Interactivity:* the full =cursor-*= set, =select-none/text/all/auto=,
+  =pointer-events-none/auto=, =resize=/=resize-x=/=resize-y=/=resize-none=,
+  =appearance-none/auto=, =field-sizing-fixed/content=, =touch-*=,
+  =scroll-auto/smooth=, plus =accent-<color>= and =caret-<color>=.
+- *Tables:* =table-auto=, =table-fixed=, =border-collapse=, =border-separate=,
+  =border-spacing-*=/=-x=/=-y=, =caption-top/bottom=.
+- *SVG:* =fill-none/current/<color>=, =stroke-none/current/<color>= and
+  =stroke-<width>=.
+- *Accessibility:* =sr-only= and =not-sr-only=.
+
 * *Interactivity and Features*
 
-- *State Modifiers:* Framework-wide support for =hover:=, =active:=, and
-  =dark:= prefixes (e.g., =hover:bg-white=, =dark:text-black=).
+- *State Modifiers:* Framework-wide support for =hover:=, =focus:=,
+  =focus-visible:=, =focus-within:=, =active:=, =disabled:=, =checked=,
+  =first:=, =last:=, =odd:=, =even:= and =dark:= prefixes (e.g.,
+  =hover:bg-white=, =focus:ring-2=, =active:scale-95=, =dark:text-black=).
+  Variant stacks use the canonical order, e.g. =dark:hover:bg-white=.
+  Additional state variants can be enabled with the =state-variants= and
+  =interactive-state-variants= parameters.
 
 - *Animations:* Built-in slide animations (=slide-from-right=,
   =slide-from-left=, etc.) and basic fade transitions.

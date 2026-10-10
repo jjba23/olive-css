@@ -69,7 +69,7 @@
                                                    'none))
 
                         (css-rule 'table
-                                  (css-declaration 'borser-collpase
+                                  (css-declaration 'border-collapse
                                                    'collapse)
                                   (css-declaration 'border-spacing 0))
 
@@ -78,7 +78,6 @@
                                                       blockquote:after
 
                                                       q:before q:after)) ", ")
-                                  (css-declaration 'content "''")
                                   (css-declaration 'content
                                                    'none))
                         (css-rule (string-join (map symbol->string

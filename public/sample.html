@@ -1,0 +1,75 @@
+<!doctype html>
+<!--
+  Olive CSS tree-shaking sample.
+
+  This page exists so that `maak tree-shake` can be run out of the box: the
+  tree-shaker scans every .html file under ./public/ and keeps only the classes
+  they use.  The output is written to ./public/olive.min.css (git-ignored).
+
+  Delete or exclude this file if you point the tree-shaker at a real site build
+  in ./public/ and do not want its sample classes in your production CSS.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Olive CSS - tree-shaking sample</title>
+  </head>
+  <body class="bg-papaya-whip-100 text-onyx-900 antialiased">
+    <header class="flex items-center justify-between p-4 md:px-8 shadow-sm border-b border-onyx-100">
+      <a class="font-serif font-bold text-lg tracking-tight hover:text-tawny-700" href="/">Olive CSS</a>
+      <nav class="flex items-center gap-4">
+        <a class="text-sm hover:text-jeans-blue-500" href="#docs">Docs</a>
+        <button class="cursor-pointer rounded-lg bg-jeans-blue-500 px-4 py-2 font-medium text-white transition-colors duration-200 hover:bg-jeans-blue-700 active:scale-95">
+          Get started
+        </button>
+      </nav>
+    </header>
+
+    <main class="mx-auto max-w-prose px-4 py-8 md:py-12">
+      <h1 class="mb-4 text-3xl font-bold">Utility-class CSS, the libre way</h1>
+      <p class="mb-6 leading-lg">
+        Olive CSS is a utility-class framework written in Guile Scheme. Ship the
+        tree-shaken build and only the classes you actually use reach the browser.
+      </p>
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <article class="rounded-xl bg-white-smoke-100 p-6 shadow-md ring-1 ring-onyx-100 transition-shadow hover:shadow-lg">
+          <h2 class="mb-2 truncate font-semibold">Hackable</h2>
+          <p class="line-clamp-3 text-sm text-onyx-700">Extend or override anything with plain Scheme code.</p>
+        </article>
+        <article class="rounded-xl bg-white-smoke-100 p-6 shadow-md ring-1 ring-onyx-100 transition-shadow hover:shadow-lg">
+          <h2 class="mb-2 truncate font-semibold">Free Software</h2>
+          <p class="line-clamp-3 text-sm text-onyx-700">LGPL v3 or later, documentation under the FDL.</p>
+        </article>
+        <article class="rounded-xl bg-white-smoke-100 p-6 shadow-md ring-1 ring-onyx-100 transition-shadow hover:shadow-lg">
+          <h2 class="mb-2 truncate font-semibold">Self-contained</h2>
+          <p class="line-clamp-3 text-sm text-onyx-700">Minimal dependencies and fast, reproducible builds.</p>
+        </article>
+      </div>
+
+      <div class="mt-8 flex flex-wrap gap-2">
+        <span class="inline-block rounded-full bg-asparagus-100 px-3 py-1 text-xs text-asparagus-900">colors</span>
+        <span class="inline-block rounded-full bg-asparagus-100 px-3 py-1 text-xs text-asparagus-900">flexbox</span>
+        <span class="inline-block rounded-full bg-asparagus-100 px-3 py-1 text-xs text-asparagus-900">grid</span>
+        <span class="inline-block rounded-full bg-asparagus-100 px-3 py-1 text-xs text-asparagus-900">effects</span>
+      </div>
+
+      <div class="mt-8 flex items-center gap-3 opacity-90 mix-blend-multiply text-shadow-sm">
+        <svg class="size-8 fill-redwood-500 stroke-onyx-900 stroke-2" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+        </svg>
+        <p class="text-xs text-onyx-500">Resize the window to see the responsive grid change.</p>
+      </div>
+
+      <input class="mt-6 w-full rounded-lg border border-onyx-100 px-3 py-2 accent-jeans-blue-500 caret-onyx-500" placeholder="Try focusing this field">
+      <p class="mt-2 text-xs text-onyx-500 focus-visible:outline-2">Focus rings are generated for interactive utilities.</p>
+      <p class="mt-2 hidden md:block text-xs">Hidden below the md breakpoint.</p>
+    </main>
+
+    <footer class="border-t border-onyx-100 p-4 text-center text-xs text-onyx-500">
+      <span class="sr-only">End of the sample page</span>
+      <span class="dark:bg-onyx-900 dark:text-white-smoke-100 dark:hover:text-tawny-300">Dark mode ready</span>
+    </footer>
+  </body>
+</html>

@@ -22,7 +22,10 @@
   #:use-module (ice-9 string-fun)
   #:use-module (ice-9 format)
   #:export (~ format-css
+              minify-css
               list-combinations
+              add-dark-wrapper
+              dark-selector-prefix
               where-dark
               lighten-oklch
               identity-oklch
@@ -34,6 +37,7 @@
               media-query
               add-media-query-prefix
               add-hover-variant
+              add-state-variant
               make-rule
               rule?
               set-rule-selector!
@@ -46,6 +50,7 @@
               declaration-value
               css-rule
               css-color-rules
+              css-palette-rules
               css-declaration
               flatten-list
               css-rule-variants
@@ -171,8 +176,13 @@ variations of a base @var{oklch} configuration."
             (add-media-query-prefix sel a)) args))
     (else args)))
 
-(define (add-hover-variant sel args)
-  "Transform utility rules in @var{args} into nested interactive pseudo-classes matching @code{&:hover} targets prefixed by @var{sel}."
+(define (add-state-variant sel pseudo args)
+  "Transform utility rules in @var{args} into flat interactive selectors.
+
+Rather than emitting CSS nesting (@code{.x{&:hover{...}}}), this produces the
+fully expanded selector (@code{.x:hover{...}}).  The result is plain CSS 3
+(no top-level nesting dependency) and a few bytes smaller per rule, which
+matters because state variants are generated for every color and utility."
   (cond
     ((rule? args)
      (let* ((a args)
@@ -180,14 +190,53 @@ variations of a base @var{oklch} configuration."
             (str (if (equal? "."
                              (string-take selector 1))
                      (format #f ".~a\\:~a" sel
-                             (string-drop selector 1)) selector))
-            (rd (css-rule "&:hover"
-                          (rule-declarations a))))
-       (css-rule str rd)))
+                             (string-drop selector 1)) selector)))
+       (css-rule (string-append str pseudo)
+                 (rule-declarations a))))
     ((list? args)
      (map (lambda (a)
-            (add-hover-variant sel a)) args))
+            (add-state-variant sel pseudo a)) args))
     (else args)))
+
+(define (add-hover-variant sel args)
+  "Transform utility rules in @var{args} into flat @code{:hover} interactive selectors prefixed by @var{sel}."
+  (add-state-variant sel ":hover" args))
+
+;; The selector used to scope "dark mode" utilities.  Any ancestor (or the
+;; scoping root itself) carrying @code{[data-theme=dark]} activates the rules.
+(define dark-selector-prefix
+  ":where([data-theme=dark], [data-theme=dark] *)")
+
+(define (add-dark-wrapper args)
+  "Prefix every utility rule in @var{args} with @code{dark-selector-prefix}.
+
+This produces fully flat, @code{data-theme=dark}-scoped selectors (no nested
+rules), which is maximally compatible.  The generator instead groups the rules
+under a single @code{dark-selector-prefix} scope to avoid repeating the scope
+selector on every rule, which keeps the large dark color section compact."
+  (cond
+    ((rule? args)
+     (css-rule (format #f "~a ~a"
+                       dark-selector-prefix
+                       (rule-selector args))
+               (rule-declarations args)))
+    ((list? args)
+     (map add-dark-wrapper args))
+    (else args)))
+
+(define (minify-css css)
+  "Collapse a formatted CSS string @var{css} into a compact, minified form.
+
+Only whitespace that is never significant is removed: runs of whitespace are
+collapsed to a single space, the space after declaration separators is
+dropped, and braces are tightened.  Descendant combinators and quoted strings
+(font stacks, oklch components) are preserved."
+  (let* ((collapsed (string-join (string-tokenize css) " "))
+         (a (string-replace-substring collapsed "; " ";"))
+         (b (string-replace-substring a ", " ","))
+         (c (string-replace-substring b " {" "{"))
+         (d (string-replace-substring c " }" "}")))
+    d))
 
 (define* (css-color-rules selector
                           #:key property
@@ -226,6 +275,31 @@ variations of a base @var{oklch} configuration."
                                                                                alpha-weight)))))))
 
                           )) variants)) palettes))
+
+(define* (css-palette-rules selector
+                            #:key property
+                            (palettes '())
+                            (other-properties '()))
+  "Generate one solid (alpha = 1) rule per palette shade.
+
+Unlike @code{css-color-rules} this does not expand the alpha cross-product,
+which keeps derived color families (ring, outline, fill, stroke, accent,
+caret) affordable.  @var{selector} is a format template with two arguments:
+the palette name and the shade weight, e.g. @code{\".ring-~a-~a\"}."
+  (append-map (lambda (palette)
+                (map (lambda (shade)
+                       (css-rule (format #f selector (car palette) (car shade))
+                                 (append (map (lambda (p)
+                                                (css-declaration (car p)
+                                                                 (cadr p)))
+                                              other-properties)
+                                         (list (css-declaration
+                                                property
+                                                (apply format #f
+                                                       "oklch(~a ~a ~a / 1)"
+                                                       (cadr shade)))))))
+                     (cdr palette)))
+              palettes))
 
 (define* (css-size s
                    #:key (conversion identity)
@@ -301,6 +375,8 @@ variations of a base @var{oklch} configuration."
           (declaration-value xs)))
 
 ;; CSS pseudo-class selector target sequence scoping system configurations targeting user-activated dark mode settings.
+;; Historic nested form (kept for backwards compatibility); the generator now
+;; uses `dark-selector-prefix', which is the same scope without the top-level `&'.
 (define where-dark
   "&:where([data-theme=dark], [data-theme=dark] *)")
 

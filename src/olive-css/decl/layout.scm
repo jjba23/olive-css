@@ -24,6 +24,9 @@
   #:export (aspect-ratio columns
                          z-index
                          absolute-positions
+                         inset-positions
+                         breaks
+                         accessibility
                          displays
                          visibility
                          box-decoration-break
@@ -49,10 +52,13 @@
   (make-parameter (css-rule-variants ".aspect-~a"
                                      #:property 'aspect-ratio
                                      #:variants '((square "1 / 1")
+                                                  (video "16 / 9")
                                                   (auto auto)
                                                   ("16\\/9" "16 / 9")
                                                   ("16\\/10" "16 / 10")
-                                                  ("4\\/3" "4 / 3")))))
+                                                  ("4\\/3" "4 / 3")
+                                                  ("3\\/2" "3 / 2")
+                                                  ("2\\/3" "2 / 3")))))
 
 (define columns
   (make-parameter (css-rule-variants ".columns-~a"
@@ -61,9 +67,12 @@
                                                         numeric-sizes))))
 
 (define z-index
-  (make-parameter (css-rule-variants ".z-~a"
-                                     #:property 'z-index
-                                     #:variants numeric-sizes)))
+  (make-parameter (append (css-rule-variants ".z-~a"
+                                             #:property 'z-index
+                                             #:variants numeric-sizes)
+                          (list (css-rule ".z-auto"
+                                          (css-declaration 'z-index
+                                                           'auto))))))
 
 (define absolute-positions
   (make-parameter (map (lambda (d)
@@ -85,6 +94,99 @@
                        '(top bottom left right)))
 
   )
+
+(define (positioned-values)
+  "Numeric, zero and fractional offset values shared by inset utilities."
+  (append (map (lambda (s)
+                 (css-size s
+                           #:conversion
+                           to-rem
+                           #:multiplier
+                           (absolute-positions-multiplier)))
+               numeric-sizes)
+          '((0 0))
+          (map css-size fractions)))
+
+(define inset-positions
+  (make-parameter (append (css-rule-variants ".inset-~a"
+                                             #:property 'inset
+                                             #:variants (positioned-values))
+                          (css-rule-variants ".inset-x-~a"
+                                             #:property 'inset-inline
+                                             #:variants (positioned-values))
+                          (css-rule-variants ".inset-y-~a"
+                                             #:property 'inset-block
+                                             #:variants (positioned-values))
+                          (css-rule-variants ".start-~a"
+                                             #:property 'inset-inline-start
+                                             #:variants (positioned-values))
+                          (css-rule-variants ".end-~a"
+                                             #:property 'inset-inline-end
+                                             #:variants (positioned-values))
+                          (css-rule-variants ".inset-~a"
+                                             #:property 'inset
+                                             #:variants '((auto auto)))
+                          (css-rule-variants ".start-~a"
+                                             #:property 'inset-inline-start
+                                             #:variants '((auto auto)))
+                          (css-rule-variants ".end-~a"
+                                             #:property 'inset-inline-end
+                                             #:variants '((auto auto))))))
+
+(define breaks
+  (make-parameter (append (css-rule-variants ".break-after-~a"
+                                             #:property 'break-after
+                                             #:variants '((auto auto)
+                                                          (avoid avoid)
+                                                          (all all)
+                                                          (avoid-page
+                                                           avoid-page)
+                                                          (page page)
+                                                          (left left)
+                                                          (right right)
+                                                          (column column)))
+                          (css-rule-variants ".break-before-~a"
+                                             #:property 'break-before
+                                             #:variants '((auto auto)
+                                                          (avoid avoid)
+                                                          (all all)
+                                                          (avoid-page
+                                                           avoid-page)
+                                                          (page page)
+                                                          (left left)
+                                                          (right right)
+                                                          (column column)))
+                          (css-rule-variants ".break-inside-~a"
+                                             #:property 'break-inside
+                                             #:variants '((auto auto)
+                                                          (avoid avoid)
+                                                          (avoid-page
+                                                           avoid-page)
+                                                          (avoid-column
+                                                           avoid-column))))))
+
+(define accessibility
+  (make-parameter (list (css-rule ".sr-only"
+                                  (css-declaration 'position 'absolute)
+                                  (css-declaration 'width "1px")
+                                  (css-declaration 'height "1px")
+                                  (css-declaration 'padding 0)
+                                  (css-declaration 'margin "-1px")
+                                  (css-declaration 'overflow 'hidden)
+                                  (css-declaration 'clip
+                                                   "rect(0, 0, 0, 0)")
+                                  (css-declaration 'white-space 'nowrap)
+                                  (css-declaration 'border-width 0))
+                        (css-rule ".not-sr-only"
+                                  (css-declaration 'position 'static)
+                                  (css-declaration 'width 'auto)
+                                  (css-declaration 'height 'auto)
+                                  (css-declaration 'padding 0)
+                                  (css-declaration 'margin 0)
+                                  (css-declaration 'overflow 'visible)
+                                  (css-declaration 'clip 'auto)
+                                  (css-declaration 'white-space
+                                                   'normal)))))
 
 (define displays
   (make-parameter (css-rule-variants ".~a"
@@ -244,6 +346,9 @@
                         (object-fit)
                         (object-position)
                         (absolute-positions)
+                        (inset-positions)
+                        (breaks)
+                        (accessibility)
                         (displays)
                         (float)
                         (clear)

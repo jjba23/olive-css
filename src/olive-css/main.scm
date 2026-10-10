@@ -30,6 +30,14 @@
   #:use-module (olive-css decl typography)
   #:use-module (olive-css decl animation)
   #:use-module (olive-css decl reset)
+  #:use-module (olive-css decl borders)
+  #:use-module (olive-css decl grid)
+  #:use-module (olive-css decl tables)
+  #:use-module (olive-css decl svg)
+  #:use-module (olive-css decl effects)
+  #:use-module (olive-css decl transforms)
+  #:use-module (olive-css decl transitions)
+  #:use-module (olive-css decl interactivity)
   #:export (rounded-multiplier olive-css-gen
                                all-responsive
                                reduced-responsive
@@ -46,7 +54,18 @@
                                sans-font-family
                                serif-font-family
                                write-docs-to-file
-                               write-css-to-file))
+                               write-css-to-file
+                               minified?
+                               core-utility-classes
+                               lean-responsive-classes
+                               palette-utility-classes
+                               color-base-classes
+                               utility-classes
+                               state-variants
+                               state-variant-targets
+                               interactive-state-variants
+                               interactive-state-targets
+                               state-variant-classes))
 
 (define mono-font-family
   (make-parameter '("'Intel One Mono'" "'IBM Plex Mono'" "monospace")))
@@ -299,7 +318,9 @@
 (define (dark-mode)
   (list '("")
         (css-comment "Load Olive CSS Dark mode")
-        (list where-dark " {")
+        ;; A single `:where(...)` scope (rather than a bare top-level `&`) keeps
+        ;; the dark-mode block compact while remaining valid CSS nesting.
+        (list (format #f "~a {" dark-selector-prefix))
         (add-media-query-prefix 'dark
                                 (font-family))
         (add-media-query-prefix 'dark
@@ -308,13 +329,12 @@
                                 (filter-classes))
         '("")
         (css-comment "Load Olive CSS Dark mode hover colors")
-        (add-hover-variant "hover\\:dark"
+        ;; The canonical Tailwind order is `dark:hover:'.  Generating both
+        ;; orders would double the (large) dark color section, so only this one
+        ;; is emitted; `variant-classes' can add alternatives if needed.
+        (add-hover-variant "dark\\:hover"
                            (colors (palettes)))
         '("}")))
-
-(define (hover-colors palettes)
-  (add-hover-variant 'hover
-                     (colors palettes)))
 
 (define display-utilities
   (make-parameter (list (css-rule ".overflow-x-scroll"
@@ -328,7 +348,12 @@
                                                    'pointer)))))
 
 (define border-radius
-  (make-parameter (append (css-rule-variants ".rounded-~a"
+  (make-parameter (append (list (css-rule ".rounded-none"
+                                          (css-declaration 'border-radius 0))
+                                (css-rule ".rounded-full"
+                                          (css-declaration 'border-radius
+                                                           "9999px")))
+                          (css-rule-variants ".rounded-~a"
                                              #:property 'border-radius
                                              #:variants (map (lambda (s)
                                                                (css-size s
@@ -417,19 +442,164 @@
 
 ;; ============ Stylesheet Generation Entry-point =========================
 
+(define (visibility-classes)
+  (visibility))
+
+(define (core-utility-classes)
+  "All structural utility families.
+
+These contain no palette-derived colors and no @code{@keyframes}, so they are
+safe to duplicate under media queries and state variants.  Palette-derived
+families live in @code{palette-utility-classes} and the main color system is
+generated separately by @code{colors}."
+  (append (font-family)
+          (layout-classes)
+          (visibility-classes)
+          (filter-classes)
+          (flexbox-classes)
+          (grid-classes)
+          (spacing-classes)
+          (sizing-classes)
+          (typography-classes)
+          (border-radius)
+          (borders)
+          (border-extras-classes)
+          (scroll-snap-aligns)
+          (scroll-snap-types)
+          (shadows)
+          (display-utilities)
+          (transform-classes)
+          (table-classes)
+          (transition-classes)
+          (effect-core-classes)
+          (interactivity-core-classes)
+          (svg-core-classes)))
+
+(define (palette-utility-classes palettes)
+  "Palette-derived utilities: ring/outline/accent/caret colors and SVG fill/stroke."
+  (append (effect-colors palettes)
+          (interactivity-colors palettes)
+          (svg-colors palettes)))
+
+(define (color-base-classes palettes)
+  "Solid palette colors for bg/text/border/decoration.
+
+Used to give the complete build responsive color parity (e.g. @code{md:bg-x})
+without expanding the large opacity-modifier cross-product under every
+breakpoint.  The full @code{bg-<color>-<shade>/<opacity>} family is generated
+only once by @code{colors}."
+  (append (css-palette-rules ".bg-~a-~a"
+                             #:property 'background
+                             #:palettes palettes)
+          (css-palette-rules ".text-~a-~a"
+                             #:property 'color
+                             #:palettes palettes)
+          (css-palette-rules ".border-~a-~a"
+                             #:property 'border-color
+                             #:palettes palettes)
+          (css-palette-rules ".decoration-~a-~a"
+                             #:property 'text-decoration-color
+                             #:palettes palettes)))
+
+(define (utility-classes palettes)
+  "Every utility family generated by olive-css (structural + palette colors)."
+  (append (core-utility-classes)
+          (palette-utility-classes palettes)
+          (colors palettes)))
+
+;; State variants (pseudo-classes) that can be enabled via `state-variants'.
+(define state-pseudos
+  '((hover . ":hover")
+    (focus . ":focus")
+    (focus-within . ":focus-within")
+    (focus-visible . ":focus-visible")
+    (active . ":active")
+    (visited . ":visited")
+    (target . ":target")
+    (disabled . ":disabled")
+    (enabled . ":enabled")
+    (checked . ":checked")
+    (required . ":required")
+    (invalid . ":invalid")
+    (valid . ":valid")
+    (first . ":first-child")
+    (last . ":last-child")
+    (only . ":only-child")
+    (odd . ":nth-child(odd)")
+    (even . ":nth-child(even)")
+    (empty . ":empty")))
+
+(define state-variants
+  (make-parameter '(hover)))
+
+;; When unset, these state variants are generated for fonts, typography,
+;; colors, transforms and effects.  Bind it to `core-utility-classes' (or any
+;; list of rules) to widen coverage.
+(define state-variant-targets
+  (make-parameter #f))
+
+(define (default-state-targets)
+  (append (font-family)
+          (typography-classes)
+          (transform-classes)
+          (effect-core-classes)
+          (shadows)
+          (colors (palettes))))
+
+;; A second, lighter tier: focus/active/etc. only need to apply to the
+;; interactive utilities (effects, transforms, typography), not to the whole
+;; color system, which keeps builds affordable.
+(define interactive-state-variants
+  (make-parameter '(focus focus-visible active)))
+
+(define interactive-state-targets
+  (make-parameter #f))
+
+(define (default-interactive-targets)
+  (append (typography-classes)
+          (transform-classes)
+          (effect-core-classes)))
+
+(define (state-rules states targets)
+  (append-map (lambda (state)
+                (let ((pseudo (assq state state-pseudos)))
+                  (if pseudo
+                      (add-state-variant (symbol->string state)
+                                         (cdr pseudo) targets)
+                      '())))
+              states))
+
+(define (state-variant-classes)
+  "Generate one rule per enabled state variant over the configured targets."
+  (append (state-rules (state-variants)
+                       (or (state-variant-targets)
+                           (default-state-targets)))
+          (state-rules (interactive-state-variants)
+                       (or (interactive-state-targets)
+                           (default-interactive-targets)))))
+
+(define (lean-responsive-classes)
+  "The lean default responsive set.
+
+Historically only a subset of families was duplicated under each breakpoint;
+keeping that default means per-project builds stay small.  Bind
+@code{responsive-classes} to @code{core-utility-classes} for full responsive
+parity (this is what the complete build does)."
+  (append (layout-classes)
+          (filter-classes)
+          (flexbox-classes)
+          (spacing-classes)
+          (sizing-classes)
+          (typography-classes)
+          (border-radius)
+          (scroll-snap-aligns)
+          (scroll-snap-types)
+          (font-family)))
+
 (define (get-responsive-classes)
   "Helper to safely get current or default responsive classes dynamically."
   (or (responsive-classes)
-      (append (layout-classes)
-              (filter-classes)
-              (flexbox-classes)
-              (spacing-classes)
-              (sizing-classes)
-              (typography-classes)
-              (border-radius)
-              (scroll-snap-aligns)
-              (scroll-snap-types)
-              (font-family))))
+      (lean-responsive-classes)))
 
 (define responsive-classes
   (make-parameter #f))
@@ -472,32 +642,16 @@
           (reset-css)
           '("")
           (css-comment "Load Olive CSS Hygge Style Sheets")
-          (font-family)
-          (add-hover-variant 'hover
-                             (font-family))
-          (layout-classes)
-          (filter-classes)
-          (flexbox-classes)
-          (spacing-classes)
-          (sizing-classes)
-          (typography-classes)
-          (add-hover-variant 'hover
-                             (typography-classes))
-          ;;
-          (borders)
-          (display-utilities)
+          (core-utility-classes)
+          (palette-utility-classes (palettes))
           (animations)
-          (visibility)
-          (border-radius)
-          (scroll-snap-aligns)
-          (scroll-snap-types)
-          (shadows)
+          (animation-classes)
+          '("")
+          (css-comment "Load Olive CSS state variants (hover:, focus:, ...)")
+          (state-variant-classes)
           '("")
           (css-comment "Load Olive CSS colors")
           (colors (palettes))
-          '("")
-          (css-comment "Load Olive CSS hover colors")
-          (hover-colors (palettes))
           (if (with-dark-mode?)
               (dark-mode)
               '())
@@ -505,15 +659,24 @@
           (css-comment "Load responsive classes")
           ((responsive))))
 
+;; When true (the default) stylesheets are written minified: no indentation,
+;; no newlines between rules and no whitespace after separators.  Bind it to
+;; #f (via `parameterize') when debugging generated output.
+(define minified?
+  (make-parameter #t))
+
 (define* (write-css-to-file #:key file css-lines)
   (catch #t
          (lambda ()
            (delete-file file))
          (lambda _
            (display "")))
-  (with-output-to-file file
-    (lambda ()
-      (display (string-join (flatten-list (map format-css css-lines)) "\n")))))
+  (let ((css (string-join (flatten-list (map format-css css-lines))
+                          "\n")))
+    (with-output-to-file file
+      (lambda ()
+        (display (if (minified?)
+                     (minify-css css) css))))))
 
 (define* (write-docs-to-file #:key file lines)
   (catch #t
