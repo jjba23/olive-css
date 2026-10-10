@@ -50,8 +50,7 @@
                                                                    to-rem
                                                                    #:multiplier
                                                                    (translate-multiplier)))
-                                                       (append '((0 0))
-                                                               numeric-sizes
+                                                       (append numeric-sizes
                                                                tshirt-sizes))
                                                   (map css-size fractions)))
             (css-rule-variants (format #f ".-translate-~a-~a" axis "~a")
@@ -64,7 +63,7 @@
                                                                        (to-rem
                                                                         (cadr
                                                                          s)))))
-                                                       numeric-sizes)
+                                                       positive-numeric-sizes)
                                                   (map (lambda (s)
                                                          (list (car s)
                                                                (format #f

@@ -127,7 +127,7 @@
                                                            "-webkit-box")
                                                           ("-webkit-box-orient"
                                                            vertical))
-                                     #:variants numeric-sizes)))
+                                     #:variants positive-numeric-sizes)))
 
 (define leading
   (make-parameter (list (css-rule ".leading-none"

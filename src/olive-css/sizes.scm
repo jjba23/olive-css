@@ -19,7 +19,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-13)
   #:use-module (ice-9 string-fun)
-  #:export (tshirt-sizes numeric-sizes
+  #:export (tshirt-sizes numeric-sizes positive-numeric-sizes
                          weights
                          alphas
                          color-weights
@@ -41,7 +41,8 @@
     ("5xl" 10)))
 
 (define numeric-sizes
-  '((1 1)
+  '((0 0)
+    (1 1)
     (2 2)
     (3 3)
     (4 4)
@@ -72,6 +73,15 @@
     (360 360)
     (420 420)
     (512 512)))
+
+;; The numeric steps without the leading zero.  A zero count is invalid CSS for
+;; grid templates (=repeat(0, ...)=), multi-column flow and line clamping, and a
+;; negative zero is meaningless for the =.-translate-*= family, so those use this
+;; list instead of `numeric-sizes'.
+(define positive-numeric-sizes
+  (filter (lambda (s)
+            (not (equal? 0 (car s))))
+          numeric-sizes))
 
 (define weights
   '((thin 100)

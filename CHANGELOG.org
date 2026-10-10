@@ -11,8 +11,24 @@ feature reference.
 
 * Unreleased
 
-Nothing yet.  Work that lands after =v0.6.0= is recorded here until it is
-tagged.
+Work that lands after =v0.6.0= is recorded here until it is tagged.
+
+** Added
+
+- *Zero on the numeric scale.* The scale now starts at =0=, so the numeric
+  families can express an explicit zero: =m-0=, =mx/my/mt/mb/ml/mr-0=,
+  =p-0= and the other padding sides, =space-x/y-0=, =gap-0= and =gap-x/y-0=,
+  =w-0=, =h-0=, =size-0=, =min-w-0=, =max-h-0=, =border-0= and the per-side
+  widths, =divide-x/y-0=, =rounded-0=, =text-0=, =leading-0=, =indent-0=,
+  =border-spacing-0=, =stroke-0=, =z-0=, =order-0=, =basis-0=, =flex-0=,
+  =brightness-0= and the remaining filters.  The positioning offsets and the
+  fixed-width/timing presets, which already had a zero, are unchanged (and no
+  longer emitted twice).
+- Only the families where a zero count is invalid CSS keep starting at =1=:
+  =grid-cols-*=, =grid-rows-*=, =columns-*= and =line-clamp-*= produce no
+  =0= step, and neither do the negative =.\-translate-*= utilities.
+- ~positive-numeric-sizes~, exported by ~(olive-css sizes)~ for builds that
+  need the scale without the zero.
 
 * v0.6.0 - 2026-10-11
 

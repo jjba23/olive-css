@@ -64,7 +64,7 @@
   (make-parameter (css-rule-variants ".columns-~a"
                                      #:property 'columns
                                      #:variants (append tshirt-sizes
-                                                        numeric-sizes))))
+                                                        positive-numeric-sizes))))
 
 (define z-index
   (make-parameter (append (css-rule-variants ".z-~a"
@@ -88,7 +88,6 @@
                                                                        #:multiplier
                                                                        (absolute-positions-multiplier)))
                                                                 numeric-sizes)
-                                                               '((0 0))
                                                                (map css-size
                                                                     fractions))))
                        '(top bottom left right)))
@@ -96,13 +95,13 @@
   )
 
 (define (positioned-values)
-  "Numeric, zero and fractional offset values shared by inset utilities."
+  "Numeric (including zero) and fractional offset values shared by the inset
+utilities.  Zero comes from `numeric-sizes' itself."
   (append (map (lambda (s)
                  (css-size s
                            #:conversion to-rem
                            #:multiplier (absolute-positions-multiplier)))
                numeric-sizes)
-          '((0 0))
           (map css-size fractions)))
 
 (define inset-positions

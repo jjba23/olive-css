@@ -50,19 +50,32 @@ table.
 
 ** The numeric scale
 
-Most size-valued families take one of these 31 steps, in the unit that belongs
+Most size-valued families take one of these 32 steps, in the unit that belongs
 to the family (see the table below):
 
 #+begin_example
-1  2  3  4  5  6  7  8  9  10  12  14  16  20  24  28  32  48  64  72  90
-96  100  128  196  212  256  312  360  420  512
+0  1  2  3  4  5  6  7  8  9  10  12  14  16  20  24  28  32  48  64  72
+90  96  100  128  196  212  256  312  360  420  512
 #+end_example
 
-Note that the numeric scale starts at =1=: there is no numeric =0= step.  Zero
-is only available where it is meaningful and is emitted as a literal =0=: the
-positioning families (=top-0=, =bottom-0=, =left-0=, =right-0=, =inset-0=,
-=inset-x-0=, =inset-y-0=, =start-0=, =end-0=) and =decoration-0= (text
-decoration thickness).
+** The zero step
+
+=0= is a real step of the scale and always emits a literal =0=, never a scaled
+value: =m-0=, =p-0=, =space-x/y-0=, =gap-0=, =w-0=, =h-0=, =size-0=,
+=min-w-0=, =max-h-0=, =border-0=, =rounded-0=, =text-0=, =leading-0=,
+=indent-0=, =border-spacing-0=, =stroke-0=, =z-0=, =order-0=, =basis-0=,
+=brightness-0= and the rest of the numeric families accept it, which makes
+resetting a measurement explicit (=m-0=, =p-0=) instead of clearing a class.
+The families whose rules already carried a zero keep it: the positioning
+offsets (=top-0=, =bottom-0=, =left-0=, =right-0=, =inset-0=, =inset-x-0=,
+=inset-y-0=, =start-0=, =end-0=), the fixed-width sets (=ring/=inset-ring= and
+=outline= widths, =outline-offset-0=, =decoration-0=, =opacity-0=) and the
+timing presets (=duration-0=, =delay-0=).
+
+A zero count is invalid CSS, so four families start at =1= instead:
+=grid-cols-<n>= and =grid-rows-<n>= (a template needs a positive repeat count),
+=columns-<n>= and =line-clamp-<n>=.  The negative =.\-translate-<n>= family also
+skips it, since a negative zero means nothing.
 
 ** The t-shirt scale
 
@@ -114,6 +127,10 @@ parameters, so every one of them can be changed at build time:
 | =z-*=, =order-*=, =grid-cols-*=, =grid-rows-*=, =columns-*=, =line-clamp-*= | no unit (plain number) | —        | 1       |
 | =tracking-*=                                                | em (fixed presets)   | —                                | —       |
 | =duration-*=, =delay-*=                                     | milliseconds         | —                                | —       |
+
+The =0= step is the one exception to the multipliers: it is emitted as a
+literal =0= in every family (=m-0= is =margin: 0=, =border-0= is
+=border-width: 0px=).  See [[The zero step]].
 
 For example, with the defaults =m-4= is =margin: 1.12rem=, =w-4= is
 =width: 0.96rem=, =gap-4= is =gap: 1.20rem=, =rounded-4= is
@@ -324,7 +341,7 @@ grouped as they are generated in ~src/olive-css/~.
 
 - =aspect-square=, =aspect-video=, =aspect-auto=, =aspect-16/9=,
   =aspect-16/10=, =aspect-4/3=, =aspect-3/2=, =aspect-2/3=
-- =columns-<size|n>=
+- =columns-<size|n>= (from =1= up, as =columns: 0= is invalid)
 - =break-before-auto=, =break-before-avoid=, =break-before-all=,
   =break-before-avoid-page=, =break-before-page=, =break-before-left=,
   =break-before-right=, =break-before-column=
@@ -373,13 +390,14 @@ grouped as they are generated in ~src/olive-css/~.
 
 ** Grid — ~decl/grid.scm~
 
-- Templates: =grid-cols-<n>= and =grid-rows-<n>= (numeric scale), plus
-  =grid-cols-none=, =grid-cols-subgrid=, =grid-rows-none=, =grid-rows-subgrid=
+- Templates: =grid-cols-<n>= and =grid-rows-<n>= (numeric scale from =1= up,
+  since =repeat(0, ...)= is invalid), plus =grid-cols-none=,
+  =grid-cols-subgrid=, =grid-rows-none=, =grid-rows-subgrid=
 - Auto flow: =grid-flow-row=, =grid-flow-col=, =grid-flow-dense=,
   =grid-flow-row-dense=, =grid-flow-col-dense=
 - Auto tracks: =auto-cols-<size|n>=, =auto-cols-auto=, =auto-cols-min=,
-  =auto-cols-max=, =auto-rows-<size|n>=, =auto-rows-auto=, =auto-rows-min=,
-  =auto-rows-max=, =auto-rows-fr=
+  =auto-cols-max=, and the sizing keywords =auto-rows-auto=, =auto-rows-min=,
+  =auto-rows-max=, =auto-rows-fr= (there is no numeric =auto-rows-<n>=)
 - Columns: =col-span-1= ... =col-span-12=, =col-span-full=, =col-auto=,
   =col-start-1= ... =col-start-12=, =col-start-auto=, =col-end-1= ...
   =col-end-12=, =col-end-auto=
@@ -454,8 +472,8 @@ grouped as they are generated in ~src/olive-css/~.
 - =hyphens-none|manual|auto=
 - =truncate= (=overflow: hidden= + =text-overflow: ellipsis= +
   =white-space: nowrap=), =text-ellipsis=, =text-clip=
-- =line-clamp-<n>= (numeric scale; sets =-webkit-line-clamp= with the needed
-  overflow and box properties)
+- =line-clamp-<n>= (numeric scale from =1= up; sets =-webkit-line-clamp= with
+  the needed overflow and box properties)
 - =text-wrap=, =text-nowrap=, =text-balance=, =text-pretty=
 
 *Decoration, case and lists*
@@ -563,7 +581,8 @@ and so on) that applies to =backdrop-filter= instead of =filter=.
 ** Transforms — ~decl/transforms.scm~
 
 - =translate-x-<size|n>=, =translate-y-<size|n>=, fractional forms
-  (=translate-x-1/2=) and negative forms (=-translate-x-4=)
+  (=translate-x-1/2=) and negative forms (=-translate-x-4=; the negative family
+  starts at =1=, since =0= is already covered by =translate-x/y-0=)
 - =rotate-0=, =rotate-1=, =rotate-2=, =rotate-3=, =rotate-6=, =rotate-12=,
   =rotate-45=, =rotate-90=, =rotate-180=, and every one of them negated as
   =.-rotate-<value>=

@@ -238,7 +238,7 @@
                                                                             "repeat(~a, minmax(0, 1fr))"
                                                                             (cadr
                                                                              x))))
-                                                               numeric-sizes)
+                                                               positive-numeric-sizes)
                                                               '((none none)
                                                                 (subgrid
                                                                  subgrid)))))))
@@ -254,7 +254,7 @@
                                                                             "repeat(~a, minmax(0, 1fr))"
                                                                             (cadr
                                                                              x))))
-                                                               numeric-sizes)
+                                                               positive-numeric-sizes)
                                                               '((none none)
                                                                 (subgrid
                                                                  subgrid)))))))
