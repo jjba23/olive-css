@@ -430,7 +430,7 @@
 (define (core-utility-classes)
   "All structural utility families.
 
-These contain no palette-derived colors and no @code{@keyframes}, so they are
+These contain no palette-derived colors and no @code{@@keyframes}, so they are
 safe to duplicate under media queries and state variants.  Palette-derived
 families live in @code{palette-utility-classes} and the main color system is
 generated separately by @code{colors}."
