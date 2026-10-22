@@ -30,6 +30,13 @@ Work that lands after =v0.6.0= is recorded here until it is tagged.
 - ~positive-numeric-sizes~, exported by ~(olive-css sizes)~ for builds that
   need the scale without the zero.
 
+* v0.6.4 - 2026-10-22
+
+A packaging release: the generated CSS is identical to =v0.6.3=.  The changes
+listed under *Unreleased* above shipped in =v0.6.1= through =v0.6.3=, none of
+which recorded a section of its own.  This tag exists so that distributions
+tracking Olive CSS have a version cut from the current tree.
+
 * v0.6.0 - 2026-10-11
 
 The first release recorded in this file, and a large one: the utility set grew
