@@ -51,16 +51,20 @@
 
 (define (repl)
   "Development REPL."
-  (time-machine-manifest-shell '("guile -L ./src"
-                                 "-c '((@ (ares server) run-nrepl-server))'")))
+  (time-machine-manifest-shell (list "guile" "-L" "./src"
+                                     "-c" "'((@ (ares server) run-nrepl-server))'")))
 
+;; A manifest shell joins the parts it is handed into one shell line, so each
+;; argument is a part of its own and each command is a call of its own: a `&&'
+;; would be one word inside a part, and a failure would be reported by the line
+;; rather than by the step that failed.
 (define (docs)
   "Generate technical API documentation."
   (delete-file-recursively "doc")
-  (time-machine-manifest-shell (list (~ "documenta api ./src/~a && "
-                                        project-name)
-                                     (~ "texi2any -v --html --css-ref=~a"
-                                        api-docs-css-url)
+  (time-machine-manifest-shell (list "documenta" "api"
+                                     (~ "./src/~a" project-name)))
+  (time-machine-manifest-shell (list "texi2any" "-v" "--html"
+                                     (~ "--css-ref=~a" api-docs-css-url)
                                      "./doc/api/index.texi"))
   (mv "./index" "./doc/api-dist"))
 
@@ -71,23 +75,24 @@
   (docs)
   (remkdir-p (~ "~a/api-docs/~a" deploy-api-docs-dir project-name))
   (mv "doc/api-dist/*"
-      (~ "~a/api-docs/~a" deploy-api-docs-dir project-name))
+      (~ "~a/api-docs/~a" deploy-api-docs-dir project-name)
+      #:expand? #t)
   (delete-file-recursively "doc"))
 
 (define (compile)
   "Compile all project source code."
-  (time-machine-manifest-shell (list "guild compile -L ./src" "-W3"
+  (time-machine-manifest-shell (list "guild" "compile" "-L" "./src" "-W3"
                                      "./src/**/*.scm")))
 
 (define (build)
   "Generate production CSS."
-  (time-machine-manifest-shell '("guile -L ./src"
-                                 "./scripts/olive-css-gen.scm")))
+  (time-machine-manifest-shell (list "guile" "-L" "./src"
+                                     "./scripts/olive-css-gen.scm")))
 
 (define (tree-shake)
   "Tree-shake and optimize CSS."
-  (time-machine-manifest-shell '("guile -L ./src"
-                                 "./scripts/olive-css-tree-shaking.scm")))
+  (time-machine-manifest-shell (list "guile" "-L" "./src"
+                                     "./scripts/olive-css-tree-shaking.scm")))
 
 ;; Veritas looks for unit tests by default and reports with emoji-reporter, so
 ;; the environment needs nothing else.  Variable assignments cannot be prefixed
@@ -95,23 +100,25 @@
 ;; assignment for the program name.
 (define (test)
   "Run the unit test suite with the Veritas testing framework."
-  (time-machine-manifest-shell '("guile --fresh-auto-compile -L ./src -L ./test"
-                                 "-c '((@ (veritas runner) run-tests))'")))
+  (time-machine-manifest-shell (list "guile" "--fresh-auto-compile"
+                                     "-L" "./src" "-L" "./test"
+                                     "-c" "'((@ (veritas runner) run-tests))'")))
 
 (define (hot-reload)
   "Hot-reloading developer's setup."
   (fmt)
   (time-machine-manifest-shell (list "watchexec"
                                      "--clear"
-                                     (~ "--exts ~a"
-                                        (string-join (map symbol->string
-                                                      hot-reload-file-types)
-                                                     ","))
+                                     "--exts"
+                                     (string-join (map symbol->string
+                                                       hot-reload-file-types)
+                                                  ",")
                                      "--ignore=resources/css/*.min.css"
                                      "--on-busy-update=restart"
-                                     "--shell bash"
-                                     "--watch . --"
-                                     "maak build")))
+                                     "--shell" "bash"
+                                     "--watch" "."
+                                     "--"
+                                     "maak" "build")))
 
 (define (dev)
   "Developer's setup."
