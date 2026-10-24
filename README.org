@@ -49,6 +49,9 @@ ___  _ _             ___  ___ ___
 --------
 
 * Why the name Olive?
+:PROPERTIES:
+:CUSTOM_ID: why-the-name-olive
+:END:
 
 The author is Spanish, and Spain is the world's largest producer of olive oil,
 so naming a libre, hackable, home-grown CSS framework after the olive tree felt
@@ -57,7 +60,85 @@ may call it olive, oliva or aceituna, it compiles either way. 🫒
 
 --------
 
+* Ways to install
+:PROPERTIES:
+:CUSTOM_ID: ways-to-install
+:END:
+
+/Four routes to the same 0.6.5, from the most automated to the most manual.  They all build the tag this README documents./
+
+** From the Guix channel
+:PROPERTIES:
+:CUSTOM_ID: from-the-guix-channel
+:END:
+*GNU Guix* is the functional package manager this project is developed with: a build is a pure function of its inputs, so the same recipe gives the same result everywhere, and an upgrade that goes wrong can be rolled back.
+
+The jointhefreeworld channel carries ~guile-olive-css~ at 0.6.5, so a checkout of the channel is enough — no package definition to write:
+
+#+begin_src shell
+git clone https://codeberg.org/jjba23/guix-jointhefreeworld.git
+guix install -L ./guix-jointhefreeworld guile-olive-css
+#+end_src
+
+Add the channel to ~$HOME/.config/guix/channels.scm~ (the channel's README has the four lines) and a plain ~guix install guile-olive-css~ keeps working on every later ~guix pull~.
+
+** From the Nix flake
+:PROPERTIES:
+:CUSTOM_ID: from-the-nix-flake
+:END:
+*Nix* offers the same declarative, reproducible model with its own language, its own store and a binary cache, and it is a natural fit if the rest of your machine is already described in Nix.
+
+The jointhefreeworld flake builds this project with this repository's own expression, so the package cannot drift from the source:
+
+#+begin_src shell
+nix build github:jjba23/nix-jointhefreeworld#guile-olive-css
+#+end_src
+
+The same attribute is available as an overlay, so ~pkgs.jointhefreeworld.guile-olive-css~ works inside a NixOS or home-manager configuration too.
+
+** As a container image
+:PROPERTIES:
+:CUSTOM_ID: as-a-container-image
+:END:
+*Podman or Docker* is the route that puts nothing on the host: the ~Dockerfile~ in this repository builds the project in a builder stage and copies only what it installed into a runtime stage, so the image is small and the host keeps its own toolchain untouched.
+
+#+begin_src shell
+podman build -t olive-css .   # docker build -t olive-css . also works
+podman run --rm -it olive-css
+#+end_src
+
+The image's entry point is Guile, with olive-css on its load path, which makes it useful for a quick try and for reproducing a bug on a clean system.
+
+** As a distribution package
+:PROPERTIES:
+:CUSTOM_ID: as-a-distribution-package
+:END:
+*Debian, openSUSE and Arch* each get the project through their own package manager.  Packaging lives in this repository under ~packaging/~ and is pinned to the same release tag, so the recipes and the sources they build are versioned together.
+
+None of the three archives ships olive-css yet, so these are recipes to build rather than packages to install from a mirror:
+
+| Distribution   | Package     | How to build it                                                                     |
+|----------------+-------------+-------------------------------------------------------------------------------------|
+| Debian, Ubuntu | ~olive-css~ | copy ~packaging/debian~ to the repository root, then ~dpkg-buildpackage -us -uc -b~ |
+| openSUSE       | ~olive-css~ | ~osc build~ with ~packaging/opensuse~                                               |
+| Arch           | ~olive-css~ | ~makepkg -si~ in ~packaging/arch~                                                   |
+
+Each recipe carries its own dependency list, so a missing library fails the build with its name rather than producing a package that cannot load.
+
+** Which one?
+:PROPERTIES:
+:CUSTOM_ID: which-one
+:END:
+- *Guix* if you want the toolchain the project is tested with, and the ability to roll back a bad upgrade.
+- *Nix* if the rest of your machine is already declarative; the flake pins nixpkgs and gives you a binary cache.
+- *Container* if you only want to try the release, or reproduce a report on a machine that has nothing installed.
+- *Distribution package* if you want the project managed by the same tool as the rest of your system, with its licence, manual page and launcher in the usual places.
+
+
 * Licensing
+:PROPERTIES:
+:CUSTOM_ID: licensing
+:END:
 
 olive-css and all of its source code are free software, licensed under the GNU Lesser General Public License v3 (or newer at your convenience).
 
@@ -75,6 +156,9 @@ https://www.gnu.org/licenses/fdl-1.3.html
 
 
 * Installing and Using
+:PROPERTIES:
+:CUSTOM_ID: installing-and-using
+:END:
 
 Installing and using Olive CSS is as simple as downloading a pre-built version from ~resources/css/~ directory, or building your own, and serving it via HTTP (of course also loading it in a ~<link>~ tag in your HTML.
 
@@ -87,6 +171,9 @@ A rule of thumb is to disable ~xl~ and/or ~2xl~ queries if you won't use them, a
 It's also important to ensure that your web server efficiently caches CSS files and compresses them with GZIP or Brotli.
 
 ** Customizing Olive CSS
+:PROPERTIES:
+:CUSTOM_ID: customizing-olive-css
+:END:
 
 Customization is a first-class feature in Olive CSS. Thanks to the power of Guile Scheme, you can enable/disable features, tweak sizes, colors, and easily add your own utility rules.
 
@@ -133,12 +220,18 @@ See ~scripts/olive-css-gen.scm~ and ~src/olive-css/main.scm~ and the API docs fo
 ----------------
 
 * Features
+:PROPERTIES:
+:CUSTOM_ID: features
+:END:
 
 Olive CSS provides a broad, Tailwind-compatible utility surface, generated from
 Scheme so that every family can be inspected, disabled or extended.  The
 sections below give an overview; [[file:docs/olive/olive.org][the documentation]] holds the full reference.
 
 ** Layout and positioning
+:PROPERTIES:
+:CUSTOM_ID: layout-and-positioning
+:END:
 
 Aspect ratios, multi-column flow, object fit and position, overflow and
 overscroll, float and clear, isolation, box sizing and decoration,
@@ -147,6 +240,9 @@ visibility, position, =z-index= with =z-auto=, and inset offsets: =inset-*=,
 =inset-x/y=, =start-*=, =end-*= and fractions such as =inset-x-1/2=.
 
 ** Flexbox and grid
+:PROPERTIES:
+:CUSTOM_ID: flexbox-and-grid
+:END:
 
 Flex direction, wrap, grow and shrink, basis, order, and the complete
 justify/align/place set.  Grid templates and auto flow; explicit placement with
@@ -154,6 +250,9 @@ justify/align/place set.  Grid templates and auto flow; explicit placement with
 =auto-rows=; and gaps via =gap=, =gap-x= and =gap-y=.
 
 ** Spacing and sizing
+:PROPERTIES:
+:CUSTOM_ID: spacing-and-sizing
+:END:
 
 Margins (including =-auto= and =mx-auto= for centering), padding, =space-x/y=
 child spacing and =divide-x/y= child borders.  Widths, heights, =min-*=,
@@ -161,6 +260,9 @@ child spacing and =divide-x/y= child borders.  Widths, heights, =min-*=,
 and the =auto=, =fit=, =min-content= and =max-content= keywords.
 
 ** Typography
+:PROPERTIES:
+:CUSTOM_ID: typography
+:END:
 
 Font families and weights, sizes, italics, smoothing, line height, letter
 spacing, text alignment, wrapping and whitespace handling, word breaking and
@@ -169,6 +271,9 @@ thickness, offset), list styles, text indent, vertical alignment, and font
 variants and stretch.
 
 ** Color
+:PROPERTIES:
+:CUSTOM_ID: color
+:END:
 
 A palette of named colors, each with five shades, applied through =bg-*=,
 =text-*=, =border-*= and =decoration-*= utilities and supporting opacity
@@ -176,6 +281,9 @@ modifiers such as =bg-jeans-blue-500/50=.  Each shade is declared in oklch, so
 the palettes stay perceptually even and are easy to extend with your own.
 
 ** Borders and effects
+:PROPERTIES:
+:CUSTOM_ID: borders-and-effects
+:END:
 
 Border widths (per side and logical), styles and colors; border radius
 (including =rounded-none= and =rounded-full=); opacity; blend modes; text
@@ -183,6 +291,9 @@ shadow; =ring= and =inset-ring= with their colors; and =outline= with color,
 offset and style.
 
 ** Transforms, transitions and animation
+:PROPERTIES:
+:CUSTOM_ID: transforms-transitions-and-animation
+:END:
 
 Translate, rotate, scale and skew (including negative and fractional forms),
 transform origin and =will-change=; transition property, duration, delay and
@@ -190,6 +301,9 @@ timing function; and the built-in =animate-spin=, =animate-ping=,
 =animate-pulse= and =animate-bounce= animations.
 
 ** Interactivity, tables and SVG
+:PROPERTIES:
+:CUSTOM_ID: interactivity-tables-and-svg
+:END:
 
 The full cursor set, text selection, pointer events, resize, appearance and
 =field-sizing=, touch actions, smooth scrolling, and accent and caret colors.
@@ -197,10 +311,16 @@ Table layout, border collapse/separate and border spacing, caption side; and
 =fill= and =stroke= utilities for SVG.
 
 ** Accessibility
+:PROPERTIES:
+:CUSTOM_ID: accessibility
+:END:
 
 =sr-only= and =not-sr-only=.
 
 ** State variants
+:PROPERTIES:
+:CUSTOM_ID: state-variants
+:END:
 
 State variants are prefixed onto utilities - =hover:bg-white=, =focus:ring-2=,
 =active:scale-95=, =dark:text-black= - and can be stacked, as in
@@ -212,6 +332,9 @@ only to the interactive families.  Bind ~state-variant-targets~ and
 ~interactive-state-targets~ to widen or narrow that coverage.
 
 ** Responsive variants
+:PROPERTIES:
+:CUSTOM_ID: responsive-variants
+:END:
 
 The =sm:=, =md:=, =lg:=, =xl:= and =2xl:= prefixes expose utilities at each
 breakpoint.  The default set is the lean ~lean-responsive-classes~, covering
@@ -221,6 +344,9 @@ the core structural families; binding ~responsive-classes~ to
 =md:bg-jeans-blue-700= and =lg:text-onyx-500=.
 
 ** Build output
+:PROPERTIES:
+:CUSTOM_ID: build-output
+:END:
 
 Generated stylesheets are minified: no indentation, no newlines between rules
 and no whitespace after separators.  State variants are emitted as flat
@@ -234,6 +360,9 @@ build into a few KiB.
 ----------------
 
 * Philosophy
+:PROPERTIES:
+:CUSTOM_ID: philosophy
+:END:
 
 Olive CSS is not another Tailwind clone. It is simply inspired by it, and its design is based on these principles:
 
@@ -247,6 +376,9 @@ It is built to encourage learning and experimentation, rather than hiding comple
 ----------------
 
 * Projects that use Olive CSS
+:PROPERTIES:
+:CUSTOM_ID: projects-that-use-olive-css
+:END:
 
 - Hygguile :: https://codeberg.org/jjba23/hygguile
 - LucidPlan :: https://codeberg.org/jjba23/lucidplan
@@ -258,6 +390,9 @@ It is built to encourage learning and experimentation, rather than hiding comple
 --------------
 
 * AI Policy
+:PROPERTIES:
+:CUSTOM_ID: ai-policy
+:END:
 
 This project adheres to the [[https://jointhefreeworld.org/blog/articles/personal/jointhefreeworld-ai-policy/index.html][jointhefreeworld AI (Artificial Intelligence) policy]].
 
@@ -270,6 +405,9 @@ We require a human in the loop for all contributions. The use of autonomous AI a
 ----------------
 
 * Code of conduct
+:PROPERTIES:
+:CUSTOM_ID: code-of-conduct
+:END:
 
 This project adheres to the jointhefreeworld code of conduct. Find it here:
 
@@ -280,6 +418,9 @@ In summary, we foster an inclusive, respectful, and cooperative environment for 
 -------
 
 * Olive CSS Project
+:PROPERTIES:
+:CUSTOM_ID: olive-css-project
+:END:
 
 Contributing to free software is a uniquely beautiful act because it embodies principles of generosity, collaboration, and empowerment.
 
@@ -291,24 +432,30 @@ Find here the Backlog and Kanban boards for olive-css: https://lucidplan.jointhe
 ----------------------
 
 * Comparison with Tailwind CSS
+:PROPERTIES:
+:CUSTOM_ID: comparison-with-tailwind-css
+:END:
 
-| Feature          | Tailwind CSS                              | Olive CSS                                                        |
-|------------------+-------------------------------------------+------------------------------------------------------------------|
-| Written in       | JavaScript                                | λ Guile Scheme                                                   |
-| License          | MIT (permissive, not copyleft)            | ✔️ LGPL v3+ (code) and FDL 1.3+ (docs)                           |
-| Customization    | Average (via CSS/JS config)               | ✔️ Extensive (via code and an expressive DSL)                    |
-| Functional API   | ❌                                         | ✔️                                                                |
-| Utility coverage | Broad                                     | ✔️ Broad (see the parity estimate below)                         |
-| State variants   | A fixed set, JIT-generated                | ✔️ Tunable (hover, focus, active, ... via parameters)            |
-| Responsive       | All utilities, on demand                  | ✔️ All utilities (full set is opt-in to keep builds lean)        |
-| Output control   | Limited; the JIT constrains what you get  | ✔️ Full (generate exactly what you want)                         |
-| Output size      | Small (JIT emits only used utilities)     | ✔️ Minified + content-aware tree-shaking (a few KiB)             |
-| Reproducibility  | Node/npm toolchain                        | ✔️ GNU Guix, bit-for-bit reproducible builds                      |
-| Paid features    | ❌ Enterprise/Tailwind UI behind a paywall | ✔️ Everything in the source code, for everyone                    |
+| Feature          | Tailwind CSS                               | Olive CSS                                                |
+|------------------+--------------------------------------------+----------------------------------------------------------|
+| Written in       | JavaScript                                 | λ Guile Scheme                                           |
+| License          | MIT (permissive, not copyleft)             | ✔️ LGPL v3+ (code) and FDL 1.3+ (docs)                    |
+| Customization    | Average (via CSS/JS config)                | ✔️ Extensive (via code and an expressive DSL)             |
+| Functional API   | ❌                                         | ✔️                                                        |
+| Utility coverage | Broad                                      | ✔️ Broad (see the parity estimate below)                  |
+| State variants   | A fixed set, JIT-generated                 | ✔️ Tunable (hover, focus, active, ... via parameters)     |
+| Responsive       | All utilities, on demand                   | ✔️ All utilities (full set is opt-in to keep builds lean) |
+| Output control   | Limited; the JIT constrains what you get   | ✔️ Full (generate exactly what you want)                  |
+| Output size      | Small (JIT emits only used utilities)      | ✔️ Minified + content-aware tree-shaking (a few KiB)      |
+| Reproducibility  | Node/npm toolchain                         | ✔️ GNU Guix, bit-for-bit reproducible builds              |
+| Paid features    | ❌ Enterprise/Tailwind UI behind a paywall | ✔️ Everything in the source code, for everyone            |
 
 Olive CSS is especially appealing if you want a completely libre, hackable, expressive and transparent alternative to Tailwind.
 
 ** Estimated feature parity with Tailwind CSS
+:PROPERTIES:
+:CUSTOM_ID: estimated-feature-parity-with-tailwind-css
+:END:
 
 How close is Olive CSS to Tailwind's utility surface?  The figure below is an
 _estimate_ based on the Tailwind v4 core utility families - an unweighted
@@ -319,23 +466,23 @@ gaps are, not a formal audit:
 Estimated feature parity with Tailwind CSS: ~79%
 #+end_example
 
-| Category                | Coverage | Main gaps                                                        |
-|-------------------------+----------+------------------------------------------------------------------|
-| Layout                  | ~95%     | -                                                                |
-| Flexbox & grid          | ~90%     | space/divide `reverse', logical (ms/me) spacing                  |
-| Spacing                 | ~70%     | negative (-m-*) and logical padding/margin                       |
-| Sizing                  | ~85%     | named container widths (max-w-sm ... max-w-7xl)                  |
-| Typography              | ~90%     | content-* / list-image-* pseudo utilities                        |
-| Backgrounds             | ~35%     | gradients and bg-position/repeat/size/clip/origin/attachment     |
-| Borders                 | ~90%     | logical border-s/e, divide colors/reverse                        |
-| Effects                 | ~65%     | shadow-color, mask-*, color-scheme                               |
-| Filters                 | ~70%     | hue-rotate, drop-shadow, filter-none, backdrop-opacity           |
-| Tables                  | ~100%    | -                                                                |
-| Transitions & animation | ~100%    | -                                                                |
-| Transforms              | ~65%     | 3D (perspective, backface, per-axis rotate/translate)            |
-| Interactivity           | ~75%     | scroll-m/scroll-p, color-scheme, forced-color-adjust             |
-| SVG                     | ~90%     | stroke-dasharray and friends                                     |
-| Accessibility           | ~100%    | -                                                                |
+| Category                | Coverage | Main gaps                                                          |
+|-------------------------+----------+--------------------------------------------------------------------|
+| Layout                  | ~95%     | -                                                                  |
+| Flexbox & grid          | ~90%     | space/divide `reverse', logical (ms/me) spacing                    |
+| Spacing                 | ~70%     | negative (-m-*) and logical padding/margin                         |
+| Sizing                  | ~85%     | named container widths (max-w-sm ... max-w-7xl)                    |
+| Typography              | ~90%     | content-* / list-image-* pseudo utilities                          |
+| Backgrounds             | ~35%     | gradients and bg-position/repeat/size/clip/origin/attachment       |
+| Borders                 | ~90%     | logical border-s/e, divide colors/reverse                          |
+| Effects                 | ~65%     | shadow-color, mask-*, color-scheme                                 |
+| Filters                 | ~70%     | hue-rotate, drop-shadow, filter-none, backdrop-opacity             |
+| Tables                  | ~100%    | -                                                                  |
+| Transitions & animation | ~100%    | -                                                                  |
+| Transforms              | ~65%     | 3D (perspective, backface, per-axis rotate/translate)              |
+| Interactivity           | ~75%     | scroll-m/scroll-p, color-scheme, forced-color-adjust               |
+| SVG                     | ~90%     | stroke-dasharray and friends                                       |
+| Accessibility           | ~100%    | -                                                                  |
 | Variants                | ~40%     | group/peer/has/not, aria/data, container queries, motion/print/rtl |
 
 _Overall: ~79% (unweighted average of the category estimates above)._
@@ -347,6 +494,9 @@ spacing.  Everything already available is documented in [[file:docs/olive/olive.
 ------------------------
 
 * Tree Shaking
+:PROPERTIES:
+:CUSTOM_ID: tree-shaking
+:END:
 
 Tree shaking removes the utilities a project does not use, so its production
 stylesheet carries only the classes the pages actually reference.  Because the
@@ -359,6 +509,9 @@ already trims the stylesheet, and every choice reduces what the tree-shaker has
 to consider.
 
 ** How it works
+:PROPERTIES:
+:CUSTOM_ID: how-it-works
+:END:
 
 The pruner lives in the library module ~(olive-css tree-shaking)~; the script
 ~scripts/olive-css-tree-shaking.scm~ is only a command-line front-end that calls
@@ -372,17 +525,20 @@ structural rules that carry no class (the reset, ~@keyframes~,
 written minified, so a multi-MiB full build becomes a few KiB of production CSS.
 
 ** Options
+:PROPERTIES:
+:CUSTOM_ID: options
+:END:
 
 Every path and search option is a Guile parameter, so a build is customized with
 ~parameterize~ instead of editing anything:
 
-| Parameter              | Default                           | Meaning                                                  |
-|------------------------+-----------------------------------+----------------------------------------------------------|
-| ~artifact-path~        | ~"public"~                        | Directory of built HTML to scan (searched recursively)   |
-| ~base-stylesheet-path~ | ~"resources/css/olive.min.css"~   | Compiled stylesheet to prune                             |
-| ~output-css-target~    | ~"olive.min.css"~                 | Output file name, resolved inside ~artifact-path~        |
-| ~scanned-file-types~   | ~(".html" ".htm")~                | File suffixes considered when scanning                   |
-| ~skipped-directories~  | ~(".git")~                        | Directories never descended into                         |
+| Parameter              | Default                         | Meaning                                                |
+|------------------------+---------------------------------+--------------------------------------------------------|
+| ~artifact-path~        | ~"public"~                      | Directory of built HTML to scan (searched recursively) |
+| ~base-stylesheet-path~ | ~"resources/css/olive.min.css"~ | Compiled stylesheet to prune                           |
+| ~output-css-target~    | ~"olive.min.css"~               | Output file name, resolved inside ~artifact-path~      |
+| ~scanned-file-types~   | ~(".html" ".htm")~              | File suffixes considered when scanning                 |
+| ~skipped-directories~  | ~(".git")~                      | Directories never descended into                       |
 
 #+begin_src scheme
 (use-modules (olive-css tree-shaking))
@@ -405,6 +561,9 @@ exported as well: ~scan-used-classes~, ~tree-shake-css~, ~parse-css-blocks~,
 ~serialize-css-blocks~ and ~escape-class-name~.
 
 ** Running it
+:PROPERTIES:
+:CUSTOM_ID: running-it
+:END:
 
 A [[https://codeberg.org/jjba23/maak][Maak]] task drives it, so it is as easy as ~maak tree-shake~.  The repository
 ships a fixture at ~public/sample.html~ to try it immediately: running
@@ -415,6 +574,9 @@ containing exactly the classes the fixture references.  In a real project, point
 exclude the sample so its classes do not reach production.
 
 ** Tests
+:PROPERTIES:
+:CUSTOM_ID: tests
+:END:
 
 A [[https://codeberg.org/jjba23/veritas][Veritas]] suite for the pruner lives at
 ~test/veritas/unit/tree-shaking.scm~ and runs with ~maak test~.  It covers
@@ -431,6 +593,9 @@ nothing behind; a failing assertion is reported and exits non-zero.
 
 
 * Troubleshooting
+:PROPERTIES:
+:CUSTOM_ID: troubleshooting
+:END:
 
 Common issues and solutions:
 
@@ -447,6 +612,9 @@ Common issues and solutions:
 -------
 
 ** On Lucida fonts
+:PROPERTIES:
+:CUSTOM_ID: on-lucida-fonts
+:END:
 
 Lucida fonts are proprietary typefaces originally developed by Bigelow & Holmes. They remain a long-time favorite for many people and are very legible in many situations and hardware/software. While they are bundled pre-installed on many operating systems and platforms, they remain proprietary fonts.
 
@@ -455,6 +623,9 @@ You may use these font files under principles of fair use or for local developme
 ---------
 
 * On Reproducibility: Why GNU Guix?
+:PROPERTIES:
+:CUSTOM_ID: on-reproducibility-why-gnu-guix
+:END:
 
 A build should never fail because "it worked on my machine." Reliable software development requires explicit, bit-for-bit reproducibility and a functional approach to package management and system deployment.
 
