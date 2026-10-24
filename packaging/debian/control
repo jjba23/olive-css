@@ -1,0 +1,27 @@
+Source: olive-css
+Section: web
+Priority: optional
+Maintainer: Josep Bigorra <jjbigorra@gmail.com>
+# veritas is produced by the same packaging batch; build it first.
+Build-Depends:
+ debhelper-compat (= 13),
+ guile-3.0,
+ guile-3.0-dev,
+ pkg-config,
+ veritas
+Standards-Version: 4.6.2
+Homepage: https://codeberg.org/jjba23/olive-css
+Vcs-Git: https://codeberg.org/jjba23/olive-css.git
+Vcs-Browser: https://codeberg.org/jjba23/olive-css
+Rules-Requires-Root: no
+
+Package: olive-css
+Architecture: any
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
+ guile-3.0
+Description: Utility-first CSS framework written in Guile Scheme
+ Olive CSS is a utility-first CSS framework whose classes are generated from
+ Guile Scheme. It produces a single stylesheet with the utilities a page uses
+ and can tree-shake the result down to those classes.

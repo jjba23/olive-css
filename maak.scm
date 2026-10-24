@@ -113,3 +113,17 @@
 (define (default)
   "Default task to be run, list available tasks."
   ($ '("maak --list")))
+
+;; ====== Container tasks ======
+
+(define (container-build)
+  "Build the container image for olive-css."
+  ($ '("podman build -t olive-css .")))
+
+(define (container-run)
+  "Run the container image for olive-css."
+  ($ '("podman run --rm -it olive-css:latest")))
+
+(define (package-docker)
+  "Build the container image for olive-css."
+  (container-build))
