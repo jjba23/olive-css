@@ -15,6 +15,15 @@ Work that lands after =v0.6.0= is recorded here until it is tagged.
 
 ** Added
 
+- *A libre typographic default.* =font-mono= now names JuliaMono, =font-sans=
+  names Work Sans and =font-serif= names Source Serif 4, all three under the
+  SIL Open Font License and self-hosted by each project (see "Fonts" in the
+  README).  The previous stacks reached for Lucida Sans, a proprietary
+  typeface, and Intel One Mono; neither is named anywhere any more, in the
+  defaults or in the per-project builds under ~scripts/olive-css-gen.scm~,
+  which now inherit the defaults.  Each stack falls back to the system's own
+  monospace, sans and serif faces, so a build that serves no font files still
+  renders.
 - *Zero on the numeric scale.* The scale now starts at =0=, so the numeric
   families can express an explicit zero: =m-0=, =mx/my/mt/mb/ml/mr-0=,
   =p-0= and the other padding sides, =space-x/y-0=, =gap-0= and =gap-x/y-0=,

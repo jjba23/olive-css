@@ -69,23 +69,23 @@
                                state-variant-classes)
   #:re-export (license-header))
 
+;; The three families Olive CSS reaches for by default: JuliaMono for code,
+;; Work Sans for prose and Source Serif 4 for long-form reading.  All three are
+;; libre (SIL Open Font License) and self-hosted by the project that uses them;
+;; the faces are declared in a `fonts.css' beside the stylesheet, see
+;; "Fonts" in the README.
 (define mono-font-family
-  (make-parameter '("'Intel One Mono'" "'IBM Plex Mono'" "monospace")))
+  (make-parameter '("'JuliaMono'" "ui-monospace" "'SFMono-Regular'"
+                    "'Cascadia Mono'" "monospace")))
 
 (define serif-font-family
-  (make-parameter '("'DejaVu Serif'" "'IBM Plex Serif'" "ui-serif" "serif"
-                    "'Times New Roman'")))
+  (make-parameter '("'Source Serif 4'" "ui-serif" "'Source Serif Pro'"
+                    "Georgia" "'Times New Roman'" "serif")))
 
 (define sans-font-family
-  (make-parameter '("'Lucida Sans'" "'Plus Jakarta Sans'"
-                    "'IBM Plex Sans'"
-                    "ui-sans-serif"
-                    "system-ui"
-                    "sans-serif"
-                    "'Apple Color Emoji'"
-                    "'Segoe UI Emoji'"
-                    "'Segoe UI Symbol'"
-                    "'Noto Color Emoji'")))
+  (make-parameter '("'Work Sans'" "ui-sans-serif" "system-ui" "sans-serif"
+                    "'Apple Color Emoji'" "'Segoe UI Emoji'"
+                    "'Segoe UI Symbol'" "'Noto Color Emoji'")))
 
 (define (font-family)
   (let* ((rules (list (css-rule ".font-sans"

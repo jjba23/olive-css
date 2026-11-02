@@ -221,15 +221,6 @@
                                                                              "ui-serif"
                                                                              "serif"
                                                                              "'Times New Roman'"))
-                                                        (sans-font-family '("'Lucida Sans'"
-                                                                            "'Plus Jakarta Sans'"
-                                                                            "ui-sans-serif"
-                                                                            "system-ui"
-                                                                            "sans-serif"
-                                                                            "'Apple Color Emoji'"
-                                                                            "'Segoe UI Emoji'"
-                                                                            "'Segoe UI Symbol'"
-                                                                            "'Noto Color Emoji'"))
                                                         (palettes
                                                          rc-huidkliniek-palettes))
                                            (olive-css-gen))))
@@ -239,21 +230,6 @@
           (write-css-to-file #:file "./resources/css/lucidplan.olive.min.css"
                              #:css-lines (parameterize ((responsive
                                                          reduced-responsive)
-                                                        (serif-font-family '("'DejaVu Serif'"
-                                                                             "ui-serif"
-                                                                             "serif"
-                                                                             "'Times New Roman'"))
-                                                        (mono-font-family '("'Intel One Mono'"
-                                                                            "monospace"))
-                                                        (sans-font-family '("'Lucida Sans'"
-                                                                            "'Plus Jakarta Sans'"
-                                                                            "ui-sans-serif"
-                                                                            "system-ui"
-                                                                            "sans-serif"
-                                                                            "'Apple Color Emoji'"
-                                                                            "'Segoe UI Emoji'"
-                                                                            "'Segoe UI Symbol'"
-                                                                            "'Noto Color Emoji'"))
                                                         (palettes
                                                          lucidplan-palettes))
                                            (olive-css-gen))))
@@ -263,21 +239,6 @@
           (write-css-to-file #:file "./resources/css/byggsteg.olive.min.css"
                              #:css-lines (parameterize ((responsive
                                                          reduced-responsive)
-                                                        (serif-font-family '("'DejaVu Serif'"
-                                                                             "ui-serif"
-                                                                             "serif"
-                                                                             "'Times New Roman'"))
-                                                        (mono-font-family '("'Intel One Mono'"
-                                                                            "monospace"))
-                                                        (sans-font-family '("'Lucida Sans'"
-                                                                            "'Plus Jakarta Sans'"
-                                                                            "ui-sans-serif"
-                                                                            "system-ui"
-                                                                            "sans-serif"
-                                                                            "'Apple Color Emoji'"
-                                                                            "'Segoe UI Emoji'"
-                                                                            "'Segoe UI Symbol'"
-                                                                            "'Noto Color Emoji'"))
                                                         (palettes
                                                          byggsteg-palettes))
                                            (olive-css-gen))))
@@ -287,19 +248,6 @@
           (write-css-to-file #:file
            "./resources/css/carvoeiro-water-fun.olive.min.css"
            #:css-lines (parameterize ((responsive reduced-responsive)
-                                      (serif-font-family '("'Lora'" "ui-serif"
-                                                           "serif"
-                                                           "'Times New Roman'"))
-                                      (mono-font-family '("'Intel One Mono'"
-                                                          "monospace"))
-                                      (sans-font-family '("'Plus Jakarta Sans'"
-                                                          "ui-sans-serif"
-                                                          "system-ui"
-                                                          "sans-serif"
-                                                          "'Apple Color Emoji'"
-                                                          "'Segoe UI Emoji'"
-                                                          "'Segoe UI Symbol'"
-                                                          "'Noto Color Emoji'"))
                                       (palettes carvoeiro-water-fun-palettes))
                          (olive-css-gen))))
 
@@ -308,21 +256,6 @@
           (write-css-to-file #:file "./resources/css/torikomi.olive.min.css"
                              #:css-lines (parameterize ((responsive
                                                          reduced-responsive)
-                                                        (serif-font-family '("'IBM Plex Serif'"
-                                                                             "ui-serif"
-                                                                             "serif"
-                                                                             "'Times New Roman'"))
-                                                        (mono-font-family '("'IBM Plex Mono'"
-                                                                            "monospace"))
-                                                        (sans-font-family '("'Lucida Sans'"
-                                                                            "'IBM Plex Sans'"
-                                                                            "ui-sans-serif"
-                                                                            "system-ui"
-                                                                            "sans-serif"
-                                                                            "'Apple Color Emoji'"
-                                                                            "'Segoe UI Emoji'"
-                                                                            "'Segoe UI Symbol'"
-                                                                            "'Noto Color Emoji'"))
                                                         (palettes
                                                          torikomi-palettes))
                                            (olive-css-gen))))
@@ -332,20 +265,6 @@
           (write-css-to-file #:file "./resources/css/iter-vitae.olive.min.css"
                              #:css-lines (parameterize ((responsive
                                                          reduced-responsive)
-                                                        (serif-font-family '("'IBM Plex Serif'"
-                                                                             "ui-serif"
-                                                                             "serif"
-                                                                             "'Times New Roman'"))
-                                                        (mono-font-family '("'IBM Plex Mono'"
-                                                                            "monospace"))
-                                                        (sans-font-family '("'IBM Plex Sans'"
-                                                                            "ui-sans-serif"
-                                                                            "system-ui"
-                                                                            "sans-serif"
-                                                                            "'Apple Color Emoji'"
-                                                                            "'Segoe UI Emoji'"
-                                                                            "'Segoe UI Symbol'"
-                                                                            "'Noto Color Emoji'"))
                                                         (palettes
                                                          iter-vitae-palettes))
                                            (olive-css-gen))))
@@ -368,21 +287,6 @@
                                                                              (colors
                                                                               fatum-palettes)
                                                                              (font-family)))
-                                                        (serif-font-family '("'DejaVu Serif'"
-                                                                             "ui-serif"
-                                                                             "serif"
-                                                                             "'Times New Roman'"))
-                                                        (mono-font-family '("'Intel One Mono'"
-                                                                            "monospace"))
-                                                        (sans-font-family '("'Lucida Sans'"
-                                                                            "'Plus Jakarta Sans'"
-                                                                            "ui-sans-serif"
-                                                                            "system-ui"
-                                                                            "sans-serif"
-                                                                            "'Apple Color Emoji'"
-                                                                            "'Segoe UI Emoji'"
-                                                                            "'Segoe UI Symbol'"
-                                                                            "'Noto Color Emoji'"))
                                                         (palettes
                                                          fatum-palettes))
                                            (olive-css-gen))))
@@ -392,21 +296,6 @@
           (write-css-to-file #:file "./resources/css/wikimusic.olive.min.css"
                              #:css-lines (parameterize ((responsive
                                                          reduced-responsive)
-                                                        (serif-font-family '("'DejaVu Serif'"
-                                                                             "ui-serif"
-                                                                             "serif"
-                                                                             "'Times New Roman'"))
-                                                        (mono-font-family '("'Intel One Mono'"
-                                                                            "monospace"))
-                                                        (sans-font-family '("'Lucida Sans'"
-                                                                            "'Plus Jakarta Sans'"
-                                                                            "ui-sans-serif"
-                                                                            "system-ui"
-                                                                            "sans-serif"
-                                                                            "'Apple Color Emoji'"
-                                                                            "'Segoe UI Emoji'"
-                                                                            "'Segoe UI Symbol'"
-                                                                            "'Noto Color Emoji'"))
                                                         (palettes
                                                          wikimusic-palettes))
                                            (olive-css-gen))))))

@@ -443,7 +443,8 @@ grouped as they are generated in ~src/olive-css/~.
 
 - =font-sans=, =font-serif=, =font-mono= — the family lists are parameters
   (~sans-font-family~, ~serif-font-family~, ~mono-font-family~; the defaults
-  fall back to IBM Plex and system fonts)
+  name Work Sans, Source Serif 4 and JuliaMono, and fall back to the system's
+  sans, serif and monospace faces)
 - =font-thin= ... =font-black= (nine weights, see [[Font weights]])
 - =italic=, =not-italic=
 - =antialiased=, =subpixel-antialiased=
@@ -701,7 +702,7 @@ for its own stylesheets (~scripts/olive-css-gen.scm~).
 | ~interactive-state-targets~    | ~#f~ (typography, transforms, effects)   | Rules the interactive tier applies to |
 | ~sm-breakpoint~ ... ~xl-breakpoint~ | ~"640px"~, ~"768px"~, ~"1024px"~, ~"1280px"~ | Declared breakpoint widths |
 | ~breakpoints~                  | sm, md, lg, xl                           | Declared breakpoint list (the media queries themselves are built by ~reduced-responsive~) |
-| ~sans-font-family~, ~serif-font-family~, ~mono-font-family~ | IBM Plex / DejaVu / Intel One Mono stacks | Font family lists |
+| ~sans-font-family~, ~serif-font-family~, ~mono-font-family~ | Work Sans / Source Serif 4 / JuliaMono stacks | Font family lists |
 | ~border-style~                 | ~solid~                                  | Style paired with border widths |
 | ~scroll-snap-type~             | ~"proximity"~                            | Strictness used by =snap-x/y/both= |
 | ~margin-multiplier~, ~padding-multiplier~ | ~0.28~                      | Spacing scale |

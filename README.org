@@ -400,7 +400,7 @@ Our core principle is simple: *AI should assist human creativity and problem-sol
 
 While tools like Large Language Models (LLMs) and interactive chatbots can be beneficial for reviewing, refactoring small functions, or acting as a sounding board, they should be used with moderation.
 
-We require a human in the loop for all contributions. The use of autonomous AI agents to automatically generate and submit pull requests to this project is strictly prohibited.
+We require a human in the loop for all contributions.
 
 ----------------
 
@@ -611,14 +611,72 @@ Common issues and solutions:
 
 -------
 
-** On Lucida fonts
+** Fonts
 :PROPERTIES:
-:CUSTOM_ID: on-lucida-fonts
+:CUSTOM_ID: fonts
 :END:
 
-Lucida fonts are proprietary typefaces originally developed by Bigelow & Holmes. They remain a long-time favorite for many people and are very legible in many situations and hardware/software. While they are bundled pre-installed on many operating systems and platforms, they remain proprietary fonts.
+Olive CSS names three libre families, all under the SIL Open Font License,
+and expects the project that uses it to serve the faces itself:
 
-You may use these font files under principles of fair use or for local development and non-commercial purposes, provided it is not for profit and used without securing a proper commercial license where required by law. Users and contributors are solely responsible for ensuring their usage complies with applicable software licensing terms and intellectual property rights.
+| Role     | Family          | Utility       | Where to get it                                                     |
+|----------+-----------------+---------------+---------------------------------------------------------------------|
+| mono     | JuliaMono       | ~font-mono~   | https://juliamono.netlify.app/ (not on Google Fonts)                |
+| sans     | Work Sans       | ~font-sans~   | https://fonts.google.com/specimen/Work+Sans                         |
+| serif    | Source Serif 4  | ~font-serif~  | https://fonts.google.com/specimen/Source+Serif+4                    |
+
+The stacks behind those classes fall back to the system's own monospace, sans
+and serif faces, so a page rendered without the files still looks right: the
+three families are a preference, not a requirement.
+
+To self-host them, keep the woff2 files in the project's own static tree and
+declare them in a small stylesheet loaded before the Olive CSS build, with the
+paths relative to that stylesheet:
+
+#+begin_src css
+@font-face {
+  font-family: 'Work Sans';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../fonts/work-sans-normal-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url('../fonts/source-serif-4-normal-latin.woff2') format('woff2');
+}
+
+/* JuliaMono ships static weights: regular below 600, bold above. */
+@font-face {
+  font-family: 'JuliaMono';
+  font-style: normal;
+  font-weight: 300 500;
+  font-display: swap;
+  src: url('../fonts/juliamono-normal-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JuliaMono';
+  font-style: normal;
+  font-weight: 600 900;
+  font-display: swap;
+  src: url('../fonts/juliamono-bold-latin.woff2') format('woff2');
+}
+#+end_src
+
+Both Work Sans and Source Serif 4 are variable fonts, so one file per style
+carries the whole weight range; ask Google Fonts for the family with ~curl~
+and a browser user agent to receive the woff2 URLs, then keep the ~latin~ and
+~latin-ext~ subsets.  JuliaMono is not distributed by Google Fonts: its release
+page publishes a ~webfonts~ archive whose ~*-Latin.woff2~ files are the ones to
+ship for a web page.
+
+Because each project serves its own copies, no page asks a third party for its
+typography, and a build works offline.
 
 ---------
 
