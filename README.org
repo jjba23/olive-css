@@ -7,6 +7,8 @@
 [[https://jointhefreeworld.org/ggg/dist/scheme-guile.svg]] [[https://jointhefreeworld.org/ggg/dist/gnu-guix.svg]]   [[https://jointhefreeworld.org/ggg/dist/maak.svg]]
 [[https://jointhefreeworld.org/ggg/dist/license-lgpl3+.svg]]    [[https://jointhefreeworld.org/ggg/dist/license-fdl13+.svg]]
 
+#+attr_html: :width 160 :alt Olive CSS logo
+[[file:logo.svg]]
 
 /Utility-class vanilla CSS framework inspired by Tailwind syntax, easy to learn and hack, written in Lisp (Guile Scheme)/
 
@@ -44,7 +46,6 @@ ___  _ _             ___  ___ ___
 
    λ Utility-class CSS for the Free World
 #+end_src
-
 
 --------
 
@@ -134,7 +135,6 @@ Each recipe carries its own dependency list, so a missing library fails the buil
 - *Container* if you only want to try the release, or reproduce a report on a machine that has nothing installed.
 - *Distribution package* if you want the project managed by the same tool as the rest of your system, with its licence, manual page and launcher in the usual places.
 
-
 * Licensing
 :PROPERTIES:
 :CUSTOM_ID: licensing
@@ -153,7 +153,6 @@ https://www.gnu.org/licenses/fdl-1.3.html
 [[https://jointhefreeworld.org/static-assets/olive-css/olive-css-new-small.png]]
 
 -------
-
 
 * Installing and Using
 :PROPERTIES:
@@ -386,7 +385,6 @@ It is built to encourage learning and experimentation, rather than hiding comple
 - Iter Vitae :: https://codeberg.org/jjba23/iter-vitae
 - Byggsteg :: https://codeberg.org/jjba23/byggsteg
 
-
 --------------
 
 * AI Policy
@@ -427,7 +425,6 @@ Contributing to free software is a uniquely beautiful act because it embodies pr
 We welcome everyone to feel invited to the olive-css Project, and encourage active contribution in all forms, to improve it and/or suggest improvements, brainstorm with me, make it more modular/flexible, etc, feel free to contact me <jjbigorra@gmail.com> to chat, discuss or report feedback.
 
 Find here the Backlog and Kanban boards for olive-css: https://lucidplan.jointhefreeworld.org/tickets/olive-css
-
 
 ----------------------
 
@@ -590,7 +587,6 @@ own fixture trees under ~/tmp~ and removes them when it finishes, so it leaves
 nothing behind; a failing assertion is reported and exits non-zero.
 
 ------------------------
-
 
 * Troubleshooting
 :PROPERTIES:
