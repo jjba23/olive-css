@@ -33,7 +33,7 @@
             olive-css-help-text
             olive-css-option-grammar))
 
-(define olive-css-version
+((define olive-css-version
   "0.8.0")
 
 (define olive-css-option-grammar
