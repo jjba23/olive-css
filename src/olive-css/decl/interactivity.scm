@@ -18,6 +18,7 @@
                                   field-sizing
                                   touch-action
                                   scroll-behavior
+                                  color-scheme
                                   interactivity-colors))
 
 (define cursor
@@ -120,6 +121,16 @@
                                      #:variants '((auto auto)
                                                   (smooth smooth)))))
 
+(define color-scheme
+  (make-parameter (css-rule-variants ".scheme-~a"
+                                     #:property 'color-scheme
+                                     #:variants '((normal normal)
+                                                  (light light)
+                                                  (dark dark)
+                                                  ("light-dark" "light dark")
+                                                  ("only-light" "only light")
+                                                  ("only-dark" "only dark")))))
+
 (define (interactivity-colors palettes)
   "Palette-aware accent and caret color utilities."
   (append (css-palette-rules ".accent-~a-~a"
@@ -138,7 +149,8 @@
         (appearance)
         (field-sizing)
         (touch-action)
-        (scroll-behavior)))
+        (scroll-behavior)
+        (color-scheme)))
 
 (define (interactivity-classes palettes)
   (append (interactivity-core-classes)

@@ -51,7 +51,7 @@ average of the category coverage underneath.  It is a useful gauge of where the
 gaps are, not a formal audit:
 
 #+begin_example
-Estimated feature parity with Tailwind CSS: ~81%
+Estimated feature parity with Tailwind CSS: ~82%
 #+end_example
 
 | Category                | Coverage | Main gaps                                                          |
@@ -61,26 +61,26 @@ Estimated feature parity with Tailwind CSS: ~81%
 | Spacing                 | ~75%     | negative (-m-*) and logical padding/margin                         |
 | Sizing                  | ~85%     | named container widths (max-w-sm ... max-w-7xl)                    |
 | Typography              | ~90%     | content-* / list-image-* pseudo utilities                          |
-| Backgrounds             | ~60%     | gradients and mask utilities                                       |
+| Backgrounds             | ~85%     | mask utilities and gradient alpha stops                            |
 | Borders                 | ~90%     | logical border-s/e, divide colors/reverse                          |
-| Effects                 | ~65%     | shadow-color, mask-*, color-scheme                                 |
+| Effects                 | ~65%     | shadow-color, mask-*                                               |
 | Filters                 | ~70%     | hue-rotate, drop-shadow, filter-none, backdrop-opacity             |
 | Tables                  | ~100%    | -                                                                  |
 | Transitions & animation | ~100%    | -                                                                  |
 | Transforms              | ~65%     | 3D (perspective, backface, per-axis rotate/translate)              |
-| Interactivity           | ~75%     | scroll-m/scroll-p, color-scheme, forced-color-adjust               |
+| Interactivity           | ~85%     | forced-color-adjust                                                |
 | SVG                     | ~90%     | stroke-dasharray and friends                                       |
 | Accessibility           | ~100%    | -                                                                  |
 | Variants                | ~40%     | group/peer/has/not, aria/data, container queries, motion/print/rtl |
 
-_Overall: ~81% (unweighted average of the category estimates above)._
+_Overall: ~82% (unweighted average of the category estimates above)._
 
 * Where the gaps are
 :PROPERTIES:
 :CUSTOM_ID: gaps
 :END:
 
-The fastest ways to close the gap are background gradients, extra variants
+The fastest ways to close the gap are mask utilities, extra variants
 (group/peer, aria/data, container queries) and negative/logical spacing.  Everything already available is documented in the
 [[file:reference.org][utility reference]]; nothing here is promised for a future release.
 

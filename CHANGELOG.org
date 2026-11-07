@@ -17,10 +17,17 @@ Work that lands after =v0.8.1= is recorded here until it is tagged.
 
 - *Background image utilities.*  =bg-center=, =bg-cover=, =bg-repeat-x=,
   =bg-fixed=, =bg-clip-text= and =bg-origin-content= position, size, repeat,
-  attach, clip and mask an image; gradients are still open.
+  attach, clip and mask an image.
 - *Scroll spacing.*  =scroll-m-*= and =scroll-p-*= (plus the axis and side
   forms) clear sticky headers when an anchor is followed, on the same numeric
   and t-shirt scale as margin and padding.
+- *Gradients.*  =bg-linear-to-*= and the familiar =bg-gradient-to-*= aliases,
+  plus =bg-radial= and =bg-conic=, consume =--olive-gradient-stops=.  The
+  =from-*=, =via-*= and =to-*= families supply those stops from the palette
+  shades, =white=, =black= and =transparent=.
+- *Color scheme.*  =scheme-normal=, =scheme-light=, =scheme-dark=,
+  =scheme-light-dark=, =scheme-only-light= and =scheme-only-dark= set the
+  =color-scheme= property, including the =only light= / =only dark= forms.
 
 * v0.8.0 - 2026-11-07
 

@@ -16,6 +16,7 @@
   #:use-module (ice-9 textual-ports)
   #:use-module (veritas veritas)
   #:use-module (olive-css main)
+  #:use-module (olive-css decl colors)
   #:use-module (olive-css decl spacing)
   #:export (spec))
 
@@ -93,5 +94,66 @@
                                   #:got "scroll-padding-bottom:"
                                   #:name "the padding side declaration")))))
 
+(define gradient-suite
+  (suite "gradients"
+         (test "directions and palette stops"
+               (let ((css (css-of (append (gradient-classes)
+                                          (gradient-color-classes
+                                           (list (cons 'redwood
+                                                       (redwood))))))))
+                 (assert-contains #:expect css #:got ".bg-linear-to-r"
+                                  #:name "the Tailwind v4 direction")
+                 (assert-contains #:expect css
+                                  #:got "linear-gradient(to right, var(--olive-gradient-stops))"
+                                  #:name "the linear direction")
+                 (assert-contains #:expect css #:got ".bg-gradient-to-r"
+                                  #:name "the familiar alias")
+                 (assert-contains #:expect css #:got ".bg-radial"
+                                  #:name "radial gradients")
+                 (assert-contains #:expect css
+                                  #:got "radial-gradient(var(--olive-gradient-stops))"
+                                  #:name "the radial direction")
+                 (assert-contains #:expect css #:got ".bg-conic"
+                                  #:name "conic gradients")
+                 (assert-contains #:expect css #:got ".from-redwood-500"
+                                  #:name "a from stop")
+                 (assert-contains #:expect css #:got "--olive-gradient-from:oklch("
+                                  #:name "the from color")
+                 (assert-contains #:expect css #:got ".via-redwood-500"
+                                  #:name "a via stop")
+                 (assert-contains #:expect css #:got "--olive-gradient-via:oklch("
+                                  #:name "the via color")
+                 (assert-contains #:expect css #:got ".to-redwood-500"
+                                  #:name "a to stop")
+                 (assert-contains #:expect css
+                                  #:got "--olive-gradient-stops:var(--olive-gradient-from),"
+                                  #:name "the from stop joins the gradient")
+                 (assert-contains #:expect css
+                                  #:got "var(--olive-gradient-via)"
+                                  #:name "the via stop joins the gradient")
+                 (assert-contains #:expect css #:got ".from-transparent"
+                                  #:name "a transparent stop")
+                 (assert-contains #:expect css
+                                  #:got "--olive-gradient-from:transparent"
+                                  #:name "the transparent value")))))
+
+(define color-scheme-suite
+  (suite "color scheme"
+         (test "scheme utilities set the color-scheme property"
+               (let ((css (css-of (color-scheme))))
+                 (assert-contains #:expect css #:got ".scheme-light"
+                                  #:name "light")
+                 (assert-contains #:expect css #:got "color-scheme:light"
+                                  #:name "the light value")
+                 (assert-contains #:expect css #:got ".scheme-light-dark"
+                                  #:name "light and dark")
+                 (assert-contains #:expect css #:got "color-scheme:light dark"
+                                  #:name "the light-dark value")
+                 (assert-contains #:expect css #:got ".scheme-only-dark"
+                                  #:name "only dark")
+                 (assert-contains #:expect css #:got "color-scheme:only dark"
+                                  #:name "the only-dark value")))))
+
 (define (spec)
-  (veritas-run background-suite scroll-spacing-suite))
+  (veritas-run background-suite scroll-spacing-suite gradient-suite
+               color-scheme-suite))

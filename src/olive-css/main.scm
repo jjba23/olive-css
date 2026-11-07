@@ -56,7 +56,8 @@
                                interactive-state-variants
                                interactive-state-targets
                                state-variant-classes)
-  #:re-export (license-header background-classes))
+  #:re-export (license-header background-classes gradient-classes
+                           gradient-color-classes color-scheme))
 
 ;; The three families Olive CSS reaches for by default: JuliaMono for code,
 ;; Work Sans for prose and Source Serif 4 for long-form reading.  All three are
@@ -451,6 +452,7 @@ generated separately by @code{colors}."
   "Palette-derived utilities: ring/outline/accent/caret colors and SVG fill/stroke."
   (append (effect-colors palettes)
           (interactivity-colors palettes)
+          (gradient-color-classes palettes)
           (svg-colors palettes)))
 
 (define (color-base-classes palettes)
