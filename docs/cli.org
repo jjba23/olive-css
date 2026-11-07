@@ -1,0 +1,166 @@
+#+title: Olive CSS command line
+#+author: Josep Bigorra
+#+email: jjbigorra@gmail.com
+#+language: en
+#+options: toc:2
+
+[[file:index.org][← Documentation index]] · [[file:../README.org][README]]
+
+* Contents
+:PROPERTIES:
+:CUSTOM_ID: contents
+:END:
+
+- [[#commands][Commands]]
+- [[#generate][=generate=]]
+- [[#tree-shake][=tree-shake=]]
+- [[#list][=list=]]
+- [[#builds][Shipped builds]]
+- [[#launcher][Where the command comes from]]
+- [[#related][Related]]
+
+* Commands
+:PROPERTIES:
+:CUSTOM_ID: commands
+:END:
+
+#+begin_example
+olive-css COMMAND [OPTIONS]
+#+end_example
+
+| Command      | What it does                                              |
+|--------------+-----------------------------------------------------------|
+| =generate=   | write one shipped build, or all of them (the default)     |
+| =tree-shake= | keep only the classes the built HTML under a directory uses |
+| =list=       | print the build names, their files and their descriptions |
+| =--help=     | print the full help page                                  |
+| =--version=  | print the version                                         |
+
+An option without a command means =generate=, so
+=olive-css --build full= and =olive-css generate --build full= are the same
+command.  Options are parsed by Guile's =getopt-long=; an unknown option prints
+its name and exits with status 2.
+
+* =generate=
+:PROPERTIES:
+:CUSTOM_ID: generate
+:END:
+
+#+begin_example
+olive-css generate [--build NAME] [--output FILE]
+                   [--list] [--minified | --no-minified]
+#+end_example
+
+- =--build NAME= (=-b=) :: write only NAME.  Without it, every build in
+  [[#builds][the list below]] is written to its usual file.
+- =--output FILE= (=-o=) :: write to FILE instead of the build's own path.
+  It needs exactly one =--build=; generating every build into one file is
+  refused.
+- =--list= (=-l=) :: print the builds instead of writing them.
+- =--minified= :: minify the output.  This is the default.
+- =--no-minified= :: write readable CSS, for debugging a generated rule.
+
+Missing parent directories are created.  Every written file is reported on one
+line:
+
+#+begin_src shell
+$ olive-css generate --build lucidplan
+olive-css: wrote resources/css/lucidplan.olive.min.css (lucidplan)
+#+end_src
+
+* =tree-shake=
+:PROPERTIES:
+:CUSTOM_ID: tree-shake
+:END:
+
+#+begin_example
+olive-css tree-shake [--directory DIR] [--stylesheet FILE] [--output FILE]
+#+end_example
+
+- =--directory DIR= (=-d=) :: the built HTML to scan, searched recursively.
+  Default =public=.
+- =--stylesheet FILE= (=-s=) :: the compiled stylesheet to prune.  Default
+  =resources/css/olive.min.css=.
+- =--output FILE= (=-o=) :: the output name, resolved inside =--directory=.
+  Default =olive.min.css=.
+
+The run reports the used-class count and the sizes before and after:
+
+#+begin_src shell
+$ olive-css tree-shake
+Tree-shaking: 89 used classes
+  resources/css/olive.min.css: 4900346 bytes
+  public/olive.min.css: 7059 bytes
+#+end_src
+
+Pruning reads =.html= and =.htm= files and skips =.git=.  The library
+parameters behind the options, and how the pruner treats media queries and the
+dark-mode scope, are in [[file:tree-shaking.org][Tree shaking]].
+
+* =list=
+:PROPERTIES:
+:CUSTOM_ID: list
+:END:
+
+#+begin_src shell
+$ olive-css list
+full	resources/css/olive.min.css	every utility, full responsive parity and dark mode
+lucidplan	resources/css/lucidplan.olive.min.css	lean responsive set and the Lucidplan palette
+...
+#+end_src
+
+The columns are the name, the output file and the description; they are
+tab-separated, so the output pipes into =cut= or =column -t=.
+
+* Shipped builds
+:PROPERTIES:
+:CUSTOM_ID: builds
+:END:
+
+The registry lives in ~src/olive-css/builds.scm~.  Each entry is a name, an
+output file, a thunk that returns the CSS and a description.  These are the new
+macros this repository ships:
+
+| Build                | Output                                             | What it changes                                  |
+|----------------------+----------------------------------------------------+--------------------------------------------------|
+| =full=              | =resources/css/olive.min.css=                      | every utility, full responsive parity, dark mode |
+| =rc-huidkliniek=    | =resources/css/rc-huidkliniek.olive.min.css=       | no dark mode, Fraunces headings, its palette     |
+| =lucidplan=         | =resources/css/lucidplan.olive.min.css=            | lean responsive set, its palette                 |
+| =byggsteg=          | =resources/css/byggsteg.olive.min.css=             | lean responsive set, its palette                 |
+| =carvoeiro-water-fun= | =resources/css/carvoeiro-water-fun.olive.min.css= | lean responsive set, its palette                 |
+| =torikomi=          | =resources/css/torikomi.olive.min.css=             | lean responsive set, its palette                 |
+| =iter-vitae=        | =resources/css/iter-vitae.olive.min.css=           | lean responsive set, its palette                 |
+| =fatum=             | =resources/css/fatum.olive.min.css=                | lean responsive set over its own families         |
+| =wikimusic=         | =resources/css/wikimusic.olive.min.css=            | lean responsive set, its palette                 |
+
+=maak build= runs =olive-css generate= with no =--build=, which regenerates
+every one of them.
+
+* Where the command comes from
+:PROPERTIES:
+:CUSTOM_ID: launcher
+:END:
+
+=bin/olive-css= is a thin launcher: it runs ~(olive-css cli)~ with Guile and,
+from a checkout, adds =src/= to the load path.  An installed copy finds the
+modules in Guile's site directory.  The same module is importable, which is how
+the project's tests drive it:
+
+#+begin_src scheme
+(use-modules (olive-css cli))
+(run-cli '("generate" "--build" "lucidplan"))
+;; => 0
+#+end_src
+
+=run-cli= returns an exit status instead of exiting, so a build script can
+react to it; =main= is the launcher entry point and exits.
+
+* Related
+:PROPERTIES:
+:CUSTOM_ID: related
+:END:
+
+- [[file:getting-started.org][Getting started]]
+- [[file:customization.org][Customizing a build]]
+- [[file:tree-shaking.org][Tree shaking]]
+- [[file:development.org][Development and releases]]

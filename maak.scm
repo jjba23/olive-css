@@ -1,19 +1,7 @@
-;; olive-css - Utility-class CSS framework that is easy to learn and hack
-
+;; olive-css
+;;
+;; SPDX-License-Identifier: MIT
 ;; Copyright © Josep Bigorra <jjbigorra@gmail.com>
-
-;; olive-css is free software: you can redistribute it and/or modify
-;; it under the terms of the Lesser GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; olive-css is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; Lesser GNU General Public License for more details.
-
-;; You should have received a copy of the Lesser GNU General Public License
-;; along with olive-css.  If not, see <https://www.gnu.org/licenses/>.
 
 (define-module (maak)
   #:declarative? #t
@@ -83,17 +71,20 @@
 (define (compile)
   "Compile all project source code."
   (time-machine-manifest-shell (list "guild" "compile" "-L" "./src" "-W3"
-                                     "./src/**/*.scm")))
+                                     "./src/**/*.scm" "./tools/**/*.scm")))
 
 (define (build)
-  "Generate production CSS."
-  (time-machine-manifest-shell (list "guile" "-L" "./src"
-                                     "./scripts/olive-css-gen.scm")))
+  "Generate every stylesheet this repository ships."
+  (run (list "./bin/olive-css" "generate") #:verbose? #t))
 
 (define (tree-shake)
-  "Tree-shake and optimize CSS."
-  (time-machine-manifest-shell (list "guile" "-L" "./src"
-                                     "./scripts/olive-css-tree-shaking.scm")))
+  "Keep only the classes the built site uses."
+  (run (list "./bin/olive-css" "tree-shake") #:verbose? #t))
+
+(define (release)
+  "Commit, tag, push and publish a GitHub release for the current version."
+  (run (list "guile" "-L" "./src" "-L" "."
+             "-c" "((@ (tools release) main))") #:verbose? #t))
 
 ;; Veritas looks for unit tests by default and reports with emoji-reporter, so
 ;; the environment needs nothing else.  Variable assignments cannot be prefixed
@@ -103,6 +94,7 @@
   "Run the unit test suite with the Veritas testing framework."
   (time-machine-manifest-shell (list "guile" "--fresh-auto-compile"
                                      "-L" "./src" "-L" "./test"
+                                     "-L" "."
                                      "-c" "'((@ (veritas runner) run-tests))'")))
 
 (define (hot-reload)

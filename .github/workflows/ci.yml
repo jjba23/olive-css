@@ -1,0 +1,27 @@
+# olive-css
+#
+# SPDX-License-Identifier: MIT
+# Copyright © Josep Bigorra <jjbigorra@gmail.com>
+
+# GitHub Actions runs no project steps of its own: it hands the tasks to the
+# Byggsteg reusable workflow, which runs them on the pinned Guix environment and
+# reports the result in its own log.  The suite runs before the deploy, so the
+# documentation is published only from a green tree.
+
+name: CI
+
+on:
+  push:
+    branches: [trunk]
+
+permissions:
+  contents: read
+
+jobs:
+  byggsteg:
+    name: 🧱 Byggsteg
+    uses: jjba23/byggsteg-github/.github/workflows/byggsteg.yml@trunk
+    with:
+      tasks: maak-test maak-deploy
+      timeout-minutes: 60
+    secrets: inherit

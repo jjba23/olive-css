@@ -20,11 +20,11 @@
 %global debug_package %{nil}
 
 Name:           olive-css
-Version:        0.6.7
+Version:        0.8.0
 Release:        0
-Summary:        Utility-first CSS framework written in Guile Scheme
-License:        LGPL-3.0-or-later
-URL:            https://codeberg.org/jjba23/olive-css
+Summary:        Utility-class CSS framework written in Guile Scheme
+License:        MIT
+URL:            https://github.com/jjba23/olive-css
 Source0:        %{name}-%{version}.tar.gz
 BuildRequires:  pkgconfig(guile-3.0)
 BuildRequires:  veritas
@@ -48,9 +48,10 @@ and can tree-shake the result down to those classes.
 %install
 # Both directories are asked of Guile's pkg-config file rather than
 # assumed, so the modules land where this distribution's Guile looks
-# for them.
+# for them.  The launcher is the command the package exists for.
 SITE_DIR="%{buildroot}$(pkg-config --variable=sitedir guile-3.0)"
 CCACHE_DIR="%{buildroot}$(pkg-config --variable=siteccachedir guile-3.0)"
+install -Dm755 bin/olive-css "%{buildroot}%{_bindir}/olive-css"
 
 mkdir -p "$SITE_DIR/olive-css" "$CCACHE_DIR/olive-css"
 cp -r src/olive-css/. "$SITE_DIR/olive-css/"
@@ -65,11 +66,12 @@ find "$SITE_DIR/olive-css" -name '*.scm' | while read -r scm_file; do
 done
 
 %check
-VERITAS_TEST_TYPE=unit VERITAS_RUN_BENCHMARKS=false guile --fresh-auto-compile -L ./src -L ./test -c '((@ (veritas runner) run-tests))'
+VERITAS_TEST_TYPE=unit VERITAS_RUN_BENCHMARKS=false guile --fresh-auto-compile -L ./src -L ./test -L . -c '((@ (veritas runner) run-tests))'
 
 %files
-%license COPYING
-%doc README.org
+%license LICENSE
+%doc README.org CHANGELOG.org docs/*.org
+%{_bindir}/olive-css
 %dir %{_datadir}/guile
 %dir %{_datadir}/guile/site
 %dir %{_datadir}/guile/site/3.0

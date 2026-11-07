@@ -1,0 +1,114 @@
+#+title: Fonts in Olive CSS
+#+author: Josep Bigorra
+#+email: jjbigorra@gmail.com
+#+language: en
+#+options: toc:2
+
+[[file:index.org][← Documentation index]] · [[file:../README.org][README]]
+
+* Contents
+:PROPERTIES:
+:CUSTOM_ID: contents
+:END:
+
+- [[#families][The three families]]
+- [[#self-hosting][Self-hosting them]]
+- [[#changing][Changing a family]]
+- [[#related][Related]]
+
+* The three families
+:PROPERTIES:
+:CUSTOM_ID: families
+:END:
+
+Olive CSS names three libre families, all under the SIL Open Font License, and
+expects the project that uses it to serve the faces itself:
+
+| Role     | Family          | Utility       | Where to get it                                      |
+|----------+-----------------+---------------+------------------------------------------------------|
+| mono     | JuliaMono       | ~font-mono~   | https://juliamono.netlify.app/ (not on Google Fonts) |
+| sans     | Work Sans       | ~font-sans~   | https://fonts.google.com/specimen/Work+Sans          |
+| serif    | Source Serif 4  | ~font-serif~  | https://fonts.google.com/specimen/Source+Serif+4     |
+
+The stacks behind those classes fall back to the system's own monospace, sans
+and serif faces, so a page rendered without the files still looks right: the
+three families are a preference, not a requirement.
+
+* Self-hosting them
+:PROPERTIES:
+:CUSTOM_ID: self-hosting
+:END:
+
+Keep the woff2 files in the project's own static tree and declare them in a
+small stylesheet loaded before the Olive CSS build, with paths relative to that
+stylesheet:
+
+#+begin_src css
+@font-face {
+  font-family: 'Work Sans';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../fonts/work-sans-normal-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url('../fonts/source-serif-4-normal-latin.woff2') format('woff2');
+}
+
+/* JuliaMono ships static weights: regular below 600, bold above. */
+@font-face {
+  font-family: 'JuliaMono';
+  font-style: normal;
+  font-weight: 300 500;
+  font-display: swap;
+  src: url('../fonts/juliamono-normal-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JuliaMono';
+  font-style: normal;
+  font-weight: 600 900;
+  font-display: swap;
+  src: url('../fonts/juliamono-bold-latin.woff2') format('woff2');
+}
+#+end_src
+
+Both Work Sans and Source Serif 4 are variable fonts, so one file per style
+carries the whole weight range.  Ask Google Fonts for the family with ~curl~ and
+a browser user agent to receive the woff2 URLs, then keep the =latin= and
+=latin-ext= subsets.  JuliaMono is not distributed by Google Fonts: its release
+page publishes a =webfonts= archive whose =*-Latin.woff2= files are the ones to
+ship for a web page.
+
+Because each project serves its own copies, no page asks a third party for its
+typography, and a build works offline.
+
+* Changing a family
+:PROPERTIES:
+:CUSTOM_ID: changing
+:END:
+
+The three stacks are parameters, so a build can name another family without
+touching the framework:
+
+#+begin_src scheme
+(parameterize ((serif-font-family '("'Fraunces'" "ui-serif" "serif")))
+  (write-css-to-file #:file "my-build.css"
+                     #:css-lines (olive-css-gen)))
+#+end_src
+
+The repository's =rc-huidkliniek= build does exactly this; see
+~src/olive-css/builds.scm~.
+
+* Related
+:PROPERTIES:
+:CUSTOM_ID: related
+:END:
+
+- [[file:customization.org][Customizing a build]]
+- [[file:reference.org#typography][Utility reference: typography]]

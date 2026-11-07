@@ -36,14 +36,15 @@ override_dh_auto_build:
 	done
 
 override_dh_auto_test:
-	VERITAS_TEST_TYPE=unit VERITAS_RUN_BENCHMARKS=false guile --fresh-auto-compile -L ./src -L ./test -c '((@ (veritas runner) run-tests))'
+	VERITAS_TEST_TYPE=unit VERITAS_RUN_BENCHMARKS=false guile --fresh-auto-compile -L ./src -L ./test -L . -c '((@ (veritas runner) run-tests))'
 
 override_dh_auto_install:
 
-	# Scheme sources and their byte-compiled copies.
+	# Scheme sources, their byte-compiled copies and the command.
 	mkdir -p $(SITE_DIR) debian/olive-css$(CCACHE_DIR)
 	cp -r $(BUILD_SITE)/olive-css $(SITE_DIR)/
 	cp -r $(BUILD_CCACHE)/olive-css debian/olive-css$(CCACHE_DIR)/
+	install -Dm755 bin/olive-css debian/olive-css/usr/bin/olive-css
 
 override_dh_auto_clean:
 	rm -rf build

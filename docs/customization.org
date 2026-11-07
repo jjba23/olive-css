@@ -1,0 +1,209 @@
+#+title: Customizing an Olive CSS build
+#+author: Josep Bigorra
+#+email: jjbigorra@gmail.com
+#+language: en
+#+options: toc:2
+
+[[file:index.org][← Documentation index]] · [[file:../README.org][README]]
+
+* Contents
+:PROPERTIES:
+:CUSTOM_ID: contents
+:END:
+
+- [[#a-build-is-a-program][A build is a program]]
+- [[#the-common-knobs][The common knobs]]
+- [[#palettes][Palettes]]
+- [[#variants][State and responsive variants]]
+- [[#your-own-rules][Your own utilities]]
+- [[#must-not-ship][What to leave out]]
+- [[#related][Related]]
+
+* A build is a program
+:PROPERTIES:
+:CUSTOM_ID: a-build-is-a-program
+:END:
+
+Everything the generator emits is controlled by Guile parameters.  A build is a
+~parameterize~ around one call to ~olive-css-gen~, and writing it to disk with
+~write-css-to-file~:
+
+#+begin_src scheme
+(use-modules (olive-css main))
+
+(parameterize ((with-dark-mode? #f)
+               (minified? #t)
+               (state-variants '(hover focus))
+               (interactive-state-variants '(focus focus-visible active))
+               (responsive reduced-responsive)
+               (responsive-classes (core-utility-classes))
+               (palettes my-project-palettes))
+  (write-css-to-file #:file "my-build.css"
+                     #:css-lines (olive-css-gen)))
+#+end_src
+
+The repository's own builds work exactly like that and live in
+~src/olive-css/builds.scm~; the CLI only selects one and writes it.  Run the
+file with =guile -L src my-build.scm=, or add an entry to the registry if it is
+a stylesheet the project ships.
+
+* The common knobs
+:PROPERTIES:
+:CUSTOM_ID: the-common-knobs
+:END:
+
+| Parameter                    | Default                                        | Meaning                                        |
+|------------------------------+------------------------------------------------+------------------------------------------------|
+| ~palettes~                   | the 52 built-in colours                        | the colours to generate                        |
+| ~with-dark-mode?~            | ~#t~                                           | emit the =data-theme=dark= layer               |
+| ~minified?~                  | ~#t~                                           | minified or readable output                    |
+| ~responsive~                 | ~all-responsive~                               | the responsive block; ~reduced-responsive~ drops =2xl= |
+| ~responsive-classes~         | ~#f~, meaning ~lean-responsive-classes~        | families that get a responsive copy            |
+| ~state-variants~             | ~'(hover)~                                     | broad-tier state prefixes                      |
+| ~state-variant-targets~      | ~#f~, meaning fonts, type, transforms, effects, shadows, colours | rules the broad tier applies to |
+| ~interactive-state-variants~ | ~'(focus focus-visible active)~                | interactive-tier state prefixes                |
+| ~interactive-state-targets~  | ~#f~, meaning typography, transforms, effects  | rules the interactive tier applies to          |
+| ~sm-breakpoint~ ... ~xl-breakpoint~ | ~"640px"~, ~"768px"~, ~"1024px"~, ~"1280px"~ | declared breakpoint widths              |
+| ~sans-font-family~, ~serif-font-family~, ~mono-font-family~ | Work Sans / Source Serif 4 / JuliaMono stacks | font family lists             |
+| ~border-style~               | ~solid~                                        | style paired with border widths                |
+| ~scroll-snap-type~           | ~"proximity"~                                  | strictness used by =snap-x/y/both=             |
+| ~margin-multiplier~, ~padding-multiplier~ | ~0.28~                             | spacing scale                                  |
+| ~gap-multiplier~             | ~0.30~                                         | gap scale                                      |
+| ~width-multiplier~, ~height-multiplier~ | ~0.24~                            | sizing scale                                   |
+| ~absolute-positions-multiplier~ | ~0.40~                                      | offset scale                                   |
+| ~rounded-multiplier~         | ~0.16~                                         | radius scale                                   |
+| ~font-size-multiplier~, ~line-height-multiplier~ | ~0.25~                   | type scale                                     |
+
+Two of them decide how large a build is before anything is pruned:
+~responsive-classes~ (which families are duplicated under every breakpoint) and
+the palette list.  The complete build binds ~responsive-classes~ to
+~(core-utility-classes)~ plus ~(color-base-classes (palettes))~; a project build
+usually uses ~reduced-responsive~ and a short palette.
+
+The full list, including the family generators, is in the
+[[file:reference.org#customizing-a-build][utility reference]].
+
+* Palettes
+:PROPERTIES:
+:CUSTOM_ID: palettes
+:END:
+
+A palette is a name and five shades derived from one oklch triple.
+~make-palette~ does the derivation; ~css-palette-rules~ and
+~css-color-rules~ turn the result into classes.  Adding a project colour looks
+like this:
+
+#+begin_src scheme
+(use-modules (olive-css dsl)
+             (olive-css main))
+
+(define my-colour
+  (make-palette '(0.62 0.15 250)))
+
+(define my-palettes
+  (append (palettes)
+          (list (cons 'my-colour my-colour))))
+
+(parameterize ((palettes my-palettes))
+  (write-css-to-file #:file "my-build.css"
+                     #:css-lines (olive-css-gen)))
+#+end_src
+
+Now =bg-my-colour-500=, =text-my-colour-300/50= and the derived ring, outline,
+accent, caret, fill and stroke utilities exist.  To ship *only* the colours a
+project uses, build the list from the palette parameters instead of appending to
+the default:
+
+#+begin_src scheme
+(define project-palettes
+  (list (cons 'onyx (onyx))
+        (cons 'floral-white (floral-white))
+        (cons 'jeans-blue (jeans-blue))))
+#+end_src
+
+The 52 built-in names are listed in the [[file:reference.org#the-color-system][colour reference]].
+
+* State and responsive variants
+:PROPERTIES:
+:CUSTOM_ID: variants
+:END:
+
+State variants are generated in two tiers so that the colour cross-product does
+not explode:
+
+- the broad tier (~state-variants~, default ~'(hover)~) applies to fonts, type,
+  transforms, effects, shadows and the whole colour system;
+- the interactive tier (~interactive-state-variants~, default
+  ~'(focus focus-visible active)~) applies only to typography, transforms and
+  effects.
+
+Add a state name to the relevant list to generate it, or bind the matching
+targets parameter to a list of rules to widen coverage:
+
+#+begin_src scheme
+(parameterize ((state-variants '(hover focus-within odd))
+               (interactive-state-variants '(focus focus-visible active disabled checked)))
+  (olive-css-gen))
+#+end_src
+
+Responsive variants come from ~responsive-classes~:
+
+- ~#f~ uses ~lean-responsive-classes~: layout, filters, flexbox, spacing,
+  sizing, typography, radius, scroll snap and font families.
+- ~(core-utility-classes)~ adds every structural family.
+- ~(append (core-utility-classes) (color-base-classes (palettes)))~ adds the
+  solid colour shades as well, which is what makes =md:bg-jeans-blue-700= and
+  =lg:text-onyx-500= exist.
+
+The opacity cross-product (=bg-x-500/50=) is generated once, not per
+breakpoint.
+
+* Your own utilities
+:PROPERTIES:
+:CUSTOM_ID: your-own-rules
+:END:
+
+A utility is a rule, and a rule is a selector plus declarations.  The DSL
+helpers keep it one line each:
+
+#+begin_src scheme
+(use-modules (olive-css dsl))
+
+(define (my-utilities)
+  (append
+   ;; one rule
+   (list (css-rule ".content-auto"
+                   (css-declaration 'content-visibility 'auto)))
+   ;; one rule per value
+   (css-rule-variants ".rotate-~a"
+                      #:property 'rotate
+                      #:variants '((45 "45deg")
+                                   (90 "90deg")))))
+#+end_src
+
+Append the result to a family list, or generate it under a state or media
+query with ~add-state-variant~, ~add-hover-variant~ and
+~add-media-query-prefix~.  ~(olive-css dsl)~ exports the record constructors,
+the variant helpers, the palette derivation and the output plumbing; the
+docstrings name the arguments.
+
+* What to leave out
+:PROPERTIES:
+:CUSTOM_ID: must-not-ship
+:END:
+
+The complete build is not a production stylesheet.  Before shipping:
+
+1. choose only the breakpoints, states and colours the project uses;
+2. run the tree-shaker ([[file:tree-shaking.org][Tree shaking]]) over the built HTML;
+3. serve the result compressed and cached.
+
+* Related
+:PROPERTIES:
+:CUSTOM_ID: related
+:END:
+
+- [[file:reference.org#customizing-a-build][Utility reference: customizing a build]]
+- [[file:cli.org][Command line]]
+- [[file:tree-shaking.org][Tree shaking]]
+- [[file:fonts.org][Fonts]]

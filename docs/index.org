@@ -1,0 +1,53 @@
+#+title: Olive CSS documentation 🫒
+#+author: Josep Bigorra
+#+email: jjbigorra@gmail.com
+#+language: en
+#+options: toc:nil
+
+[[file:../README.org][← Back to the README]]
+
+* Olive CSS documentation
+:PROPERTIES:
+:CUSTOM_ID: documentation
+:END:
+
+The [[file:../README.org][README]] says what Olive CSS is and how to install it.  These pages go
+past that: how a build is customized, what every utility does, how pruning
+works, and how the project is developed and released.
+
+** Contents
+:PROPERTIES:
+:CUSTOM_ID: contents
+:END:
+
+| Document                              | Read it when you want to know                                      |
+|---------------------------------------+--------------------------------------------------------------------|
+| [[file:getting-started.org][Getting started]]                     | install it, build a stylesheet, put it on a page                   |
+| [[file:cli.org][Command line]]                        | every command, option, exit code and shipped build                 |
+| [[file:customization.org][Customizing a build]]                 | parameters, palettes, responsive sets, your own utilities          |
+| [[file:tree-shaking.org][Tree shaking]]                        | how production CSS keeps only the classes a site uses              |
+| [[file:reference.org][Utility reference]]                   | every class family, value scale and variant                        |
+| [[file:comparison.org][Compared with Tailwind]]               | the feature table and the estimated parity                         |
+| [[file:fonts.org][Fonts]]                               | the three libre families and how to self-host them                 |
+| [[file:development.org][Development and releases]]            | tasks, tests, packaging, CI and =maak release=                     |
+
+** Where to start
+:PROPERTIES:
+:CUSTOM_ID: where-to-start
+:END:
+
+If you have never built a stylesheet, read [[file:getting-started.org][Getting started]].  If you know
+Tailwind and want to know what is different, read [[file:comparison.org][Compared with Tailwind]] and
+then the [[file:reference.org][utility reference]].  If you are shipping to production, read
+[[file:tree-shaking.org][Tree shaking]] - it is the step that turns the multi-MiB complete build into a
+few KiB.
+
+If you are changing Olive CSS itself, read [[file:development.org][Development and releases]]
+before touching a task or the release process.
+
+* Related documents
+
+- [[file:../README.org][README]] - what Olive CSS is and how to install it
+- [[file:../CHANGELOG.org][Changelog]] - notable changes, one section per release
+- [[file:../LICENSE][LICENSE]] - the MIT licence
+- [[https://jointhefreeworld.org/api-docs/olive-css/API.html][Guile API documentation]] - signatures and docstrings

@@ -1,3 +1,15 @@
+olive-css (0.8.0-1) unstable; urgency=medium
+
+  * MIT licence: LICENSE replaces COPYING, every source header is a short
+    SPDX-License-Identifier: MIT block, and the generated CSS says MIT too.
+  * olive-css command: generate the shipped builds, prune a site's CSS and
+    list the builds; the generation scripts are gone.
+  * The README is a landing page again and the guide lives in docs/.
+  * maak release commits, tags, pushes and publishes the GitHub release.
+  * The package installs /usr/bin/olive-css and the guide.
+
+ -- Josep Bigorra <jjbigorra@gmail.com>  Sat, 07 Nov 2026 12:00:00 +0100
+
 olive-css (0.6.5-1) unstable; urgency=medium
 
   * Bump version for container and GNU/Linux packaging improvements.

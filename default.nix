@@ -1,26 +1,14 @@
 # olive-css
-
+#
+# SPDX-License-Identifier: MIT
 # Copyright © Josep Bigorra <jjbigorra@gmail.com>
-
-# olive-css is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# olive-css is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-
-# You should have received a copy of the GNU Lesser General Public License
-# along with olive-css.  If not, see <https://www.gnu.org/licenses/>.
 
 # The package of this checkout as it stands.  It is the same derivation as the
 # `guile-olive-css' package in nixpkgs -- same phases, same layout under $out --
 # so that a change which breaks this build breaks that one for the same reason.
 # What differs is the source: this file builds the working tree, while nixpkgs
-# pins a released tag and its hash.  Keep `version' in step with the tag you
-# release, because nothing here can read it from the library.
+# pins a released tag and its hash.  `maak release' writes `version', so keep
+# releasing through it rather than editing the string by hand.
 
 { lib
 , stdenv
@@ -29,7 +17,7 @@
 
 stdenv.mkDerivation {
   pname = "guile-olive-css";
-  version = "0.6.7";
+  version = "0.8.0";
 
   src = ./.;
 
@@ -57,13 +45,21 @@ stdenv.mkDerivation {
 
   installPhase = ''
     runHook preInstall
+
+    install -Dm755 bin/olive-css "$out/bin/olive-css"
+    install -Dm644 LICENSE "$out/share/doc/guile-olive-css/LICENSE"
+    for doc in README.org CHANGELOG.org docs/*.org; do
+      install -Dm644 "$doc" "$out/share/doc/guile-olive-css/$(basename "$doc")"
+    done
+
     runHook postInstall
   '';
 
   meta = with lib; {
-    description = "Utility-first CSS framework built with GNU Guile";
-    homepage = "https://codeberg.org/jjba23/olive-css";
-    license = licenses.lgpl3Plus;
+    description = "Utility-class CSS framework written in Guile Scheme";
+    homepage = "https://github.com/jjba23/olive-css";
+    license = licenses.mit;
+    mainProgram = "olive-css";
     platforms = guile.meta.platforms;
   };
 }

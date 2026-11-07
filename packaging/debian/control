@@ -10,9 +10,9 @@ Build-Depends:
  pkg-config,
  veritas
 Standards-Version: 4.6.2
-Homepage: https://codeberg.org/jjba23/olive-css
-Vcs-Git: https://codeberg.org/jjba23/olive-css.git
-Vcs-Browser: https://codeberg.org/jjba23/olive-css
+Homepage: https://github.com/jjba23/olive-css
+Vcs-Git: https://github.com/jjba23/olive-css.git
+Vcs-Browser: https://github.com/jjba23/olive-css
 Rules-Requires-Root: no
 
 Package: olive-css

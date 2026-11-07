@@ -1,0 +1,25 @@
+#!/bin/sh
+# olive-css
+#
+# SPDX-License-Identifier: MIT
+# Copyright © Josep Bigorra <jjbigorra@gmail.com>
+#
+# Thin launcher around (olive-css cli).  It adds the modules to Guile's load
+# path whether it runs from a checkout, from an installed prefix, or from an
+# installed package whose site directory is Guile's own.  The "--" separator
+# keeps Guile from interpreting flags such as -h itself; the CLI drops that
+# marker before parsing.
+
+here=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+if [ -d "$here/../src/olive-css" ]; then
+  exec guile -L "$here/../src" \
+       -c '((@ (olive-css cli) main) (cdr (command-line)))' \
+       -- "$@"
+elif [ -d "$here/../share/guile/site/3.0/olive-css" ]; then
+  exec guile -L "$here/../share/guile/site/3.0" \
+       -c '((@ (olive-css cli) main) (cdr (command-line)))' \
+       -- "$@"
+else
+  exec guile -c '((@ (olive-css cli) main) (cdr (command-line)))' -- "$@"
+fi

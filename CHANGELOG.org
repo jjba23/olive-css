@@ -11,16 +11,28 @@ feature reference.
 
 * Unreleased
 
-Work that lands after =v0.6.0= is recorded here until it is tagged.
+Work that lands after =v0.7.0= is recorded here until it is tagged.
 
 ** Added
 
+- *A command line of its own.*  ~olive-css~ is now the way to generate and
+  prune stylesheets.  ~olive-css generate~ writes one shipped build or all of
+  them, ~olive-css tree-shake~ prunes a build against a site's HTML, and
+  ~olive-css list~ prints the builds.  The project presets moved out of
+  =scripts/olive-css-gen.scm= into ~(olive-css builds)~, so a build is data the
+  CLI, a program and a test can all use; both scripts are gone and
+  ~maak build~ / ~maak tree-shake~ call the CLI instead.
+- *A release task.*  ~maak release~ turns the changelog's Unreleased section
+  into a dated release, writes the version into every recipe, commits, tags,
+  pushes and publishes the GitHub release.  It refuses to run on a dirty tree,
+  off =trunk=, or on a version that already has a tag, and it refreshes the
+  Arch checksum from the archive the new tag serves.
+
 - *A libre typographic default.* =font-mono= now names JuliaMono, =font-sans=
   names Work Sans and =font-serif= names Source Serif 4, all three under the
-  SIL Open Font License and self-hosted by each project (see "Fonts" in the
-  README).  The previous stacks named two families that are gone from the
-  defaults and from every per-project build under
-  ~scripts/olive-css-gen.scm~, which now inherit them: a proprietary one that
+  SIL Open Font License and self-hosted by each project  (see [[file:docs/fonts.org][the fonts guide]]).  The previous stacks named two families that are gone from the
+  defaults and from every per-project build in ~(olive-css builds)~, which now
+  inherit them: a proprietary one that
   shipped with some systems, and a monospace face that was fetched from a font
   service.  Each stack falls back to the system's own monospace, sans and
   serif faces, so a build that serves no font files still renders.
@@ -38,6 +50,29 @@ Work that lands after =v0.6.0= is recorded here until it is tagged.
   =0= step, and neither do the negative =.\-translate-*= utilities.
 - ~positive-numeric-sizes~, exported by ~(olive-css sizes)~ for builds that
   need the scale without the zero.
+
+** Changed
+
+- *CI moved to GitHub Actions.*  Pushes to =trunk= now run =maak-test= and
+  =maak-deploy= through the Byggsteg reusable workflow in
+  =.github/workflows/ci.yml=; the Woodpecker pipeline is gone.
+- *MIT licence.*  olive-css is licensed under the MIT licence: =LICENSE=
+  replaces =COPYING=, every source file carries a short
+  =SPDX-License-Identifier: MIT= header, and the generated stylesheets, the
+  documentation, the packaging recipes and the container labels say MIT too.
+  The FDL no longer applies to the documentation.
+- *The guide lives in =docs/=.*  The README is a landing page again - what
+  Olive CSS is, a quick start, install routes and the map - and the details
+  moved to [[file:docs/index.org][the documentation index]]: getting started, the CLI,
+  building, tree shaking, the full utility reference, the Tailwind comparison,
+  fonts and development.  Every page has its own contents list and links back.
+- *Packaging ships the command.*  The Debian, openSUSE and Arch recipes install
+  =/usr/bin/olive-css=, the licence and the guide, and their test run loads the
+  release tool from the project root.  The container's entry point is now
+  ~olive-css~ rather than a bare Guile.
+- *One version, one home.*  The version is 0.8.0 in the CLI, the Nix
+  expression, the openSUSE spec, the Arch recipe and the Debian changelog;
+  every recipe names the repository's GitHub home.
 
 * v0.6.4 - 2026-10-22
 

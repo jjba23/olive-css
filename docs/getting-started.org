@@ -1,0 +1,238 @@
+#+title: Getting started with Olive CSS
+#+author: Josep Bigorra
+#+email: jjbigorra@gmail.com
+#+language: en
+#+options: toc:2
+
+[[file:index.org][← Documentation index]] · [[file:../README.org][README]]
+
+* Contents
+:PROPERTIES:
+:CUSTOM_ID: contents
+:END:
+
+- [[#install][Install]]
+- [[#first-build][Build a stylesheet]]
+- [[#first-page][Put it on a page]]
+- [[#production][Prune it for production]]
+- [[#checkout][Build straight from a checkout]]
+- [[#troubleshooting][Troubleshooting]]
+
+* Install
+:PROPERTIES:
+:CUSTOM_ID: install
+:END:
+
+Every route installs the same Scheme library.  The Nix package and the
+recipes under =packaging/= in this repository also install the =olive-css=
+command; with the Guix channel, run the launcher from a checkout (see
+[[#checkout][Build straight from a checkout]]).
+
+** GNU Guix
+:PROPERTIES:
+:CUSTOM_ID: install-guix
+:END:
+
+*GNU Guix* is the functional package manager this project is developed with: a
+build is a pure function of its inputs, so the same recipe gives the same result
+everywhere, and a bad upgrade can be rolled back.
+
+The jointhefreeworld channel carries ~guile-olive-css~, so a checkout of the
+channel is enough - there is no package definition to write:
+
+#+begin_src shell
+git clone https://codeberg.org/jjba23/guix-jointhefreeworld.git
+guix install -L ./guix-jointhefreeworld guile-olive-css
+#+end_src
+
+Add the channel to ~$HOME/.config/guix/channels.scm~ (the channel's README has
+the four lines) and a plain ~guix install guile-olive-css~ keeps working on
+every later ~guix pull~.
+
+** Nix
+:PROPERTIES:
+:CUSTOM_ID: install-nix
+:END:
+
+*Nix* offers the same declarative, reproducible model with its own language,
+its own store and a binary cache.  The jointhefreeworld flake builds this
+project with this repository's own expression, so the package cannot drift from
+the source:
+
+#+begin_src shell
+nix build github:jjba23/nix-jointhefreeworld#guile-olive-css
+#+end_src
+
+The same attribute is available as an overlay, so
+~pkgs.jointhefreeworld.guile-olive-css~ works inside a NixOS or home-manager
+configuration too.
+
+** Container
+:PROPERTIES:
+:CUSTOM_ID: install-container
+:END:
+
+*Podman or Docker* puts nothing on the host.  The image builds the project in a
+builder stage and copies only the installed files into a small runtime stage:
+
+#+begin_src shell
+podman build -t olive-css .   # docker build -t olive-css . also works
+podman run --rm -it olive-css --help
+#+end_src
+
+The image's entry point is the =olive-css= command, with the library on Guile's
+load path - useful for a quick try and for reproducing a report on a clean
+system.
+
+** Distribution package
+:PROPERTIES:
+:CUSTOM_ID: install-distribution
+:END:
+
+Recipes live under =packaging/= and are pinned to the same release tag, so the
+recipe and the sources it builds are versioned together:
+
+| Distribution   | Package     | How to build it                                                                     |
+|----------------+-------------+-------------------------------------------------------------------------------------|
+| Debian, Ubuntu | ~olive-css~ | copy ~packaging/debian~ to the repository root, then ~dpkg-buildpackage -us -uc -b~ |
+| openSUSE       | ~olive-css~ | ~osc build~ with ~packaging/opensuse~                                               |
+| Arch           | ~olive-css~ | ~makepkg -si~ in ~packaging/arch~                                                   |
+
+None of the three archives ships olive-css yet, so these are recipes to build
+rather than packages to install from a mirror.  Each carries its own dependency
+list, so a missing library fails the build with its name rather than producing a
+package that cannot load.
+
+* Build a stylesheet
+:PROPERTIES:
+:CUSTOM_ID: first-build
+:END:
+
+With the command installed, generate the complete stylesheet:
+
+#+begin_src shell
+olive-css generate --build full
+#+end_src
+
+That writes =resources/css/olive.min.css=: every utility, every breakpoint and
+the dark-mode layer, minified.  It is deliberately large because it is the
+superset; projects normally build a narrower one and prune it.
+
+List the builds this repository ships, then write one project build:
+
+#+begin_src shell
+olive-css list
+olive-css generate --build lucidplan
+#+end_src
+
+=--output= writes a single build somewhere else, creating the directory if it is
+missing:
+
+#+begin_src shell
+olive-css generate --build full --output /tmp/olive.css
+#+end_src
+
+A build of your own is a Scheme program: see
+[[file:customization.org][Customizing a build]].  [[file:cli.org][Command line]] has the full
+option list.
+
+* Put it on a page
+:PROPERTIES:
+:CUSTOM_ID: first-page
+:END:
+
+Copy the stylesheet into the site's static tree and link it:
+
+#+begin_src html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/olive.min.css">
+    <title>Hello Olive CSS</title>
+  </head>
+  <body class="bg-floral-white-100 text-onyx-900">
+    <main class="mx-auto max-w-prose px-4 py-8">
+      <h1 class="mb-4 text-3xl font-bold">Hello Olive CSS!</h1>
+      <p class="leading-md text-onyx-700">
+        This paragraph is styled by utility classes, not by a stylesheet you wrote.
+      </p>
+      <button class="cursor-pointer rounded-lg bg-jeans-blue-500 px-4 py-2
+                     text-white transition-colors hover:bg-jeans-blue-700">
+        A button
+      </button>
+    </main>
+  </body>
+</html>
+#+end_src
+
+The class names are the Tailwind ones you already know.  Which families and
+values exist is listed in the [[file:reference.org][utility reference]].
+
+* Prune it for production
+:PROPERTIES:
+:CUSTOM_ID: production
+:END:
+
+The prebuilt stylesheets contain every class.  For production, point the
+tree-shaker at the directory of built HTML and it keeps only the rules those
+pages reference:
+
+#+begin_src shell
+olive-css tree-shake --directory public --output app.min.css
+#+end_src
+
+On this repository's sample page a 4.9 MB build becomes about 7 KB.  Read
+[[file:tree-shaking.org][Tree shaking]] for the options and the rules it applies.
+
+* Build straight from a checkout
+:PROPERTIES:
+:CUSTOM_ID: checkout
+:END:
+
+Working on the framework itself (or trying a change before it is packaged) does
+not need an install.  The checkout's launcher adds =src/= to Guile's load path:
+
+#+begin_src shell
+guix shell -m manifest.scm -- ./bin/olive-css generate --build full
+guix shell -m manifest.scm -- ./bin/olive-css tree-shake
+#+end_src
+
+Without Guix, Guile 3.0 is the only requirement; put =src= on the load path and
+run the same commands:
+
+#+begin_src shell
+GUILE_LOAD_PATH="$PWD/src:$GUILE_LOAD_PATH" ./bin/olive-css --version
+#+end_src
+
+* Troubleshooting
+:PROPERTIES:
+:CUSTOM_ID: troubleshooting
+:END:
+
+- *Output is too large* :: Run ~olive-css tree-shake~ and/or build a narrower
+  stylesheet: disable breakpoints you do not use, drop dark mode, choose only
+  the palettes your project needs.  See [[file:customization.org][Customizing a build]].
+- *Class not found* :: Regenerate after adding the class logic, and remember
+  that some families are only responsive when you opt in through
+  ~responsive-classes~.
+- *Responsive variant not generated* :: The default responsive set is the lean
+  ~lean-responsive-classes~.  Bind ~responsive-classes~ to
+  ~core-utility-classes~ (and include ~color-base-classes~ for =md:bg-x=) for
+  full responsive parity.
+- *Dark mode not working* :: Put ~data-theme="dark"~ on an ancestor, make sure
+  the build has dark mode enabled, and use the canonical order
+  (=dark:hover:bg-x=).
+- *Invalid CSS* :: Re-check custom rule definitions, especially the oklch
+  colours, and generate with =--no-minified= to read the output.
+
+* Related
+:PROPERTIES:
+:CUSTOM_ID: related
+:END:
+
+- [[file:cli.org][Command line]]
+- [[file:customization.org][Customizing a build]]
+- [[file:tree-shaking.org][Tree shaking]]
+- [[file:reference.org][Utility reference]]

@@ -1,19 +1,7 @@
-;; olive-css - Utility-class CSS framework that is easy to learn and hack
-
+;; olive-css
+;;
+;; SPDX-License-Identifier: MIT
 ;; Copyright © 2026 Oliver Fox <southfoxdreamer@gmail.com>
-
-;; olive-css is free software: you can redistribute it and/or modify
-;; it under the terms of the Lesser GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; olive-css is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; Lesser GNU General Public License for more details.
-
-;; You should have received a copy of the Lesser GNU General Public License
-;; along with olive-css.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 ;;;
@@ -30,8 +18,8 @@
 ;;;                  (output-css-target "app.min.css"))
 ;;;     (tree-shake))
 ;;;
-;;; The command-line front-end lives in
-;;; @file{scripts/olive-css-tree-shaking.scm}.
+;;; The command-line front-end is @code{olive-css tree-shake}, from
+;;; @code{(olive-css cli)}.
 ;;;
 ;;;
 ;;; Code:
