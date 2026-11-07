@@ -174,6 +174,11 @@ publishes the API documentation once the suite passes, on the same pinned
 environment you get from the manifest.  The workflow lives in
 =.github/workflows/ci.yml= and has no project steps of its own to maintain.
 
+It needs the repository secrets =BYGGSTEG_EMAIL= and =BYGGSTEG_PASSWORD=
+(Settings → Secrets and variables → Actions).  GitHub rejects the call before
+any step runs while either is missing, so a red run with a secrets annotation
+means the account details are not configured, not that the suite failed.
+
 * Related
 :PROPERTIES:
 :CUSTOM_ID: related
