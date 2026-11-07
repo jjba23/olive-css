@@ -11,11 +11,15 @@ feature reference.
 
 * Unreleased
 
-Work that lands after =v0.8.0= is recorded here until it is tagged.
+Work that lands after =v0.8.1= is recorded here until it is tagged.
 
 Nothing yet.
 
 * v0.8.0 - 2026-11-07
+
+Nothing yet.
+
+* v0.8.1 - 2026-11-07
 
 ** Added
 

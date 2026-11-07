@@ -1,3 +1,9 @@
+olive-css (0.8.1-1) unstable; urgency=medium
+
+  * Release v0.8.1.
+
+ -- Josep Bigorra <jjbigorra@gmail.com>  za, 07 nov 2026 15:48:20 +0100
+
 olive-css (0.8.0-1) unstable; urgency=medium
 
   * MIT licence: LICENSE replaces COPYING, every source header is a short
