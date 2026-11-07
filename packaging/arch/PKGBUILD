@@ -27,7 +27,7 @@ checkdepends=(
 
 source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz")
 # `maak release' fills this in from the archive the new tag serves.
-sha256sums=('c5f56a790f556a852a4478a3feaae0e0e504cb23c0a65391a2f5215a4ff0aee0')
+sha256sums=('020749e1364c8a9c4d013e8bfffa5eb784f7f832e249281eb7e91f1014d9a185')
 
 # Guile looks for byte-compiled modules under the site-ccache directory,
 # which differs between distributions, so ask Guile's pkg-config file
