@@ -17,7 +17,7 @@
 
 stdenv.mkDerivation {
   pname = "guile-olive-css";
-  version = "1.0.1";
+  version = "1.1.0";
 
   src = ./.;
 
