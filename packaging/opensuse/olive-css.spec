@@ -20,7 +20,7 @@
 %global debug_package %{nil}
 
 Name:           olive-css
-Version:        0.8.1
+Version:        1.0.1
 Release:        0
 Summary:        Utility-class CSS framework written in Guile Scheme
 License:        MIT
