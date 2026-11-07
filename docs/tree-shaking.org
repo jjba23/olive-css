@@ -27,7 +27,7 @@
 The complete stylesheet contains every class, state and breakpoint, so it is
 measured in megabytes.  A production page needs a few dozen of those rules.  The
 tree-shaker scans the built HTML, keeps the rules whose selectors match a class
-that appears there, and writes the result minified - a 4.9 MB build becomes
+that appears there, and writes the result minified - a 5.1 MB build becomes
 about 7 KB for this repository's sample page.
 
 Shrinking the input first is still worth it: choosing the breakpoints, dropping
@@ -92,7 +92,7 @@ instead of editing code:
 ;; => ((stylesheet . "resources/css/olive.min.css")
 ;;     (destination . "_site/app.min.css")
 ;;     (used-classes . 89)
-;;     (input-bytes . 4900346)
+;;     (input-bytes . 5075339)
 ;;     (output-bytes . 7059))
 #+end_src
 

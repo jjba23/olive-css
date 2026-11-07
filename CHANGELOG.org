@@ -13,7 +13,14 @@ feature reference.
 
 Work that lands after =v0.8.1= is recorded here until it is tagged.
 
-Nothing yet.
+** Added
+
+- *Background image utilities.*  =bg-center=, =bg-cover=, =bg-repeat-x=,
+  =bg-fixed=, =bg-clip-text= and =bg-origin-content= position, size, repeat,
+  attach, clip and mask an image; gradients are still open.
+- *Scroll spacing.*  =scroll-m-*= and =scroll-p-*= (plus the axis and side
+  forms) clear sticky headers when an anchor is followed, on the same numeric
+  and t-shirt scale as margin and padding.
 
 * v0.8.0 - 2026-11-07
 

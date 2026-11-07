@@ -9,7 +9,8 @@
   #:use-module (ice-9 string-fun)
   #:use-module (olive-css dsl)
   #:use-module (olive-css sizes)
-  #:export (spacing-classes margin padding space-between margin-multiplier
+  #:export (spacing-classes margin padding space-between scroll-margin
+                            scroll-padding margin-multiplier
                             padding-multiplier))
 
 (define margin-multiplier
@@ -112,7 +113,46 @@ format directive."
   (make-parameter (append (space-rules 'x)
                           (space-rules 'y))))
 
+(define (scroll-spacing-rules declarations multiplier)
+  "Scroll snap clearance on the spacing scale."
+  (map (lambda (d)
+         (css-rule-variants (format #f ".scroll-~a-~a" (car d) "~a")
+                            #:property (cadr d)
+                            #:variants (map (lambda (s)
+                                              (css-size s
+                                                        #:conversion
+                                                        to-rem
+                                                        #:multiplier
+                                                        multiplier))
+                                            (append numeric-sizes
+                                                    tshirt-sizes))))
+       declarations))
+
+(define scroll-margin
+  (make-parameter (scroll-spacing-rules
+                   '((m scroll-margin)
+                     (mx scroll-margin-inline)
+                     (my scroll-margin-block)
+                     (mt scroll-margin-top)
+                     (mb scroll-margin-bottom)
+                     (ml scroll-margin-left)
+                     (mr scroll-margin-right))
+                   (margin-multiplier))))
+
+(define scroll-padding
+  (make-parameter (scroll-spacing-rules
+                   '((p scroll-padding)
+                     (px scroll-padding-inline)
+                     (py scroll-padding-block)
+                     (pt scroll-padding-top)
+                     (pb scroll-padding-bottom)
+                     (pl scroll-padding-left)
+                     (pr scroll-padding-right))
+                   (padding-multiplier))))
+
 (define spacing-classes
   (make-parameter (list (margin)
                         (padding)
-                        (space-between))))
+                        (space-between)
+                        (scroll-margin)
+                        (scroll-padding))))

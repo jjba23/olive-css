@@ -11,6 +11,7 @@
   #:use-module (olive-css sizes)
   #:use-module (olive-css decl colors)
   #:use-module (olive-css decl layout)
+  #:use-module (olive-css decl backgrounds)
   #:use-module (olive-css decl flexbox)
   #:use-module (olive-css decl spacing)
   #:use-module (olive-css decl sizing)
@@ -55,7 +56,7 @@
                                interactive-state-variants
                                interactive-state-targets
                                state-variant-classes)
-  #:re-export (license-header))
+  #:re-export (license-header background-classes))
 
 ;; The three families Olive CSS reaches for by default: JuliaMono for code,
 ;; Work Sans for prose and Source Serif 4 for long-form reading.  All three are
@@ -424,6 +425,7 @@ families live in @code{palette-utility-classes} and the main color system is
 generated separately by @code{colors}."
   (append (font-family)
           (layout-classes)
+          (background-classes)
           (visibility-classes)
           (filter-classes)
           (flexbox-classes)
@@ -554,6 +556,7 @@ keeping that default means per-project builds stay small.  Bind
 @code{responsive-classes} to @code{core-utility-classes} for full responsive
 parity (this is what the complete build does)."
   (append (layout-classes)
+          (background-classes)
           (filter-classes)
           (flexbox-classes)
           (spacing-classes)

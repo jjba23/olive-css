@@ -425,6 +425,27 @@ grouped as they are generated in ~src/olive-css/~.
   column are untouched
 - Child borders: =divide-x-<n>= and =divide-y-<n>= — same child selector,
   =border-inline-start-width= / =border-block-start-width= in px
+- Scroll margin: =scroll-m-<size|n>=, =scroll-mx-<size|n>=, =scroll-my-<size|n>=,
+  =scroll-mt-<size|n>=, =scroll-mb-<size|n>=, =scroll-ml-<size|n>=,
+  =scroll-mr-<size|n>=
+- Scroll padding: =scroll-p-<size|n>=, =scroll-px-<size|n>=, =scroll-py-<size|n>=,
+  =scroll-pt-<size|n>=, =scroll-pb-<size|n>=, =scroll-pl-<size|n>=,
+  =scroll-pr-<size|n>=
+
+** Backgrounds — ~decl/backgrounds.scm~
+
+- Image: =bg-none= clears a background image
+- Position: =bg-center=, =bg-top=, =bg-top-right=, =bg-right=, =bg-bottom-right=,
+  =bg-bottom=, =bg-bottom-left=, =bg-left=, =bg-top-left=
+- Size: =bg-auto=, =bg-cover=, =bg-contain=
+- Repeat: =bg-repeat=, =bg-no-repeat=, =bg-repeat-x=, =bg-repeat-y=,
+  =bg-repeat-round=, =bg-repeat-space=
+- Attachment: =bg-fixed=, =bg-local=, =bg-scroll=
+- Clip: =bg-clip-border=, =bg-clip-padding=, =bg-clip-content=, =bg-clip-text=
+- Origin: =bg-origin-border=, =bg-origin-padding=, =bg-origin-content=
+
+Gradients are not generated yet; these utilities position, size and mask an
+image you supply yourself.
 
 ** Sizing — ~decl/sizing.scm~
 
@@ -764,6 +785,7 @@ Extension helpers from ~(olive-css dsl)~:
 | ~(olive-css sizes)~               | numeric/t-shirt/fraction scales, weights, alphas, tracking, stretch, numeric variants |
 | ~(olive-css dsl)~                 | rule/declaration records, variants, palette derivation, output helpers |
 | ~(olive-css decl layout)~         | position, offsets, z-index, display, visibility, isolation, box, aspect, columns, breaks, float, clear, overflow, overscroll, object |
+| ~(olive-css decl backgrounds)~    | image position, size, repeat, attachment, clip and origin |
 | ~(olive-css decl flexbox)~        | direction, wrap, flex, grow, shrink, basis, order, justify/items/content/self/place, gap |
 | ~(olive-css decl grid)~           | templates, auto flow and tracks, col/row placement, gap-x/y |
 | ~(olive-css decl spacing)~        | margin, padding, space-x/y |
@@ -784,7 +806,7 @@ Extension helpers from ~(olive-css dsl)~:
 ** Shipped stylesheets
 
 The repository ships pre-built stylesheets in ~resources/css/~: the complete
-~olive.min.css~ (every feature, ~4.9 MiB) and one leaner build per project that
+~olive.min.css~ (every feature, ~4.8 MiB) and one leaner build per project that
 uses Olive CSS (~1.1–2 MiB each), for example
 ~rc-huidkliniek.olive.min.css~, which disables dark mode, uses
 ~reduced-responsive~ and its own palette.  Copy one as-is, or build your own
@@ -819,7 +841,7 @@ minified result, returning an association list with the paths and byte counts:
 ;; => ((stylesheet . "resources/css/olive.min.css")
 ;;     (destination . "_site/app.min.css")
 ;;     (used-classes . 89)
-;;     (input-bytes . 4900346)
+;;     (input-bytes . 5075339)
 ;;     (output-bytes . 7059))
 #+end_src
 

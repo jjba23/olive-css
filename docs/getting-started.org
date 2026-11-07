@@ -183,7 +183,7 @@ pages reference:
 olive-css tree-shake --directory public --output app.min.css
 #+end_src
 
-On this repository's sample page a 4.9 MB build becomes about 7 KB.  Read
+On this repository's sample page a 5.1 MB build becomes about 7 KB.  Read
 [[file:tree-shaking.org][Tree shaking]] for the options and the rules it applies.
 
 * Build straight from a checkout

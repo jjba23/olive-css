@@ -51,17 +51,17 @@ average of the category coverage underneath.  It is a useful gauge of where the
 gaps are, not a formal audit:
 
 #+begin_example
-Estimated feature parity with Tailwind CSS: ~79%
+Estimated feature parity with Tailwind CSS: ~81%
 #+end_example
 
 | Category                | Coverage | Main gaps                                                          |
 |-------------------------+----------+--------------------------------------------------------------------|
 | Layout                  | ~95%     | -                                                                  |
 | Flexbox & grid          | ~90%     | space/divide =reverse=, logical (ms/me) spacing                    |
-| Spacing                 | ~70%     | negative (-m-*) and logical padding/margin                         |
+| Spacing                 | ~75%     | negative (-m-*) and logical padding/margin                         |
 | Sizing                  | ~85%     | named container widths (max-w-sm ... max-w-7xl)                    |
 | Typography              | ~90%     | content-* / list-image-* pseudo utilities                          |
-| Backgrounds             | ~35%     | gradients and bg-position/repeat/size/clip/origin/attachment       |
+| Backgrounds             | ~60%     | gradients and mask utilities                                       |
 | Borders                 | ~90%     | logical border-s/e, divide colors/reverse                          |
 | Effects                 | ~65%     | shadow-color, mask-*, color-scheme                                 |
 | Filters                 | ~70%     | hue-rotate, drop-shadow, filter-none, backdrop-opacity             |
@@ -73,16 +73,15 @@ Estimated feature parity with Tailwind CSS: ~79%
 | Accessibility           | ~100%    | -                                                                  |
 | Variants                | ~40%     | group/peer/has/not, aria/data, container queries, motion/print/rtl |
 
-_Overall: ~79% (unweighted average of the category estimates above)._
+_Overall: ~81% (unweighted average of the category estimates above)._
 
 * Where the gaps are
 :PROPERTIES:
 :CUSTOM_ID: gaps
 :END:
 
-The fastest ways to close the gap are background gradients and image utilities,
-extra variants (group/peer, aria/data, container queries) and negative/logical
-spacing.  Everything already available is documented in the
+The fastest ways to close the gap are background gradients, extra variants
+(group/peer, aria/data, container queries) and negative/logical spacing.  Everything already available is documented in the
 [[file:reference.org][utility reference]]; nothing here is promised for a future release.
 
 * Related
