@@ -83,7 +83,7 @@
 
 (define (release)
   "Commit, tag, push and publish a GitHub release for the current version."
-  (run (list "guile" "-L" "./src" "-L" "."
+  (run (list "guile" "--fresh-auto-compile" "-L" "./src" "-L" "."
              "-c" "((@ (tools release) main))") #:verbose? #t))
 
 ;; Veritas looks for unit tests by default and reports with emoji-reporter, so
