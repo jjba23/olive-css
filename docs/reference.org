@@ -419,6 +419,13 @@ grouped as they are generated in ~src/olive-css/~.
   =mr-auto=)
 - Padding: =p-<size|n>=, =px-<size|n>=, =py-<size|n>=, =pt-<size|n>=,
   =pb-<size|n>=, =pl-<size|n>=, =pr-<size|n>=
+- Logical margins: =ms-<size|n>= and =me-<size|n>=, with =ms-auto= and
+  =me-auto= — =margin-inline-start= and =margin-inline-end=
+- Logical padding: =ps-<size|n>= and =pe-<size|n>= — =padding-inline-start=
+  and =padding-inline-end=
+- Negative margins: =.-m-<size|n>=, =.-mx-<size|n>=, =.-my-<size|n>=,
+  =.-mt-<size|n>=, =.-mb-<size|n>=, =.-ml-<size|n>=, =.-mr-<size|n>=,
+  =.-ms-<size|n>= and =.-me-<size|n>= — the margin scale, negated
 - Child spacing: =space-x-<size|n>= and =space-y-<size|n>= — they add
   =margin-inline-start= / =margin-block-start= between children, matching
   =<parent> > :not([hidden]) ~ :not([hidden])=, so the outer edges of a row or
@@ -445,6 +452,8 @@ grouped as they are generated in ~src/olive-css/~.
 - Origin: =bg-origin-border=, =bg-origin-padding=, =bg-origin-content=
 - Linear gradients: =bg-linear-to-t|tr|r|br|b|bl|l|tl= (Tailwind v4 names)
   and the familiar =bg-gradient-to-*= aliases
+- Angles: =bg-linear-0=, =bg-linear-45=, =bg-linear-90=, =bg-linear-135=,
+  =bg-linear-180=, =bg-linear-225=, =bg-linear-270=, =bg-linear-315=
 - Radial and conic: =bg-radial=, =bg-conic=
 - Stops: =from-<color>-<shade>=, =via-<color>-<shade>=, =to-<color>-<shade>=,
   plus =from-white=, =from-black=, =from-transparent= and their =via=/=to=
@@ -674,6 +683,7 @@ escaped class (=-rotate-45= → =.\\-rotate-45=).
 - Scroll behaviour: =scroll-auto=, =scroll-smooth=
 - Color scheme: =scheme-normal=, =scheme-light=, =scheme-dark=,
   =scheme-light-dark=, =scheme-only-light=, =scheme-only-dark=
+- Forced colors: =forced-color-adjust-auto=, =forced-color-adjust-none=
 - Colors: =accent-<color>-<shade>=, =caret-<color>-<shade>=
 
 ** Tables — ~decl/tables.scm~
@@ -770,7 +780,8 @@ Entry points exported by ~(olive-css main)~:
   responsive sets
 - ~colors~, ~font-family~, ~border-radius~, ~borders~, ~shadows~,
   ~scroll-snap-aligns~, ~scroll-snap-types~, ~gradient-classes~,
-  ~gradient-color-classes~, ~color-scheme~ — individual family generators
+  ~gradient-color-classes~, ~color-scheme~, ~forced-color-adjust~ — individual
+  family generators
 
 Extension helpers from ~(olive-css dsl)~:
 
@@ -797,7 +808,7 @@ Extension helpers from ~(olive-css dsl)~:
 | ~(olive-css decl backgrounds)~    | image position, size, repeat, attachment, clip, origin and gradients |
 | ~(olive-css decl flexbox)~        | direction, wrap, flex, grow, shrink, basis, order, justify/items/content/self/place, gap |
 | ~(olive-css decl grid)~           | templates, auto flow and tracks, col/row placement, gap-x/y |
-| ~(olive-css decl spacing)~        | margin, padding, space-x/y |
+| ~(olive-css decl spacing)~        | margin, padding, logical/negative spacing, space-x/y |
 | ~(olive-css decl sizing)~         | w/h/min/max/size |
 | ~(olive-css decl typography)~     | size, weight, style, alignment, tracking, leading, decoration, lists, wrap, truncation |
 | ~(olive-css decl colors)~         | the 52 oklch palettes |
@@ -806,7 +817,7 @@ Extension helpers from ~(olive-css dsl)~:
 | ~(olive-css decl filters)~        | blur and color filters, plus backdrop variants |
 | ~(olive-css decl transforms)~     | translate, rotate, scale, skew, origin, will-change |
 | ~(olive-css decl transitions)~    | transitions and keyframe animations |
-| ~(olive-css decl interactivity)~  | cursor, selection, pointer events, resize, appearance, touch, scroll, color scheme, accent/caret |
+| ~(olive-css decl interactivity)~  | cursor, selection, pointer events, resize, appearance, touch, scroll, color scheme, forced colors, accent/caret |
 | ~(olive-css decl tables)~         | table layout, collapse, spacing, caption |
 | ~(olive-css decl svg)~            | fill and stroke |
 | ~(olive-css decl animation)~      | slide-in helpers |
@@ -815,7 +826,7 @@ Extension helpers from ~(olive-css dsl)~:
 ** Shipped stylesheets
 
 The repository ships pre-built stylesheets in ~resources/css/~: the complete
-~olive.min.css~ (every feature, ~5.0 MiB) and one leaner build per project that
+~olive.min.css~ (every feature, ~4.9 MiB) and one leaner build per project that
 uses Olive CSS (~1.1–2 MiB each), for example
 ~rc-huidkliniek.olive.min.css~, which disables dark mode, uses
 ~reduced-responsive~ and its own palette.  Copy one as-is, or build your own
@@ -850,8 +861,8 @@ minified result, returning an association list with the paths and byte counts:
 ;; => ((stylesheet . "resources/css/olive.min.css")
 ;;     (destination . "_site/app.min.css")
 ;;     (used-classes . 89)
-;;     (input-bytes . 5217393)
-;;     (output-bytes . 7059))
+;;     (input-bytes . 5172306)
+;;     (output-bytes . 6997))
 #+end_src
 
 The lower-level entry points are exported too: ~scan-used-classes~,
@@ -878,5 +889,5 @@ end-to-end prune and the no-leakage invariant against the sample fixture.
 This reference lists everything the framework generates; the parity table in
 [[file:comparison.org][Compared with Tailwind]] tracks what Tailwind CSS offers beyond it.  The main gaps are
 background gradient alpha stops, the =group=/=peer=/=has=/=not= and
-=aria-/=data-= variants, container queries, 3D transforms, =mask-*=, shadow
-colors, and negative/logical spacing (=-m-*=, =ms-*=, =me-*=).
+=aria-/=data-= variants, container queries, 3D transforms, =mask-*= and
+shadow colors.

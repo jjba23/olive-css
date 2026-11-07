@@ -57,7 +57,8 @@
                                interactive-state-targets
                                state-variant-classes)
   #:re-export (license-header background-classes gradient-classes
-                           gradient-color-classes color-scheme))
+                           gradient-color-classes color-scheme
+                           forced-color-adjust))
 
 ;; The three families Olive CSS reaches for by default: JuliaMono for code,
 ;; Work Sans for prose and Source Serif 4 for long-form reading.  All three are

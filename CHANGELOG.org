@@ -13,7 +13,25 @@ feature reference.
 
 Work that lands after =v1.0.1= is recorded here until it is tagged.
 
-Nothing yet.
+** Added
+
+- *Gradient angles.*  =bg-linear-0=, =bg-linear-45=, =bg-linear-90=,
+  =bg-linear-135=, =bg-linear-180=, =bg-linear-225=, =bg-linear-270= and
+  =bg-linear-315= complete the linear-gradient directions.
+- *Logical spacing.*  =ms-*=, =me-*=, =ps-*= and =pe-*= emit the
+  =margin-inline-start/end= and =padding-inline-start/end= properties, with
+  =ms-auto= and =me-auto=.
+- *Negative margins.*  =.-m-*=, =.-mx-*=, =.-my-*=, the four sides and the
+  logical sides negate the same numeric and t-shirt margin scale.
+- *Forced colors.*  =forced-color-adjust-auto= and =forced-color-adjust-none=
+  expose the =forced-color-adjust= property.
+
+** Changed
+
+- *Smaller minified output.*  Whitespace around color slashes, property colons
+  and block braces is now removed.  The final declaration keeps its semicolon:
+  dropping =;}= saves another ~80 KB, but makes tree-shaking roughly 100x
+  slower, so the default keeps the sub-second prune.
 
 * v1.0.1 - 2026-11-07
 

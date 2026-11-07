@@ -19,6 +19,7 @@
                                   touch-action
                                   scroll-behavior
                                   color-scheme
+                                  forced-color-adjust
                                   interactivity-colors))
 
 (define cursor
@@ -131,6 +132,12 @@
                                                   ("only-light" "only light")
                                                   ("only-dark" "only dark")))))
 
+(define forced-color-adjust
+  (make-parameter (css-rule-variants ".forced-color-adjust-~a"
+                                     #:property 'forced-color-adjust
+                                     #:variants '((auto auto)
+                                                  (none none)))))
+
 (define (interactivity-colors palettes)
   "Palette-aware accent and caret color utilities."
   (append (css-palette-rules ".accent-~a-~a"
@@ -150,7 +157,8 @@
         (field-sizing)
         (touch-action)
         (scroll-behavior)
-        (color-scheme)))
+        (color-scheme)
+        (forced-color-adjust)))
 
 (define (interactivity-classes palettes)
   (append (interactivity-core-classes)

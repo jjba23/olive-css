@@ -89,8 +89,8 @@ The run reports the used-class count and the sizes before and after:
 #+begin_src shell
 $ olive-css tree-shake
 Tree-shaking: 89 used classes
-  resources/css/olive.min.css: 5217393 bytes
-  public/olive.min.css: 7059 bytes
+  resources/css/olive.min.css: 5172306 bytes
+  public/olive.min.css: 6997 bytes
 #+end_src
 
 Pruning reads =.html= and =.htm= files and skips =.git=.  The library

@@ -44,7 +44,9 @@
                          (pt padding-top)
                          (pb padding-bottom)
                          (pl padding-left)
-                         (pr padding-right)))))
+                         (pr padding-right)
+                         (ps padding-inline-start)
+                         (pe padding-inline-end)))))
 
 (define (margin-auto-rules)
   "Generate the =*-auto= margin utilities (e.g. =.mx-auto= center-alignment)."
@@ -60,10 +62,36 @@
          (mt margin-top)
          (mb margin-bottom)
          (ml margin-left)
-         (mr margin-right))))
+         (mr margin-right)
+         (ms margin-inline-start)
+         (me margin-inline-end))))
+
+(define (negative-margin-rules)
+  "Negative margins on the same scale, including the logical sides."
+  (map (lambda (d)
+         (css-rule-variants (string-append ".\\-"
+                                           (symbol->string (car d))
+                                           "-~a")
+                            #:property (cadr d)
+                            #:variants (map (lambda (s)
+                                              (css-size s
+                                                        #:conversion to-rem
+                                                        #:multiplier (- (margin-multiplier))))
+                                            (append positive-numeric-sizes
+                                                    tshirt-sizes))))
+       '((m margin)
+         (mx margin-inline)
+         (my margin-block)
+         (mt margin-top)
+         (mb margin-bottom)
+         (ml margin-left)
+         (mr margin-right)
+         (ms margin-inline-start)
+         (me margin-inline-end))))
 
 (define margin
   (make-parameter (append (margin-auto-rules)
+                          (negative-margin-rules)
                           (map (lambda (d)
                                  (map (lambda (p)
                                         (css-rule-variants (string-append "."
@@ -89,7 +117,9 @@
                                  (mt margin-top)
                                  (mb margin-bottom)
                                  (ml margin-left)
-                                 (mr margin-right))))))
+                                 (mr margin-right)
+                                 (ms margin-inline-start)
+                                 (me margin-inline-end))))))
 
 (define (space-rules axis)
   "Generate child-spacing rules for @var{axis} (`x' or `y').

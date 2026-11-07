@@ -79,6 +79,16 @@
     (l "to left")
     (tl "to top left")))
 
+(define gradient-angles
+  '((0 "0deg")
+    (45 "45deg")
+    (90 "90deg")
+    (135 "135deg")
+    (180 "180deg")
+    (225 "225deg")
+    (270 "270deg")
+    (315 "315deg")))
+
 (define (linear-gradient-rules prefix)
   "Build one linear-gradient rule per direction."
   (css-rule-variants (string-append "." prefix "-~a")
@@ -93,6 +103,13 @@
   "Gradient directions that consume the stop variables."
   (append (linear-gradient-rules "bg-linear-to")
           (linear-gradient-rules "bg-gradient-to")
+          (css-rule-variants ".bg-linear-~a"
+                             #:property 'background-image
+                             #:variants (map (lambda (angle)
+                                               (list (car angle)
+                                                     (format #f "linear-gradient(~a, var(--olive-gradient-stops))"
+                                                             (cadr angle))))
+                                             gradient-angles))
           (list (css-rule ".bg-radial"
                           (css-declaration 'background-image
                                            "radial-gradient(var(--olive-gradient-stops))"))

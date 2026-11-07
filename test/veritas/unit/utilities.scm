@@ -16,19 +16,27 @@
   #:use-module (ice-9 textual-ports)
   #:use-module (veritas veritas)
   #:use-module (olive-css main)
+  #:use-module ((olive-css dsl) #:select (minify-css))
   #:use-module (olive-css decl colors)
   #:use-module (olive-css decl spacing)
   #:export (spec))
 
-(define test-file "/tmp/olive-css-utilities-test.css")
-
 (define (css-of classes)
   "Write CLASSES to a temporary stylesheet and return its text."
-  (parameterize ((minified? #f))
-    (write-css-to-file #:file test-file #:css-lines classes))
-  (let ((css (call-with-input-file test-file get-string-all)))
-    (delete-file test-file)
-    css))
+  (let ((test-file (string-append "/tmp/olive-css-utilities-"
+                                  (number->string (getpid))
+                                  "-"
+                                  (number->string (random 1000000))
+                                  ".css")))
+    (dynamic-wind
+      (lambda () #t)
+      (lambda ()
+        (parameterize ((minified? #f))
+          (write-css-to-file #:file test-file #:css-lines classes))
+        (call-with-input-file test-file get-string-all))
+      (lambda ()
+        (when (file-exists? test-file)
+          (delete-file test-file))))))
 
 (define background-suite
   (suite "background images"
@@ -115,6 +123,11 @@
                                   #:name "the radial direction")
                  (assert-contains #:expect css #:got ".bg-conic"
                                   #:name "conic gradients")
+                 (assert-contains #:expect css #:got ".bg-linear-45"
+                                  #:name "a linear angle")
+                 (assert-contains #:expect css
+                                  #:got "linear-gradient(45deg, var(--olive-gradient-stops))"
+                                  #:name "the angle declaration")
                  (assert-contains #:expect css #:got ".from-redwood-500"
                                   #:name "a from stop")
                  (assert-contains #:expect css #:got "--olive-gradient-from:oklch("
@@ -137,6 +150,55 @@
                                   #:got "--olive-gradient-from:transparent"
                                   #:name "the transparent value")))))
 
+(define logical-spacing-suite
+  (suite "logical and negative spacing"
+         (test "logical sides and negative margins"
+               (let ((css (css-of (list (margin)
+                                        (padding)))))
+                 (assert-contains #:expect css #:got ".ms-4"
+                                  #:name "logical margin start")
+                 (assert-contains #:expect css
+                                  #:got "margin-inline-start:1.12rem"
+                                  #:name "the logical margin start value")
+                 (assert-contains #:expect css #:got ".me-4"
+                                  #:name "logical margin end")
+                 (assert-contains #:expect css
+                                  #:got "margin-inline-end:1.12rem"
+                                  #:name "the logical margin end value")
+                 (assert-contains #:expect css #:got ".ms-auto"
+                                  #:name "logical automatic margin")
+                 (assert-contains #:expect css #:got ".ps-4"
+                                  #:name "logical padding start")
+                 (assert-contains #:expect css
+                                  #:got "padding-inline-start:1.12rem"
+                                  #:name "the logical padding start value")
+                 (assert-contains #:expect css #:got ".pe-4"
+                                  #:name "logical padding end")
+                 (assert-contains #:expect css
+                                  #:got "padding-inline-end:1.12rem"
+                                  #:name "the logical padding end value")
+                 (assert-contains #:expect css #:got "-m-4"
+                                  #:name "negative margin")
+                 (assert-contains #:expect css #:got "-1.12rem"
+                                  #:name "the negative value")
+                 (assert-contains #:expect css #:got "-mt-8"
+                                  #:name "negative side margin")))))
+
+(define forced-color-suite
+  (suite "forced color adjustment"
+         (test "forced-color-adjust auto and none"
+               (let ((css (css-of (forced-color-adjust))))
+                 (assert-contains #:expect css #:got ".forced-color-adjust-none"
+                                  #:name "none")
+                 (assert-contains #:expect css
+                                  #:got "forced-color-adjust:none"
+                                  #:name "the none value")
+                 (assert-contains #:expect css #:got ".forced-color-adjust-auto"
+                                  #:name "auto")
+                 (assert-contains #:expect css
+                                  #:got "forced-color-adjust:auto"
+                                  #:name "the auto value")))))
+
 (define color-scheme-suite
   (suite "color scheme"
          (test "scheme utilities set the color-scheme property"
@@ -154,6 +216,14 @@
                  (assert-contains #:expect css #:got "color-scheme:only dark"
                                   #:name "the only-dark value")))))
 
+(define minifier-suite
+  (suite "minifier"
+         (test "drops optional whitespace and final separators"
+               (assert-equal #:expect ".a{color:red;background:oklch(1 0 0/1);}.b>.c{margin:0 1px;}"
+                             #:got (minify-css ".a {color: red; background: oklch(1 0 0 / 1);}\n.b > .c { margin: 0 1px; }")
+                             #:name "the compact form"))))
+
 (define (spec)
   (veritas-run background-suite scroll-spacing-suite gradient-suite
-               color-scheme-suite))
+               logical-spacing-suite forced-color-suite color-scheme-suite
+               minifier-suite))

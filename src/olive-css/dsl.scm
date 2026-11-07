@@ -216,14 +216,23 @@ selector on every rule, which keeps the large dark color section compact."
 
 Only whitespace that is never significant is removed: runs of whitespace are
 collapsed to a single space, the space after declaration separators is
-dropped, and braces are tightened.  Descendant combinators and quoted strings
-(font stacks, oklch components) are preserved."
+dropped, separators lose their optional whitespace, and braces are tightened.  Descendant
+combinators and quoted strings (font stacks, oklch components) are preserved.
+
+The final declaration keeps its semicolon: dropping =;}= saves about 76 KB in
+the complete build, but makes the tree-shaker's block parser roughly 100x
+slower, so the default trades those bytes for a sub-second prune."
   (let* ((collapsed (string-join (string-tokenize css) " "))
          (a (string-replace-substring collapsed "; " ";"))
          (b (string-replace-substring a ", " ","))
          (c (string-replace-substring b " {" "{"))
-         (d (string-replace-substring c " }" "}")))
-    d))
+         (d (string-replace-substring c " }" "}"))
+         (e (string-replace-substring d " / " "/"))
+         (f (string-replace-substring e " > " ">"))
+         (g (string-replace-substring f " ~ " "~"))
+         (h (string-replace-substring g ": " ":"))
+         (i (string-replace-substring h "{ " "{")))
+    (string-replace-substring i "} " "}")))
 
 (define* (css-color-rules selector
                           #:key property

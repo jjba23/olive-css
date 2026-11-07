@@ -92,8 +92,8 @@ instead of editing code:
 ;; => ((stylesheet . "resources/css/olive.min.css")
 ;;     (destination . "_site/app.min.css")
 ;;     (used-classes . 89)
-;;     (input-bytes . 5217393)
-;;     (output-bytes . 7059))
+;;     (input-bytes . 5172306)
+;;     (output-bytes . 6997))
 #+end_src
 
 ~tree-shake~ returns that association list, so a build script can report the
