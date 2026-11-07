@@ -55,6 +55,13 @@ Nothing yet.
 - ~positive-numeric-sizes~, exported by ~(olive-css sizes)~ for builds that
   need the scale without the zero.
 
+** Fixed
+
+- *The v0.8.0 CLI compiles again.*  The release task left the opening
+  parenthesis of =olive-css-version= outside its match, so the form gained a
+  second one and the released CLI could not be compiled.  The pattern now
+  captures the whole form, with a regression test.
+
 ** Changed
 
 - *CI moved to GitHub Actions.*  Pushes to =trunk= now run =maak-test= and

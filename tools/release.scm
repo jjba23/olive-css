@@ -24,7 +24,7 @@
   #:use-module (ice-9 textual-ports)
   #:use-module (srfi srfi-13)
   #:use-module (olive-css cli)
-  #:export (main release-changelog release-notes))
+  #:export (main release-changelog release-notes rewrite-cli-version))
 
 (define repository
   "https://github.com/jjba23/olive-css")
@@ -122,11 +122,28 @@
   (write-file path
               (replace-first (read-file path) pattern replacement)))
 
+(define (rewrite-cli-version text version)
+  "Rewrite the =olive-css-version= string in TEXT to VERSION.
+
+Only the quoted value changes; the form around it is left byte-for-byte alone,
+so a release cannot unbalance it."
+  (let* ((marker "(define olive-css-version")
+         (form (string-contains text marker)))
+    (unless form
+      (error "no olive-css-version form"))
+    (let* ((open (string-contains text "\"" form))
+           (close (and open (string-contains text "\"" (+ open 1)))))
+      (unless close
+        (error "no olive-css-version string"))
+      (string-append (substring text 0 (+ open 1))
+                     version
+                     (substring text close)))))
+
 (define (refresh-version-files! version)
   "Write VERSION into every recipe that names it, and date the changelog."
-  (set-version-in-file! "src/olive-css/cli.scm"
-                        "(define olive-css-version\n  \")[^\"]+"
-                        (string-append "(define olive-css-version\n  \"" version))
+  (write-file "src/olive-css/cli.scm"
+              (rewrite-cli-version (read-file "src/olive-css/cli.scm")
+                                   version))
   (set-version-in-file! "default.nix"
                         "version = \"[^\"]+\";"
                         (string-append "version = \"" version "\";"))

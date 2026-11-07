@@ -60,5 +60,18 @@
                (assert-false (contains? notes "* Unreleased")
                              #:name "the working section is not"))))
 
+(define version-suite
+  (suite "release version rewrite"
+         (test "replaces the cli version without doubling the opening paren"
+               (let ((rewritten (rewrite-cli-version
+                                 "(define olive-css-version\n  \"0.8.0\")\n"
+                                 "0.8.1")))
+                 (assert-equal #:expect
+                               "(define olive-css-version\n  \"0.8.1\")\n"
+                               #:got rewritten
+                               #:name "the form stays balanced")
+                 (assert-false (contains? rewritten "((define")
+                               #:name "no second opening paren")))))
+
 (define (spec)
-  (veritas-run changer-suite notes-suite))
+  (veritas-run changer-suite notes-suite version-suite))

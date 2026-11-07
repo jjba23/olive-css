@@ -33,8 +33,8 @@
             olive-css-help-text
             olive-css-option-grammar))
 
-((define olive-css-version
-  "0.8.0")
+(define olive-css-version
+  "0.8.1")
 
 (define olive-css-option-grammar
   '((build (single-char #\b)
