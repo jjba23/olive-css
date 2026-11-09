@@ -152,8 +152,8 @@ guix shell -m manifest.scm -- maak build
 [[file:docs/development.org][Development and releases]] covers the tasks, the test suite and the release
 process.  Small, focused commits with a test for every behaviour, please.
 
-This project adheres to the [[https://jointhefreeworld.org/blog/articles/personal/jointhefreeworld-ai-policy/index.html][jointhefreeworld AI policy]]: AI may assist, but a
-human stays in the loop for every contribution.  It also follows the
+This project follows the [[https://jointhefreeworld.org/ai-policy/][jointhefreeworld AI policy]].
+See [[file:AI_POLICY.md][AI_POLICY.md]] for the short version. It also follows the
 [[https://jointhefreeworld.org/blog/articles/personal/jointhefreeworld-code-of-conduct/index.html][jointhefreeworld code of conduct]].
 
 Find the backlog and Kanban board at
