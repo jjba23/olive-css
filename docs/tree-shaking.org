@@ -92,7 +92,7 @@ instead of editing code:
 ;; => ((stylesheet . "resources/css/olive.min.css")
 ;;     (destination . "_site/app.min.css")
 ;;     (used-classes . 89)
-;;     (input-bytes . 5172306)
+;;     (input-bytes . 5475198)
 ;;     (output-bytes . 6997))
 #+end_src
 

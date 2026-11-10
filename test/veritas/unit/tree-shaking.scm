@@ -301,7 +301,11 @@ the rules nested in media queries and the dark-mode scope are visited too."
                                                      (escaped "/50"))
                              #:got (escape-class-name "md:hover:bg-x/50")
                              #:name
-                             "stacked variant carrying an opacity modifier"))
+                             "stacked variant carrying an opacity modifier")
+               (assert-equal #:expect (string-append "mask-t-from-50"
+                                                     (escaped "%"))
+                             #:got (escape-class-name "mask-t-from-50%")
+                             #:name "percentage-suffixed mask utility"))
          (test "ordinary names pass through untouched"
                (assert-equal #:expect "bg-jeans-blue-500"
                              #:got (escape-class-name "bg-jeans-blue-500")

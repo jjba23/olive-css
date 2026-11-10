@@ -604,6 +604,41 @@ Derived color families use the solid shade only (alpha = 1), which is what keeps
   =outline-offset-4=, =outline-offset-8=, =outline-none=, =outline-hidden=,
   =outline-<color>-<shade>=
 
+** Masks — ~decl/masks.scm~
+
+- Image: =mask-none= clears a mask; =mask-radial=, =mask-conic= and
+  =mask-linear-<angle>= create black-to-transparent gradient masks.  Angles
+  use the same =0=, =45= ... =315= scale as background gradients.
+- Edge fades: =mask-t-from-<pct>=, =mask-r-from-<pct>=, =mask-b-from-<pct>=
+  and =mask-l-from-<pct>=, with matching =-to-= forms.  Percentages run from
+  =0%= to =100%= in tens; a =from= class fades to transparent at 100% unless
+  the matching =to= class moves the end.  =mask-x-from-<pct>= /
+  =mask-y-from-<pct>= (and their =-to= forms) cover both sides of an axis in
+  one rule and set =mask-composite: intersect=.
+- Linear stops: =mask-linear-from-<pct>= and =mask-linear-to-<pct>=
+- Radial stops, shape, size and position: =mask-radial-from-<pct>=,
+  =mask-radial-to-<pct>=, =mask-circle=, =mask-ellipse=,
+  =mask-radial-closest-side|closest-corner|farthest-side|farthest-corner=,
+  =mask-radial-at-top-left|top|top-right|left|center|right|bottom-left|bottom|bottom-right=
+- Conic angle and stops: =mask-conic-<angle>=, =mask-conic-from-<pct>=,
+  =mask-conic-to-<pct>=
+- Position: =mask-top-left=, =mask-top=, =mask-top-right=, =mask-left=,
+  =mask-center=, =mask-right=, =mask-bottom-left=, =mask-bottom=,
+  =mask-bottom-right=
+- Size: =mask-auto=, =mask-cover=, =mask-contain=
+- Repeat: =mask-repeat=, =mask-no-repeat=, =mask-repeat-x=,
+  =mask-repeat-y=, =mask-repeat-round=, =mask-repeat-space=
+- Origin: =mask-origin-border=, =mask-origin-padding=, =mask-origin-content=,
+  =mask-origin-fill=, =mask-origin-stroke=, =mask-origin-view=
+- Clip: =mask-clip-border=, =mask-clip-padding=, =mask-clip-content=,
+  =mask-clip-fill=, =mask-clip-stroke=, =mask-clip-view=, =mask-no-clip=
+- Composite: =mask-add=, =mask-subtract=, =mask-intersect=, =mask-exclude=
+- Mode: =mask-alpha=, =mask-luminance=, =mask-match=
+- SVG type: =mask-type-alpha=, =mask-type-luminance=
+
+Gradient masks use black and transparent stops.  The generated stops are
+percentages, not arbitrary colors, and image URLs are left to custom CSS.
+
 ** Filters — ~decl/filters.scm~
 
 Every filter has a =backdrop-= twin (=backdrop-blur-*=, =backdrop-brightness-*=,
@@ -780,8 +815,8 @@ Entry points exported by ~(olive-css main)~:
   responsive sets
 - ~colors~, ~font-family~, ~border-radius~, ~borders~, ~shadows~,
   ~scroll-snap-aligns~, ~scroll-snap-types~, ~gradient-classes~,
-  ~gradient-color-classes~, ~color-scheme~, ~forced-color-adjust~ — individual
-  family generators
+  ~gradient-color-classes~, ~mask-classes~, ~color-scheme~,
+  ~forced-color-adjust~ — individual family generators
 
 Extension helpers from ~(olive-css dsl)~:
 
@@ -814,6 +849,7 @@ Extension helpers from ~(olive-css dsl)~:
 | ~(olive-css decl colors)~         | the 52 oklch palettes |
 | ~(olive-css decl borders)~        | border widths/styles, radius helpers, child dividers |
 | ~(olive-css decl effects)~        | opacity, blend modes, ring, inset-ring, outline, text shadow |
+| ~(olive-css decl masks)~          | gradient masks, edge fades, position, size, repeat, origin, clip, composite, mode, type |
 | ~(olive-css decl filters)~        | blur and color filters, plus backdrop variants |
 | ~(olive-css decl transforms)~     | translate, rotate, scale, skew, origin, will-change |
 | ~(olive-css decl transitions)~    | transitions and keyframe animations |
@@ -826,7 +862,7 @@ Extension helpers from ~(olive-css dsl)~:
 ** Shipped stylesheets
 
 The repository ships pre-built stylesheets in ~resources/css/~: the complete
-~olive.min.css~ (every feature, ~4.9 MiB) and one leaner build per project that
+~olive.min.css~ (every feature, ~5.2 MiB) and one leaner build per project that
 uses Olive CSS (~1.1–2 MiB each), for example
 ~rc-huidkliniek.olive.min.css~, which disables dark mode, uses
 ~reduced-responsive~ and its own palette.  Copy one as-is, or build your own
@@ -861,7 +897,7 @@ minified result, returning an association list with the paths and byte counts:
 ;; => ((stylesheet . "resources/css/olive.min.css")
 ;;     (destination . "_site/app.min.css")
 ;;     (used-classes . 89)
-;;     (input-bytes . 5172306)
+;;     (input-bytes . 5475198)
 ;;     (output-bytes . 6997))
 #+end_src
 
@@ -888,6 +924,6 @@ end-to-end prune and the no-leakage invariant against the sample fixture.
 
 This reference lists everything the framework generates; the parity table in
 [[file:comparison.org][Compared with Tailwind]] tracks what Tailwind CSS offers beyond it.  The main gaps are
-background gradient alpha stops, the =group=/=peer=/=has=/=not= and
-=aria-/=data-= variants, container queries, 3D transforms, =mask-*= and
-shadow colors.
+background gradient alpha stops, mask color stops/custom image values, the
+=group=/=peer=/=has=/=not= and =aria-/=data-= variants, container queries,
+3D transforms and shadow colors.

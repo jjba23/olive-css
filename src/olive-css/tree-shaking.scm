@@ -83,12 +83,13 @@
 
 (define (escape-class-name name)
   "Escape NAME the way a CSS selector escapes it, e.g. \"hover:bg-white\"
-becomes \"hover\\:bg-white\"."
+becomes \"hover\\:bg-white\" and \"mask-t-from-50%\" becomes
+\"mask-t-from-50\\%\"."
   (fold (lambda (replacement acc)
           (string-replace-substring acc
                                     (car replacement)
                                     (cdr replacement))) name
-        '((":" . "\\:") ("/" . "\\/"))))
+        '((":" . "\\:") ("/" . "\\/") ("%" . "\\%"))))
 
 (define (extract-classes-from-html file-path)
   "Return the (escaped) class names referenced by the `class' attributes of the

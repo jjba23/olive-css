@@ -51,7 +51,7 @@ average of the category coverage underneath.  It is a useful gauge of where the
 gaps are, not a formal audit:
 
 #+begin_example
-Estimated feature parity with Tailwind CSS: ~83%
+Estimated feature parity with Tailwind CSS: ~85%
 #+end_example
 
 | Category                | Coverage | Main gaps                                                          |
@@ -61,9 +61,9 @@ Estimated feature parity with Tailwind CSS: ~83%
 | Spacing                 | ~85%     | space/divide reverse                                               |
 | Sizing                  | ~85%     | named container widths (max-w-sm ... max-w-7xl)                    |
 | Typography              | ~90%     | content-* / list-image-* pseudo utilities                          |
-| Backgrounds             | ~90%     | mask utilities and gradient alpha stops                            |
+| Backgrounds             | ~90%     | gradient alpha stops                                              |
 | Borders                 | ~90%     | logical border-s/e, divide colors/reverse                          |
-| Effects                 | ~65%     | shadow-color, mask-*                                               |
+| Effects                 | ~85%     | shadow-color and mask color stops/custom image values              |
 | Filters                 | ~70%     | hue-rotate, drop-shadow, filter-none, backdrop-opacity             |
 | Tables                  | ~100%    | -                                                                  |
 | Transitions & animation | ~100%    | -                                                                  |
@@ -73,15 +73,16 @@ Estimated feature parity with Tailwind CSS: ~83%
 | Accessibility           | ~100%    | -                                                                  |
 | Variants                | ~40%     | group/peer/has/not, aria/data, container queries, motion/print/rtl |
 
-_Overall: ~83% (unweighted average of the category estimates above)._
+_Overall: ~85% (unweighted average of the category estimates above)._
 
 * Where the gaps are
 :PROPERTIES:
 :CUSTOM_ID: gaps
 :END:
 
-The fastest ways to close the gap are mask utilities, extra variants
-(group/peer, aria/data, container queries) and gradient alpha stops.  Everything already available is documented in the
+The fastest ways to close the gap are extra variants (group/peer, aria/data,
+container queries), gradient alpha stops, and shadow/mask color stops.
+Everything already available is documented in the
 [[file:reference.org][utility reference]]; nothing here is promised for a future release.
 
 * Related

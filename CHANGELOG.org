@@ -13,7 +13,12 @@ feature reference.
 
 Work that lands after =v1.1.0= is recorded here until it is tagged.
 
-Nothing yet.
+** Added
+
+- *Mask utilities.*  =mask-none=, linear/radial/conic gradient masks, side
+  =from=/=to= fades, position, size, repeat, origin, clip, composite, mode
+  and SVG type.  Gradient stops use 10% steps; arbitrary image values and
+  color stops are not generated.
 
 * v1.1.0 - 2026-11-07
 

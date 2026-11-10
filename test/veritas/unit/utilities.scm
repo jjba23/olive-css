@@ -26,7 +26,7 @@
   (let ((test-file (string-append "/tmp/olive-css-utilities-"
                                   (number->string (getpid))
                                   "-"
-                                  (number->string (random 1000000))
+                                  (symbol->string (gensym "css-"))
                                   ".css")))
     (dynamic-wind
       (lambda () #t)
@@ -216,6 +216,120 @@
                  (assert-contains #:expect css #:got "color-scheme:only dark"
                                   #:name "the only-dark value")))))
 
+(define mask-suite
+  (suite "masks"
+         (test "gradient masks and edge fades"
+               (let ((css (css-of (mask-classes))))
+                 (assert-contains #:expect css #:got ".mask-none"
+                                  #:name "mask removal")
+                 (assert-contains #:expect css
+                                  #:got "mask-image:none"
+                                  #:name "the none declaration")
+                 (assert-contains #:expect css #:got ".mask-linear-45"
+                                  #:name "an angled linear mask")
+                 (assert-contains #:expect css
+                                  #:got "--olive-mask-linear-angle:45deg"
+                                  #:name "the linear angle")
+                 (assert-contains #:expect css
+                                  #:got "linear-gradient(var(--olive-mask-linear-angle,0deg),black var(--olive-mask-linear-from,0%),transparent var(--olive-mask-linear-to,100%))"
+                                  #:name "the linear image")
+                 (assert-contains #:expect css
+                                  #:got "mask-linear-from-50"
+                                  #:name "a linear from stop")
+                 (assert-contains #:expect css
+                                  #:got "--olive-mask-linear-from:50%"
+                                  #:name "the linear from value")
+                 (assert-contains #:expect css #:got ".mask-radial"
+                                  #:name "a radial mask")
+                 (assert-contains #:expect css
+                                  #:got "radial-gradient(var(--olive-mask-radial-shape,ellipse) var(--olive-mask-radial-size,farthest-corner) at var(--olive-mask-radial-position,center),black var(--olive-mask-radial-from,0%),transparent var(--olive-mask-radial-to,100%))"
+                                  #:name "the radial image")
+                 (assert-contains #:expect css #:got ".mask-circle"
+                                  #:name "a radial shape")
+                 (assert-contains #:expect css
+                                  #:got "--olive-mask-radial-shape:circle"
+                                  #:name "the radial shape value")
+                 (assert-contains #:expect css
+                                  #:got ".mask-radial-at-top-right"
+                                  #:name "a radial position")
+                 (assert-contains #:expect css
+                                  #:got "--olive-mask-radial-position:top right"
+                                  #:name "the radial position value")
+                 (assert-contains #:expect css #:got ".mask-conic-90"
+                                  #:name "an angled conic mask")
+                 (assert-contains #:expect css
+                                  #:got "--olive-mask-conic-angle:90deg"
+                                  #:name "the conic angle")
+                 (assert-contains #:expect css
+                                  #:got "conic-gradient(from var(--olive-mask-conic-angle,0deg),black var(--olive-mask-conic-from,0%),transparent var(--olive-mask-conic-to,100%))"
+                                  #:name "the conic image")
+                 (assert-contains #:expect css
+                                  #:got "mask-t-from-50"
+                                  #:name "a top edge fade")
+                 (assert-contains #:expect css
+                                  #:got "linear-gradient(to top,black var(--olive-mask-top-from,0%),transparent var(--olive-mask-top-to,100%))"
+                                  #:name "the top edge image")
+                 (assert-contains #:expect css
+                                  #:got "mask-x-from-50"
+                                  #:name "a horizontal edge fade")
+                 (assert-contains #:expect css
+                                  #:got "linear-gradient(to right,black var(--olive-mask-right-from,0%),transparent var(--olive-mask-right-to,100%)),linear-gradient(to left,black var(--olive-mask-left-from,0%),transparent var(--olive-mask-left-to,100%))"
+                                  #:name "both horizontal layers")
+                 (assert-contains #:expect css
+                                  #:got "mask-composite:intersect"
+                                  #:name "horizontal layers intersect")))
+         (test "position, size, repeat, origin, clip and modes"
+               (let ((css (css-of (mask-classes))))
+                 (assert-contains #:expect css #:got ".mask-top-left"
+                                  #:name "mask position")
+                 (assert-contains #:expect css
+                                  #:got "mask-position:top left"
+                                  #:name "the position declaration")
+                 (assert-contains #:expect css #:got ".mask-cover"
+                                  #:name "mask size")
+                 (assert-contains #:expect css
+                                  #:got "mask-size:cover"
+                                  #:name "the size declaration")
+                 (assert-contains #:expect css #:got ".mask-repeat-x"
+                                  #:name "mask repeat")
+                 (assert-contains #:expect css
+                                  #:got "mask-repeat:repeat-x"
+                                  #:name "the repeat declaration")
+                 (assert-contains #:expect css
+                                  #:got ".mask-origin-view"
+                                  #:name "mask origin")
+                 (assert-contains #:expect css
+                                  #:got "mask-origin:view-box"
+                                  #:name "the origin declaration")
+                 (assert-contains #:expect css
+                                  #:got ".mask-clip-fill"
+                                  #:name "mask clip")
+                 (assert-contains #:expect css
+                                  #:got "mask-clip:fill-box"
+                                  #:name "the clip declaration")
+                 (assert-contains #:expect css
+                                  #:got ".mask-no-clip"
+                                  #:name "no mask clip")
+                 (assert-contains #:expect css
+                                  #:got "mask-clip:no-clip"
+                                  #:name "the no-clip declaration")
+                 (assert-contains #:expect css #:got ".mask-intersect"
+                                  #:name "mask composite")
+                 (assert-contains #:expect css
+                                  #:got "mask-composite:intersect"
+                                  #:name "the composite declaration")
+                 (assert-contains #:expect css #:got ".mask-alpha"
+                                  #:name "mask mode")
+                 (assert-contains #:expect css
+                                  #:got "mask-mode:alpha"
+                                  #:name "the mode declaration")
+                 (assert-contains #:expect css
+                                  #:got ".mask-type-luminance"
+                                  #:name "SVG mask type")
+                 (assert-contains #:expect css
+                                  #:got "mask-type:luminance"
+                                  #:name "the type declaration")))))
+
 (define minifier-suite
   (suite "minifier"
          (test "drops optional whitespace and final separators"
@@ -226,4 +340,4 @@
 (define (spec)
   (veritas-run background-suite scroll-spacing-suite gradient-suite
                logical-spacing-suite forced-color-suite color-scheme-suite
-               minifier-suite))
+               mask-suite minifier-suite))
