@@ -1,3 +1,9 @@
+olive-css (1.1.3-1) unstable; urgency=medium
+
+  * Release v1.1.3: the funding file carries a custom funding URL.
+
+ -- Josep Bigorra <jjbigorra@gmail.com>  di, 10 nov 2026 21:03:00 +0100
+
 olive-css (1.1.0-1) unstable; urgency=medium
 
   * Release v1.1.0.

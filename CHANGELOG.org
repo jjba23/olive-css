@@ -11,7 +11,7 @@ feature reference.
 
 * Unreleased
 
-Work that lands after =v1.1.0= is recorded here until it is tagged.
+Work that lands after =v1.1.3= is recorded here until it is tagged.
 
 ** Added
 
@@ -19,6 +19,14 @@ Work that lands after =v1.1.0= is recorded here until it is tagged.
   =from=/=to= fades, position, size, repeat, origin, clip, composite, mode
   and SVG type.  Gradient stops use 10% steps; arbitrary image values and
   color stops are not generated.
+
+* v1.1.3 - 2026-11-10
+
+** Changed
+
+- The funding file now carries a custom funding URL that points at
+  [[https://buymeacoffee.com/jjbigorra][Buy Me a Coffee]], so the repository
+  shows a Sponsor button.
 
 * v1.1.0 - 2026-11-07
 
