@@ -9,6 +9,10 @@ by the release they belong to, and releases correspond to the repository's git
 tags.  See [[file:README.org][the README]] for installation, usage and the
 feature reference.
 
+* v1.1.4 - 2026-11-12
+
+- Builds against the channels this project builds against: the jointhefreeworld collection at v1.0.4, and Guix master `3b4e873`.
+
 * Unreleased
 
 Work that lands after =v1.1.3= is recorded here until it is tagged.

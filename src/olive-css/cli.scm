@@ -34,7 +34,7 @@
             olive-css-option-grammar))
 
 (define olive-css-version
-  "1.1.3")
+  "1.1.4")
 
 (define olive-css-option-grammar
   '((build (single-char #\b)
