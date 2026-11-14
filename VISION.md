@@ -32,26 +32,30 @@ at once.
 
 The pruning half is the other product. The tree-shaker imports only
 `(olive-css license)`, so pruning never loads the generator; it walks a built site
-for `.html` and `.htm`, reads every `class` attribute, escapes the names the way
-CSS escapes them (`hover:bg-x` becomes `hover\:bg-x`), de-duplicates, then parses
-the stylesheet into *nested blocks* rather than matching lines, so a rule inside
-`@media`, `@supports`, `@layer` or the dark-mode block is understood as nested. A
-5.2 MB build becomes about 7 KB for the sample page.
+for the file suffixes a build names, reads the class names its `scan-mode`
+understands (`class` attributes, alternatively SXML `(class "...")` attributes, or
+nothing at all when the build declares its classes), escapes the names the way CSS
+escapes them (`hover:bg-x` becomes `hover\:bg-x`), de-duplicates, then parses the
+stylesheet into *nested blocks* rather than matching lines, so a rule inside
+`@media`, `@container`, `@supports`, `@layer` or the dark-mode block is understood
+as nested. A 9.1 MB build becomes about 7 KB for the sample page.
 
-`docs/comparison.org` measures the utility surface honestly: ~85% parity with
+`docs/comparison.org` measures the utility surface honestly: ~95% parity with
 Tailwind v4's families, with the weakest category named rather than hidden —
-variants at ~40%, since `group`, `peer`, `has`, `not`, `aria-*`, `data-*`, container
-queries and the motion/print/rtl variants are absent; transforms at ~65% for want
-of 3D; filters at ~70% — and gradient alpha stops, shadow colours and mask colour
-stops are the cheapest missing pieces.
+variants at ~90%, where what is left is arbitrary values and stacked
+combinations rather than whole families; effects and SVG at ~90%, for want of
+mask colour stops and `stroke-dasharray`; and arbitrary values
+(`w-[13px]`, `content-['x']`) everywhere, which a static generator cannot
+enumerate and therefore cannot prune.
 
 ## The vision
 
-1. **A Tailwind user can switch without rewriting a page.** The named gaps — the
-   `group`/`peer`/`has` variants, `aria-*` and `data-*`, container queries, 3D
-   transforms, gradient and shadow colour stops — are a finite list, and closing
-   it is the difference between "85% and it looks right in a demo" and a
-   framework someone can adopt for a real site.
+1. **A Tailwind user can switch without rewriting a page.** The named gaps —
+   `group`/`peer`/`has`, `aria-*` and `data-*`, container queries, 3D
+   transforms, gradient and shadow colour stops — have landed, which is the
+   difference between "it looks right in a demo" and a framework someone can
+   adopt for a real site. What remains is the arbitrary-value escape hatch and
+   stacking, both of which are design decisions rather than missing families.
 2. **The generator never has to understand your templates.** On-demand
    generation needs a parser for your HTML, or your JSX, or your Phoenix
    templates. Generating everything and pruning the built output needs only the
@@ -66,33 +70,23 @@ stops are the cheapest missing pieces.
    the stylesheet has no rule for — a typo that today ships unstyled.
 5. **A build is a value you can measure.** Every build has a size, a rule count and
    a cost in bytes per family, and today nothing reports any of them. A release that
-   changes the minifier or the scales should say what it did to 5.2 MB.
+   changes the minifier or the scales should say what it did to 9.1 MB.
 
 ## Features that are in scope and not built yet
 
-- **The missing variants.** `group-hover`, `peer-checked`, `has-*`, `not-*`,
-  `aria-*`, `data-*`, container queries, `motion-safe`/`motion-reduce`, `print` and
-  the rtl/ltr pair — the category `comparison.org` puts at ~40%. The hard part is
-  `group` and `peer`: they need a selector *shape* rather than a prefix, breaking
-  the assumption that a variant is a string prepended to a selector, and `has-*`
-  needs `:has()` plus a decision about how deep a combinator to author.
-- **Gradient alpha stops and shadow colours** — `from-red-500/50`, `shadow-red-500`
-  — the cheapest remaining percentage points. The hard part is that a colour stop
-  is a *pair* of declarations (the custom property holding the channels, the shadow
-  reading it), so palette arithmetic has to be emitted as variables, not literals.
-- **3D transforms and the rest of the filter set**, at ~65% and ~70%:
-  `perspective-*`, `backface-*`, `rotate-x/y/z`, `hue-rotate-*`, `drop-shadow-*`
-  and `backdrop-opacity-*`. The hard part is composition: `transform` and `filter`
-  are one property each, so a family spanning several axes needs accumulated state
-  rather than independent declarations.
-- **Named container widths** (`max-w-sm` … `max-w-7xl`) and the
-  `content-*`/`list-image-*` pseudo-element utilities. The hard part is agreeing on
-  a second width vocabulary next to the t-shirt scale `sizes.scm` already defines,
-  without renaming what sites already use.
-- **Logical borders**: `border-s`/`border-e` alongside `divide-*` colours and the
-  `space`/`divide` reverse variants. The hard part is that these emit a
-  `:not(:last-child)` descendant selector, which the tree-shaker must match as
-  *two* class names in one selector.
+- **Mask colour stops and custom mask images.** The last named family Tailwind
+  has and this generator does not: the masks module draws black-to-transparent
+  gradients, so a coloured stop or an image URL means custom CSS.
+- **`stroke-dasharray` and friends** in `decl/svg.scm`.
+- **Arbitrary values** (`w-[13px]`, `content-['x']`, `[&>svg]`): one small,
+  explicit, recognised shape, because a class the generator cannot enumerate
+  cannot be pruned.
+- **Stacked variants** (`md:group-hover:bg-x`, `print:hover:bg-x`). The
+  selector, at-rule and state layers are generated independently, so a
+  combination needs an explicit entry in a build. Combining two layers costs
+  their product in bytes, so the decision is about which combinations to
+  afford, not about whether the machinery allows it.
+
 
 ## New features that would be worth having
 
@@ -116,26 +110,21 @@ stops are the cheapest missing pieces.
 
 ## Contributions that would move the needle
 
-1. **Gradient alpha stops and shadow colours.** The cheapest percentage points on
-   the parity table, in one or two `decl/` modules, testable against the existing
-   `utilities.scm` assertions — and the change that teaches a new contributor how a
-   colour family is emitted.
-2. **`olive-css check`.** Built on the pruner's existing scan, it turns a silent
+1. **`olive-css check`.** Built on the pruner's existing scan, it turns a silent
    class of bug — a typo that ships unstyled — into a non-zero exit, and it is what
    a user wants the first time they misspell `md:flex`.
-3. **The print, motion and rtl variants.** Prefix-shaped like the ones that already
-   exist, so they need no change to the variant machinery — only the media query
-   strings and a test each. The cheapest way to move the weakest category.
-4. **`olive-css size`, and a byte budget in the CI task.** It puts the minifier's
+2. **`olive-css size`, and a byte budget in the CI task.** It puts the minifier's
    own trade-offs — the changelog already discusses giving up `;}` for a 100×
-   slowdown in tree-shaking — under a number rather than under memory.
-5. **`group` and `peer` variants.** The hard one, worth doing carefully: it changes
-   the variant contract from "prefix the selector" to "build the selector", a design
-   decision to record before it is code.
-6. **3D transforms, the rest of the filter set, and container queries.** A `decl/`
-   module each for the first two; container queries need `@container` named blocks
-   in the generator *and* the pruner's nested-block parse to keep up, so they are
-   the first task here that touches both halves.
+   slowdown in tree-shaking — under a number rather than under memory. The
+   complete build grew by four megabytes in one pass; a per-family byte report
+   would have said so per family.
+3. **Mask colour stops and custom mask images.** The last named family Tailwind
+   has and `decl/masks.scm` does not.
+4. **An arbitrary-value shape**, small and explicit enough that the pruner can
+   keep it: `p-[13px]` and `content-['x']`, not a general CSS parser.
+5. **Stacked variants**, generated per requested pair (`md:group-hover:`) rather
+   than as a cross-product, so the byte cost stays proportional to what a site
+   asked for.
 
 ## Compared to related projects
 
@@ -168,17 +157,21 @@ this table can claim.
 ## In the long run
 
 **Generate everything, prune what is used.** The architectural bet, to be defended
-with numbers rather than claimed: a 5.2 MB build and a 7 KB output mean the
-expensive work happens once per framework release and the cheap work once per site.
-In exchange the framework never parses a template — it works with HTML, a
+with numbers rather than claimed: a 9.1 MB build and a 7 KB output mean the
+expensive work happens once per framework release and the cheap work once per
+site. In exchange the framework never parses a template — it works with HTML, a
 Sitebuilder output, whatever a project writes — and the generator stays a pure
-function of its parameters.
+function of its parameters. The three scanning modes are where that trade bends:
+an application that builds class names at run time declares them
+(`preserved-classes`, `preserved-patterns`) rather than making the pruner parse a
+program.
 
 **The scales are the API.** `sizes.scm` holds the t-shirt sizes, numeric steps,
-fractions, trackings, alphas and colour weights, and every `decl/` module reads
-them. Parity with Tailwind is a vocabulary question before it is a code question:
-matching means matching the names and the steps, and the framework's durability
-depends on those lists staying readable and documented as the decisions they are.
+fractions, container widths, trackings, alphas and colour weights, and every
+`decl/` module reads them. Parity with Tailwind is a vocabulary question before
+it is a code question: matching means matching the names and the steps, and the
+framework's durability depends on those lists staying readable and documented as
+the decisions they are.
 
 **No toolchain is the moat.** The site that uses Olive CSS has no `node_modules`,
 no lockfile to audit and no build step to keep working between other projects'

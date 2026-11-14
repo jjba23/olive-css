@@ -27,8 +27,10 @@ understands.
 In one sentence: *Tailwind's syntax, a Lisp engine, and a stylesheet you own.*
 
 #+begin_src html
-<div class="m-2 px-4 py-6 bg-jeans-blue-500 md:bg-asparagus-300 hover:bg-tawny-700">
-  <span class="text-white font-bold font-serif">Hello Olive CSS!</span>
+<div class="group m-2 px-4 py-6 bg-jeans-blue-500 md:bg-asparagus-300 hover:bg-tawny-700">
+  <span class="text-white font-bold font-serif group-hover:text-tawny-700">
+    Hello Olive CSS!
+  </span>
 </div>
 #+end_src
 
@@ -38,9 +40,11 @@ In one sentence: *Tailwind's syntax, a Lisp engine, and a stylesheet you own.*
 :END:
 
 - *Familiar* :: If you know Tailwind, you already know the class names.  The
-  reference lists every family Olive CSS emits.
+  reference lists every family Olive CSS emits, variants included: =group-hover=,
+  =peer-checked=, =has-*=, =not-*=, =aria-*=, =data-*=, =print:=,
+  =motion-safe=/=motion-reduce=, =rtl:=/=ltr:= and container queries.
 - *Hackable* :: A build is a Scheme program.  Choose the colours, breakpoints,
-  states and scales you need, or add a utility family of your own.
+  states, variants and scales you need, or add a utility family of your own.
 - *Self-contained* :: One command generates a stylesheet.  No package manager,
   no watcher, no JavaScript runtime is needed to serve it.
 - *Small in production* :: The complete stylesheet is deliberately generous;

@@ -31,7 +31,7 @@ olive-css COMMAND [OPTIONS]
 | Command      | What it does                                              |
 |--------------+-----------------------------------------------------------|
 | =generate=   | write one shipped build, or all of them (the default)     |
-| =tree-shake= | keep only the classes the built HTML under a directory uses |
+| =tree-shake= | keep only the classes the built site under a directory uses |
 | =list=       | print the build names, their files and their descriptions |
 | =--help=     | print the full help page                                  |
 | =--version=  | print the version                                         |
@@ -75,27 +75,39 @@ olive-css: wrote resources/css/lucidplan.olive.min.css (lucidplan)
 
 #+begin_example
 olive-css tree-shake [--directory DIR] [--stylesheet FILE] [--output FILE]
+                     [--mode html|sxml|manifest]
+                     [--keep CLASSES] [--keep-pattern REGEXPS]
 #+end_example
 
-- =--directory DIR= (=-d=) :: the built HTML to scan, searched recursively.
+- =--directory DIR= (=-d=) :: the built files to scan, searched recursively.
   Default =public=.
 - =--stylesheet FILE= (=-s=) :: the compiled stylesheet to prune.  Default
   =resources/css/olive.min.css=.
 - =--output FILE= (=-o=) :: the output name, resolved inside =--directory=.
   Default =olive.min.css=.
+- =--mode MODE= (=-m=) :: what each file is read for.  =html= reads class
+  attributes (the default), =sxml= also reads SXML =(class "...")= attributes,
+  and =manifest= reads no file at all.
+- =--keep CLASSES= (=-k=) :: comma-separated classes to keep as written, for
+  the names an application builds at run time.
+- =--keep-pattern REGEXPS= :: comma-separated regular expressions; a rule whose
+  class name matches one is kept, which is how a whole family
+  (=text-.*-500=) survives.
 
-The run reports the used-class count and the sizes before and after:
+The run reports the mode, the kept-class count and the sizes before and after:
 
 #+begin_src shell
 $ olive-css tree-shake
-Tree-shaking: 89 used classes
-  resources/css/olive.min.css: 5475198 bytes
-  public/olive.min.css: 6997 bytes
+Tree-shaking (html mode): 89 classes kept
+  resources/css/olive.min.css: 9065114 bytes
+  public/olive.min.css: 7153 bytes
 #+end_src
 
-Pruning reads =.html= and =.htm= files and skips =.git=.  The library
-parameters behind the options, and how the pruner treats media queries and the
-dark-mode scope, are in [[file:tree-shaking.org][Tree shaking]].
+Pruning reads the files ~scanned-file-types~ names (default =.html= and =.htm=)
+and skips =.git=.  An unknown mode is refused with status 1 and the modes it
+knows are printed.  The library parameters behind the options, and how the
+pruner treats media queries, the dark-mode scope and selectors that name more
+than one class, are in [[file:tree-shaking.org][Tree shaking]].
 
 * =list=
 :PROPERTIES:

@@ -28,7 +28,7 @@
 | Customization    | Average (via CSS/JS config)                | ✔️ Extensive (via code and an expressive DSL)            |
 | Functional API   | ❌                                         | ✔️                                                       |
 | Utility coverage | Broad                                      | ✔️ Broad (see the parity estimate below)                 |
-| State variants   | A fixed set, JIT-generated                 | ✔️ Tunable (hover, focus, active, ... via parameters)    |
+| State variants   | A fixed set, JIT-generated                 | ✔️ Tunable (state, group/peer, has/not, aria/data, at-rule, container - via parameters) |
 | Responsive       | All utilities, on demand                   | ✔️ All utilities (full set is opt-in to keep builds lean)|
 | Output control   | Limited; the JIT constrains what you get   | ✔️ Full (generate exactly what you want)                 |
 | Output size      | Small (JIT emits only used utilities)      | ✔️ Minified + content-aware tree-shaking (a few KiB)     |
@@ -51,37 +51,41 @@ average of the category coverage underneath.  It is a useful gauge of where the
 gaps are, not a formal audit:
 
 #+begin_example
-Estimated feature parity with Tailwind CSS: ~85%
+Estimated feature parity with Tailwind CSS: ~95%
 #+end_example
 
 | Category                | Coverage | Main gaps                                                          |
 |-------------------------+----------+--------------------------------------------------------------------|
 | Layout                  | ~95%     | -                                                                  |
-| Flexbox & grid          | ~90%     | space/divide =reverse=                                             |
-| Spacing                 | ~85%     | space/divide reverse                                               |
-| Sizing                  | ~85%     | named container widths (max-w-sm ... max-w-7xl)                    |
-| Typography              | ~90%     | content-* / list-image-* pseudo utilities                          |
-| Backgrounds             | ~90%     | gradient alpha stops                                              |
-| Borders                 | ~90%     | logical border-s/e, divide colors/reverse                          |
-| Effects                 | ~85%     | shadow-color and mask color stops/custom image values              |
-| Filters                 | ~70%     | hue-rotate, drop-shadow, filter-none, backdrop-opacity             |
+| Flexbox & grid          | ~95%     | -                                                                  |
+| Spacing                 | ~95%     | -                                                                  |
+| Sizing                  | ~95%     | -                                                                  |
+| Typography              | ~95%     | arbitrary =content-['x']= strings                                  |
+| Backgrounds             | ~95%     | -                                                                  |
+| Borders                 | ~95%     | -                                                                  |
+| Effects                 | ~90%     | mask color stops/custom image values                                |
+| Filters                 | ~95%     | -                                                                  |
 | Tables                  | ~100%    | -                                                                  |
 | Transitions & animation | ~100%    | -                                                                  |
-| Transforms              | ~65%     | 3D (perspective, backface, per-axis rotate/translate)              |
-| Interactivity           | ~90%     | -                                                                  |
+| Transforms              | ~95%     | -                                                                  |
+| Interactivity           | ~95%     | -                                                                  |
 | SVG                     | ~90%     | stroke-dasharray and friends                                       |
 | Accessibility           | ~100%    | -                                                                  |
-| Variants                | ~40%     | group/peer/has/not, aria/data, container queries, motion/print/rtl |
+| Variants                | ~90%     | arbitrary values (=[&>*]=, =has-[img]=), stacked non-dark variants |
 
-_Overall: ~85% (unweighted average of the category estimates above)._
+_Overall: ~95% (unweighted average of the category estimates above)._
 
 * Where the gaps are
 :PROPERTIES:
 :CUSTOM_ID: gaps
 :END:
 
-The fastest ways to close the gap are extra variants (group/peer, aria/data,
-container queries), gradient alpha stops, and shadow/mask color stops.
+The remaining gaps are the ones a static generator cannot close by naming more
+classes: arbitrary values (=w-[13px]=, =content-['x']=, =[&>svg]=), and stacked
+variants (=md:group-hover:=), which the two independent layers do not combine.
+Mask color stops are the last named family Tailwind has and this generator does
+not.
+
 Everything already available is documented in the
 [[file:reference.org][utility reference]]; nothing here is promised for a future release.
 

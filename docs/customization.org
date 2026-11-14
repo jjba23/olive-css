@@ -61,8 +61,17 @@ a stylesheet the project ships.
 | ~responsive-classes~         | ~#f~, meaning ~lean-responsive-classes~        | families that get a responsive copy            |
 | ~state-variants~             | ~'(hover)~                                     | broad-tier state prefixes                      |
 | ~state-variant-targets~      | ~#f~, meaning fonts, type, transforms, effects, shadows, colours | rules the broad tier applies to |
-| ~interactive-state-variants~ | ~'(focus focus-visible active)~                | interactive-tier state prefixes                |
+| ~interactive-state-variants~ | ~'(focus focus-visible active before after)~   | interactive-tier state prefixes                |
 | ~interactive-state-targets~  | ~#f~, meaning typography, transforms, effects  | rules the interactive tier applies to          |
+| ~selector-variants~          | ~'("group-hover" "peer-checked")~              | variants that reshape the selector             |
+| ~selector-variant-targets~   | ~#f~, meaning fonts, type, transforms, effects, shadows and the solid palette colours | families the selector variants cover |
+| ~at-rule-variants~           | ~print=, =motion-safe=, =motion-reduce=        | variant prefix and the at-rule that qualifies it |
+| ~at-rule-variant-targets~    | ~#f~, meaning layout, box, type, transforms, effects | families the at-rule variants cover |
+| ~container-breakpoints~      | =sm= 24rem ... =7xl= 80rem                     | container query scale                          |
+| ~container-variants~         | ~'("sm" "md" "lg" "xl")~                       | container query variants to generate           |
+| ~aria-variants~, ~data-variants~ | the ARIA and =data-= vocabulary this build generates | class suffix and the attribute selector |
+| ~gradient-alphas~            | the shared opacity vocabulary                  | opacity modifiers a gradient stop accepts      |
+| ~list-images~, ~content-strings~ | ~'()~                                      | marker images and generated strings a build adds |
 | ~sm-breakpoint~ ... ~xl-breakpoint~ | ~"640px"~, ~"768px"~, ~"1024px"~, ~"1280px"~ | declared breakpoint widths              |
 | ~sans-font-family~, ~serif-font-family~, ~mono-font-family~ | Work Sans / Source Serif 4 / JuliaMono stacks | font family lists             |
 | ~border-style~               | ~solid~                                        | style paired with border widths                |
@@ -143,6 +152,46 @@ targets parameter to a list of rules to widen coverage:
 #+begin_src scheme
 (parameterize ((state-variants '(hover focus-within odd))
                (interactive-state-variants '(focus focus-visible active disabled checked)))
+  (olive-css-gen))
+#+end_src
+
+** Variants that are a selector shape
+
+Not every variant is a prefix: =group-hover= names an ancestor's state,
+=peer-checked= a preceding sibling's, =has-checked= wraps the state in a
+functional pseudo-class, =aria-expanded= and =data-open= name an attribute, and
+=rtl= scopes the rule.  Those are generated from ~selector-variants~, a list of
+names, over ~selector-variant-targets~:
+
+#+begin_src scheme
+(parameterize ((selector-variants '("group-hover" "peer-checked"
+                                    "has-checked" "not-focus"
+                                    "aria-expanded" "rtl")))
+  (olive-css-gen))
+#+end_src
+
+The vocabulary is built from the state list: =group-<state>=, =peer-<state>=,
+=has-<state>= and =not-<state>= exist for every state name, so =group-focus= and
+=has-disabled= are one entry away.  =aria-= takes ~aria-variants~ (the ARIA
+vocabulary, mapped to attribute selectors) and =data-= takes ~data-variants~,
+which a build extends with the values its markup actually sets.
+
+Their default targets are the interactive tier plus the solid palette colours:
+=group-hover:bg-x-500= works, while the whole opacity cross-product is not
+duplicated once per variant.  Bind ~selector-variant-targets~ to
+~(default-state-targets)~ to get it anyway.
+
+** Variants that are an at-rule
+
+~at-rule-variants~ maps a prefix to the block that qualifies it, so =print:=,
+=motion-safe:= and =motion-reduce:= wrap their rules in a media query.
+~container-variants~ does the same for container queries: =@sm:flex= comes from
+~container-breakpoints~, and measures the nearest element that carries the
+=.@container= utility.
+
+#+begin_src scheme
+(parameterize ((at-rule-variants '(("print" . "@media print")))
+               (container-variants '("sm" "md")))
   (olive-css-gen))
 #+end_src
 
