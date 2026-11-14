@@ -1,3 +1,9 @@
+olive-css (2.0.0-1) unstable; urgency=medium
+
+  * Release v2.0.0.
+
+ -- Josep Bigorra <jjbigorra@gmail.com>  za, 14 nov 2026 22:20:50 +0100
+
 olive-css (1.1.4-1) unstable; urgency=medium
 
   * Build against the jointhefreeworld collection at v1.0.4.
