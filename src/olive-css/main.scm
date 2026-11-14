@@ -51,12 +51,27 @@
                                lean-responsive-classes
                                palette-utility-classes
                                color-base-classes
+                               shadows
+                               shadow-colors
                                utility-classes
                                state-variants
                                state-variant-targets
                                interactive-state-variants
                                interactive-state-targets
-                               state-variant-classes)
+                               state-variant-classes
+                               selector-variants
+                               selector-variant-targets
+                               selector-variant-classes
+                               default-selector-variant-targets
+                               at-rule-variants
+                               at-rule-variant-targets
+                               at-rule-variant-classes
+                               default-at-rule-variant-targets
+                               aria-variants
+                               data-variants
+                               container-breakpoints
+                               container-variants
+                               variant-classes)
   #:re-export (license-header background-classes gradient-classes
                            gradient-color-classes color-scheme
                            forced-color-adjust mask-classes))
@@ -224,24 +239,65 @@
                         (cons 'wine
                               (wine)))))
 
+;; Every shadow colour reads `--olive-shadow-color' with its own black as the
+;; fallback, so `.shadow-<palette>-<shade>' only has to set the variable and
+;; the geometry, blur and spread of the shadow stay as they were.
+(define (shadow-color color)
+  (format #f "var(--olive-shadow-color, ~a)" color))
+
 (define shadows
   (make-parameter (css-rule-variants ".shadow-~a"
                                      #:property 'box-shadow
-                                     #:variants '(("2xs"
-                                                   "0 1px rgb(0 0 0 / 0.05)")
-                                                  (xs
-                                                   "0 1px 2px 0 rgb(0 0 0 / 0.05)")
-                                                  (sm
-                                                   "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)")
-                                                  (md
-                                                   "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)")
-                                                  (lg
-                                                   "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)")
-                                                  (xl
-                                                   "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)")
-                                                  ("2xl"
-                                                   "0 25px 50px -12px rgb(0 0 0 / 0.25)")
-                                                  (none "0 0 #0000")))))
+                                     #:variants (list (list "2xs"
+                                                            (format #f
+                                                                    "0 1px ~a"
+                                                                    (shadow-color
+                                                                     "rgb(0 0 0 / 0.05)")))
+                                                      (list 'xs
+                                                            (format #f
+                                                                    "0 1px 2px 0 ~a"
+                                                                    (shadow-color
+                                                                     "rgb(0 0 0 / 0.05)")))
+                                                      (list 'sm
+                                                            (format #f
+                                                                    "0 1px 3px 0 ~a, 0 1px 2px -1px ~a"
+                                                                    (shadow-color
+                                                                     "rgb(0 0 0 / 0.1)")
+                                                                    (shadow-color
+                                                                     "rgb(0 0 0 / 0.1)")))
+                                                      (list 'md
+                                                            (format #f
+                                                                    "0 4px 6px -1px ~a, 0 2px 4px -2px ~a"
+                                                                    (shadow-color
+                                                                     "rgb(0 0 0 / 0.1)")
+                                                                    (shadow-color
+                                                                     "rgb(0 0 0 / 0.1)")))
+                                                      (list 'lg
+                                                            (format #f
+                                                                    "0 10px 15px -3px ~a, 0 4px 6px -4px ~a"
+                                                                    (shadow-color
+                                                                     "rgb(0 0 0 / 0.1)")
+                                                                    (shadow-color
+                                                                     "rgb(0 0 0 / 0.1)")))
+                                                      (list 'xl
+                                                            (format #f
+                                                                    "0 20px 25px -5px ~a, 0 8px 10px -6px ~a"
+                                                                    (shadow-color
+                                                                     "rgb(0 0 0 / 0.1)")
+                                                                    (shadow-color
+                                                                     "rgb(0 0 0 / 0.1)")))
+                                                      (list "2xl"
+                                                            (format #f
+                                                                    "0 25px 50px -12px ~a"
+                                                                    (shadow-color
+                                                                     "rgb(0 0 0 / 0.25)")))
+                                                      (list 'none "0 0 #0000")))))
+
+(define (shadow-colors palettes)
+  "Palette shadow colours: `.shadow-onyx-500' recolours every shadow utility."
+  (css-palette-rules ".shadow-~a-~a"
+                     #:property '--olive-shadow-color
+                     #:palettes palettes))
 
 (define scroll-snap-type
   (make-parameter "proximity"))
@@ -452,19 +508,27 @@ generated separately by @code{colors}."
           (svg-core-classes)))
 
 (define (palette-utility-classes palettes)
-  "Palette-derived utilities: ring/outline/accent/caret colors and SVG fill/stroke."
+  "Palette-derived utilities.
+
+Ring, outline, accent and caret colors, SVG fill and stroke, the gradient
+stops, the shadow colour and the child-divider colours.  They all come from the
+same palettes but are generated once, since none of them is duplicated under a
+breakpoint."
   (append (effect-colors palettes)
           (interactivity-colors palettes)
           (gradient-color-classes palettes)
+          (shadow-colors palettes)
+          (divide-colors palettes)
           (svg-colors palettes)))
 
 (define (color-base-classes palettes)
   "Solid palette colors for bg/text/border/decoration.
 
 Used to give the complete build responsive color parity (e.g. @code{md:bg-x})
-without expanding the large opacity-modifier cross-product under every
-breakpoint.  The full @code{bg-<color>-<shade>/<opacity>} family is generated
-only once by @code{colors}."
+and the variant layers a palette to work with, without expanding the large
+opacity-modifier cross-product under every breakpoint or variant.  The full
+@code{bg-<color>-<shade>/<opacity>} family is generated only once by
+@code{colors}."
   (append (css-palette-rules ".bg-~a-~a"
                              #:property 'background
                              #:palettes palettes)
@@ -485,6 +549,9 @@ only once by @code{colors}."
           (colors palettes)))
 
 ;; State variants (pseudo-classes) that can be enabled via `state-variants'.
+;; The pseudo-elements at the end are what `before:content-empty' and friends
+;; are written with; a state variant appends its pseudo, so they compose with
+;; any of the classes above.
 (define state-pseudos
   '((hover . ":hover") (focus . ":focus")
     (focus-within . ":focus-within")
@@ -503,7 +570,15 @@ only once by @code{colors}."
     (only . ":only-child")
     (odd . ":nth-child(odd)")
     (even . ":nth-child(even)")
-    (empty . ":empty")))
+    (empty . ":empty")
+    (before . "::before")
+    (after . "::after")
+    (placeholder . "::placeholder")
+    (marker . "::marker")
+    (selection . "::selection")
+    (file . "::file-selector-button")
+    (first-line . "::first-line")
+    (first-letter . "::first-letter")))
 
 (define state-variants
   (make-parameter '(hover)))
@@ -524,9 +599,10 @@ only once by @code{colors}."
 
 ;; A second, lighter tier: focus/active/etc. only need to apply to the
 ;; interactive utilities (effects, transforms, typography), not to the whole
-;; color system, which keeps builds affordable.
+;; color system, which keeps builds affordable.  `before' and `after' are here
+;; because that is how the `content-*' utilities reach a pseudo-element.
 (define interactive-state-variants
-  (make-parameter '(focus focus-visible active)))
+  (make-parameter '(focus focus-visible active before after)))
 
 (define interactive-state-targets
   (make-parameter #f))
@@ -552,6 +628,208 @@ only once by @code{colors}."
           (state-rules (interactive-state-variants)
                        (or (interactive-state-targets)
                            (default-interactive-targets)))))
+
+;; ============ Variants that reshape the selector ==========================
+;;
+;; A state variant only appends a pseudo-class, which is why it could be a
+;; string prefix.  The rest of the families cannot: group and peer name a
+;; relationship between two elements, has/not wrap the state in a functional
+;; pseudo-class, aria/data name an attribute, and rtl/ltr scope the rule with
+;; `:where'.  Those are shapes, so a variant is a name plus a function from the
+;; variant class selector to the selector that is written.
+
+(define aria-variants
+  (make-parameter '(("busy" . "[aria-busy=true]")
+                    ("checked" . "[aria-checked=true]")
+                    ("current" . "[aria-current=page]")
+                    ("disabled" . "[aria-disabled=true]")
+                    ("expanded" . "[aria-expanded=true]")
+                    ("hidden" . "[aria-hidden=true]")
+                    ("invalid" . "[aria-invalid=true]")
+                    ("pressed" . "[aria-pressed=true]")
+                    ("readonly" . "[aria-readonly=true]")
+                    ("required" . "[aria-required=true]")
+                    ("selected" . "[aria-selected=true]"))))
+
+;; The data attribute vocabulary that is generated.  It cannot be discovered
+;; the way ARIA can: any `data-' attribute is legal, so a build lists the
+;; values its markup sets and extends this parameter with its own.
+(define data-variants
+  (make-parameter '(("active" . "[data-active]")
+                    ("checked" . "[data-checked]")
+                    ("closed" . "[data-closed]")
+                    ("disabled" . "[data-disabled]")
+                    ("inactive" . "[data-inactive]")
+                    ("loading" . "[data-loading]")
+                    ("open" . "[data-open]")
+                    ("selected" . "[data-selected]"))))
+
+(define (state-pseudo name)
+  "The pseudo-class of the state variant NAME, or #f when there is none."
+  (let ((entry (assq (string->symbol name) state-pseudos)))
+    (and entry (cdr entry))))
+
+(define (attribute-selector name variants)
+  "The attribute selector registered for NAME in VARIABLES, or #f."
+  (let ((entry (assoc name variants)))
+    (and entry (cdr entry))))
+
+(define (selector-variant-shaper name)
+  "The selector shape of variant NAME, or #f when NAME is not a selector
+variant.  The shaper receives the variant class selector and returns the
+selector to emit."
+  (cond
+    ((string-prefix? "group-" name)
+     (let ((pseudo (state-pseudo (string-drop name 6))))
+       (and pseudo (lambda (cls)
+                     (format #f ".group~a ~a" pseudo cls)))))
+    ((string-prefix? "peer-" name)
+     (let ((pseudo (state-pseudo (string-drop name 5))))
+       (and pseudo (lambda (cls)
+                     (format #f ".peer~a ~~ ~a" pseudo cls)))))
+    ;; :has() has no depth limit: `has-checked' matches any descendant, which
+    ;; is what the markup asks for and costs nothing to author.
+    ((string-prefix? "has-" name)
+     (let ((pseudo (state-pseudo (string-drop name 4))))
+       (and pseudo (lambda (cls)
+                     (format #f "~a:has(~a)" cls pseudo)))))
+    ((string-prefix? "not-" name)
+     (let ((pseudo (state-pseudo (string-drop name 4))))
+       (and pseudo (lambda (cls)
+                     (format #f "~a:not(~a)" cls pseudo)))))
+    ((string-prefix? "aria-" name)
+     (let ((attr (attribute-selector (string-drop name 5)
+                                     (aria-variants))))
+       (and attr (lambda (cls)
+                   (format #f "~a~a" cls attr)))))
+    ((string-prefix? "data-" name)
+     (let ((attr (attribute-selector (string-drop name 5)
+                                     (data-variants))))
+       (and attr (lambda (cls)
+                   (format #f "~a~a" cls attr)))))
+    ((member name '("rtl" "ltr"))
+     (lambda (cls)
+       (format #f "~a:where([dir=~a], [dir=~a] *)" cls name name)))
+    (else #f)))
+
+;; The selector variants a build generates, as class prefixes.  Only
+;; `group-hover' and `peer-checked' are on by default; anything else in the
+;; vocabulary (group-*, peer-*, has-*, not-*, aria-*, data-*, rtl, ltr) is one
+;; entry away.
+(define selector-variants
+  (make-parameter '("group-hover" "peer-checked")))
+
+;; Families the selector variants apply to; #f uses the broad-but-affordable
+;; tier below.  Bind it to `(default-state-targets)' for the full colour
+;; cross-product under every variant.
+(define selector-variant-targets
+  (make-parameter #f))
+
+(define (default-selector-variant-targets)
+  "The families a selector variant covers by default.
+
+The interactive tier plus the solid palette colours: `group-hover:bg-x-500'
+is the reason these variants exist, while the whole opacity cross-product is
+generated once by `colors' rather than once per variant - the same trade
+`color-base-classes' makes for the responsive layer.  Filters are left out
+because their composed value is long and a hover-only blur is rare; bind
+`selector-variant-targets' to widen."
+  (append (default-interactive-targets)
+          (font-family)
+          (shadows)
+          (color-base-classes (palettes))))
+
+(define (selector-variant-classes)
+  "One rule per enabled selector variant over the configured families."
+  (append-map (lambda (name)
+                (let ((shaper (selector-variant-shaper name)))
+                  (if shaper
+                      (flatten-list
+                       (add-selector-variant name shaper
+                                             (or (selector-variant-targets)
+                                                 (default-selector-variant-targets))))
+                      (begin (format (current-error-port)
+                                     "warning: unknown selector variant: ~a~%"
+                                     name) '()))))
+              (selector-variants)))
+
+;; At-rule variants need no selector work: the class is named after the
+;; variant and the block around it does the qualifying.
+(define at-rule-variants
+  (make-parameter '(("print" . "@media print")
+                    ("motion-safe"
+                     .
+                     "@media (prefers-reduced-motion: no-preference)")
+                    ("motion-reduce"
+                     .
+                     "@media (prefers-reduced-motion: reduce)"))))
+
+;; Families the at-rule variants apply to; #f uses the structural tier below.
+(define at-rule-variant-targets
+  (make-parameter #f))
+
+(define (default-at-rule-variant-targets)
+  "The families an at-rule variant covers by default.
+
+Layout, box, type, transforms and effects are what a media query or a print
+stylesheet changes (`print:hidden', `motion-reduce:transition-none'), and
+colours stay out so the palette is not duplicated under every at-rule.  Unit
+spacing is left out as well: it is the largest family and `@sm:p-4' is rare
+next to `@sm:flex', so bind `at-rule-variant-targets' to
+`(default-at-rule-variant-targets)' plus `(spacing-classes)' to have it."
+  (append (layout-classes)
+          (display-utilities)
+          (flexbox-classes)
+          (sizing-classes)
+          (typography-classes)
+          (transform-classes)
+          (transition-classes)
+          (effect-core-classes)
+          (shadows)))
+
+;; Container query scales, in the vocabulary Tailwind v4 uses.  The class name
+;; is the quoted prefix, e.g. `@sm:flex' -> `.\\@sm\\:flex'.
+(define container-breakpoints
+  (make-parameter '(("sm" . "24rem")
+                    ("md" . "28rem")
+                    ("lg" . "32rem")
+                    ("xl" . "36rem")
+                    ("2xl" . "42rem")
+                    ("3xl" . "48rem")
+                    ("4xl" . "56rem")
+                    ("5xl" . "64rem")
+                    ("6xl" . "72rem")
+                    ("7xl" . "80rem"))))
+
+(define container-variants
+  (make-parameter '("sm" "md" "lg" "xl")))
+
+(define (at-rule-variant-classes)
+  "One at-rule block per enabled media or container variant."
+  (define targets
+    (or (at-rule-variant-targets)
+        (default-at-rule-variant-targets)))
+  (define (variant-block name prelude)
+    (at-rule-block prelude
+                   (flatten-list (add-selector-variant name identity
+                                                       targets))))
+  (append (map (lambda (spec)
+                 (variant-block (car spec)
+                                (cdr spec)))
+               (at-rule-variants))
+          (map (lambda (bp)
+                 (variant-block (format #f "@~a" (car bp))
+                                (format #f "@container (width >= ~a)"
+                                        (cdr bp))))
+               (filter (lambda (bp)
+                         (member (car bp)
+                                 (container-variants)))
+                       (container-breakpoints)))))
+
+(define (variant-classes)
+  "Every generated variant: selector shapes, then at-rule blocks."
+  (append (selector-variant-classes)
+          (at-rule-variant-classes)))
 
 (define (lean-responsive-classes)
   "The lean default responsive set.
@@ -625,6 +903,9 @@ parity (this is what the complete build does)."
           '("")
           (css-comment "Load Olive CSS state variants (hover:, focus:, ...)")
           (state-variant-classes)
+          '("")
+          (css-comment "Load Olive CSS selector and at-rule variants (group-hover:, peer-checked:, has-, aria-, data-, rtl:, print:, @sm:, ...)")
+          (variant-classes)
           '("")
           (css-comment "Load Olive CSS colors")
           (colors (palettes))

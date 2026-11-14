@@ -26,6 +26,10 @@
               add-media-query-prefix
               add-hover-variant
               add-state-variant
+              add-selector-variant
+              variant-selector
+              class-name-end
+              at-rule-block
               make-rule
               rule?
               set-rule-selector!
@@ -171,24 +175,67 @@ Rather than emitting CSS nesting (@code{.x{&:hover{...}}}), this produces the
 fully expanded selector (@code{.x:hover{...}}).  The result is plain CSS 3
 (no top-level nesting dependency) and a few bytes smaller per rule, which
 matters because state variants are generated for every color and utility."
-  (cond
-    ((rule? args)
-     (let* ((a args)
-            (selector (rule-selector a))
-            (str (if (equal? "."
-                             (string-take selector 1))
-                     (format #f ".~a\\:~a" sel
-                             (string-drop selector 1)) selector)))
-       (css-rule (string-append str pseudo)
-                 (rule-declarations a))))
-    ((list? args)
-     (map (lambda (a)
-            (add-state-variant sel pseudo a)) args))
-    (else args)))
+  (add-selector-variant sel
+                        (lambda (cls)
+                          (string-append cls pseudo))
+                        args))
 
 (define (add-hover-variant sel args)
   "Transform utility rules in @var{args} into flat @code{:hover} interactive selectors prefixed by @var{sel}."
   (add-state-variant sel ":hover" args))
+
+(define (class-name-end selector start)
+  "Exclusive end index of the class name that begins at @var{start} in
+@var{selector}.  An escaped character belongs to the name, so
+@code{bg-x-500\\/50} is one name rather than three."
+  (let loop
+    ((i start))
+    (cond
+      ((>= i
+           (string-length selector))
+       i)
+      ((char=? (string-ref selector i) #\\)
+       (loop (+ i 2)))
+      ((or (char-alphabetic? (string-ref selector i))
+           (char-numeric? (string-ref selector i))
+           (memv (string-ref selector i) '(#\- #\_)))
+       (loop (+ i 1)))
+      (else i))))
+
+(define (variant-selector name selector)
+  "The escaped class selector of variant @var{name} applied to the first class
+of @var{selector}: @code{.bg-x} under @code{hover} gives @code{.hover\\:bg-x}.
+
+A name that starts with @code{@@} (the container query variants) is escaped
+too, because @code{@@} cannot begin a CSS identifier."
+  (if (equal? "." (string-take selector 1))
+      (format #f ".~a\\:~a"
+              (string-replace-substring name "@" "\\@")
+              (substring selector 1
+                         (class-name-end selector 1)))
+      selector))
+
+(define (add-selector-variant name reshape args)
+  "Emit every rule in @var{args} under variant @var{name}.
+
+@var{reshape} receives the variant class selector and returns the selector to
+write, so a variant is a selector /shape/ rather than a prefix:
+@code{(lambda (c) (format #f \".group:hover ~a\" c))} gives group-hover, while
+the identity gives a class the surrounding at-rule already qualifies."
+  (cond
+    ((rule? args)
+     (css-rule (reshape (variant-selector name (rule-selector args)))
+               (rule-declarations args)))
+    ((list? args)
+     (map (lambda (a)
+            (add-selector-variant name reshape a)) args))
+    (else args)))
+
+(define (at-rule-block prelude args)
+  "Wrap @var{args} in a block opened by @var{prelude}, which carries its own
+at-keyword: @code{\"@media print\"} or @code{\"@container (width >= 24rem)\"}."
+  (append (list (format #f "~a {" prelude)) args
+          '("}")))
 
 ;; The selector used to scope "dark mode" utilities.  Any ancestor (or the
 ;; scoping root itself) carrying @code{[data-theme=dark]} activates the rules.

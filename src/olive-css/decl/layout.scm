@@ -21,6 +21,7 @@
                          float
                          clear
                          isolation
+                         container-type
                          object-fit
                          object-position
                          overflow
@@ -301,6 +302,17 @@ utilities.  Zero comes from `numeric-sizes' itself."
                                      #:variants '((isolate isolate)
                                                   (isolation-auto auto)))))
 
+;; A query container for the `@sm:' ... variants to measure.  `inline-size'
+;; keeps the block size free, which is what a layout container wants.  The `@'
+;; cannot begin a CSS identifier, so the selectors escape it.
+(define container-type
+  (make-parameter (list (css-rule ".\\@container"
+                                  (css-declaration 'container-type
+                                                   'inline-size))
+                        (css-rule ".\\@container-normal"
+                                  (css-declaration 'container-type
+                                                   'normal)))))
+
 (define object-fit
   (make-parameter (css-rule-variants ".object-~a"
                                      #:property 'object-fit
@@ -353,5 +365,6 @@ utilities.  Zero comes from `numeric-sizes' itself."
                         (box-decoration-break)
                         (box-sizing)
                         (isolation)
+                        (container-type)
                         (position)
                         (z-index))))
