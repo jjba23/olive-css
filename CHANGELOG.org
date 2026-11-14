@@ -13,6 +13,14 @@ feature reference.
 
 - Builds against the channels this project builds against: the jointhefreeworld collection at v1.0.4, and Guix master `3b4e873`.
 
+* v1.1.5 - 2026-11-13
+
+- *A VISION document.*  Argues for closing the finite list of missing Tailwind
+  families and for making the generate-everything-and-prune bet a documented
+  position, and compares the framework with the neighbours it is measured
+  against.  Recorded here because the tag exists; the entry was written after
+  the release.
+
 * Unreleased
 
 Work that lands after =v1.1.3= is recorded here until it is tagged.
