@@ -25,6 +25,18 @@
 (define prose-size
   (make-parameter "84ch"))
 
+;; The named container widths.  They are emitted after the t-shirt scale that
+;; `max-w-<n>' shares, so a site that wrote `max-w-lg' for a container gets the
+;; container width (32rem) and `max-w-<n>' remains the way to reach the
+;; spacing scale.
+(define (container-max-width-rules)
+  (css-rule-variants ".max-w-~a"
+                     #:property 'max-width
+                     #:variants (map (lambda (width)
+                                       (list (car width)
+                                             (format #f "~arem" (cadr width))))
+                                     container-widths)))
+
 (define width
   (make-parameter (append (list (css-rule ".w-screen"
                                           (css-declaration 'width "100vw"))
@@ -107,7 +119,8 @@
                                                                         fractions))))
                                '((w width)
                                  (min-w min-width)
-                                 (max-w max-width))))))
+                                 (max-w max-width)))
+                          (container-max-width-rules))))
 
 (define height
   (make-parameter (append (list (css-rule ".h-screen"

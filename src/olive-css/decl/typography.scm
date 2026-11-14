@@ -18,6 +18,11 @@
                                word-break
                                text-decoration-style
                                list-style-type
+                               list-style-position
+                               list-image
+                               list-images
+                               content
+                               content-strings
                                text-overflow
                                overflow-wrap
                                hyphens
@@ -144,6 +149,54 @@
                                            #:property 'list-style-position
                                            #:variants '((inside inside)
                                                         (outside outside))))))
+
+;; A list marker image is a URL, so the vocabulary is a build's own: this
+;; parameter is the place to name the marks a site draws.
+(define list-images
+  (make-parameter '()))
+
+(define list-image
+  (make-parameter (append (list (css-rule ".list-image-none"
+                                          (css-declaration 'list-style-image
+                                                           'none)))
+                          (map (lambda (image)
+                                 (css-rule (format #f ".list-image-~a"
+                                                   (car image))
+                                           (css-declaration 'list-style-image
+                                                            (format #f
+                                                                    "url(~a)"
+                                                                    (cdr image)))))
+                               (list-images)))))
+
+;; Generated content, which only means anything on a pseudo-element: write it
+;; with the `before:' and `after:' state variants.
+(define content-strings
+  (make-parameter '()))
+
+(define content
+  (make-parameter (append (list (css-rule ".content-none"
+                                          (css-declaration 'content
+                                                           'none))
+                                (css-rule ".content-empty"
+                                          (css-declaration 'content "\"\"")))
+                          (css-rule-variants ".content-~a"
+                                             #:property 'content
+                                             #:variants '((open-quote
+                                                          open-quote)
+                                                         (close-quote
+                                                          close-quote)
+                                                         (no-open-quote
+                                                          no-open-quote)
+                                                         (no-close-quote
+                                                          no-close-quote)))
+                          (map (lambda (entry)
+                                 (css-rule (format #f ".content-~a"
+                                                   (car entry))
+                                           (css-declaration 'content
+                                                            (format #f
+                                                                    "\"~a\""
+                                                                    (cdr entry)))))
+                               (content-strings)))))
 
 (define text-decoration-line
   (make-parameter (css-rule-variants ".~a"
@@ -293,6 +346,8 @@
                         (leading)
                         (list-style-type)
                         (list-style-position)
+                        (list-image)
+                        (content)
                         (font-variant-numeric)
                         (text-decoration-line)
                         (text-decoration-thickness)

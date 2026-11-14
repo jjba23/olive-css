@@ -8,6 +8,7 @@
   #:use-module (srfi srfi-13)
   #:use-module (ice-9 string-fun)
   #:export (tshirt-sizes numeric-sizes positive-numeric-sizes
+                         container-widths
                          weights
                          alphas
                          color-weights
@@ -70,6 +71,26 @@
   (filter (lambda (s)
             (not (equal? 0 (car s))))
           numeric-sizes))
+
+;; The named container widths, in rem.  A second vocabulary next to the
+;; t-shirt scale: `tshirt-sizes' is tuned for spacing and radius, where a
+;; multiplier applies, while a container width is a real-world measurement that
+;; has to be readable on its own.  `max-w-<name>' uses these, `max-w-<n>' still
+;; reaches the numeric spacing scale.
+(define container-widths
+  '(("3xs" 16)
+    ("2xs" 18)
+    (xs 20)
+    (sm 24)
+    (md 28)
+    (lg 32)
+    (xl 36)
+    ("2xl" 42)
+    ("3xl" 48)
+    ("4xl" 56)
+    ("5xl" 64)
+    ("6xl" 72)
+    ("7xl" 80)))
 
 (define weights
   '((thin 100)
