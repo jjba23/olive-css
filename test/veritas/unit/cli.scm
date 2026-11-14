@@ -100,7 +100,11 @@
                  (assert-contains #:expect help #:got "tree-shake"
                                   #:name "the tree-shake command")
                  (assert-contains #:expect help #:got "--build"
-                                  #:name "the build option")))
+                                  #:name "the build option")
+                 (assert-contains #:expect help #:got "--mode"
+                                  #:name "the scan mode option")
+                 (assert-contains #:expect help #:got "--keep-pattern"
+                                  #:name "the pattern option")))
          (test "list prints the build names"
                (let ((printed (output-of (lambda ()
                                            (run-cli '("list"))))))
@@ -139,6 +143,20 @@
                                               "/tmp/x.css")))))
                  (assert-equal #:expect 1 #:got status
                                #:name "generating every build elsewhere is refused")))
+         (test "an unknown scan mode is refused"
+               (let ((status 0)
+                     (said ""))
+                 (set! said (error-of (lambda ()
+                                        (set! status
+                                              (run-cli '("tree-shake"
+                                                         "--mode"
+                                                         "nope"))))))
+                 (assert-equal #:expect 1 #:got status
+                               #:name "the exit status")
+                 (assert-contains #:expect said #:got "nope"
+                                  #:name "the rejected mode is named")
+                 (assert-contains #:expect said #:got "manifest"
+                                  #:name "the modes it knows are named")))
          (test "--help wins over a command"
                (assert-equal #:expect 0
                              #:got (run-cli '("generate" "--help"))

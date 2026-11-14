@@ -13,30 +13,25 @@
 ;;; Code:
 
 (define-module (veritas unit utilities)
-  #:use-module (ice-9 textual-ports)
+  #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-13)
   #:use-module (veritas veritas)
   #:use-module (olive-css main)
-  #:use-module ((olive-css dsl) #:select (minify-css))
+  #:use-module ((olive-css dsl) #:select (format-css flatten-list minify-css))
   #:use-module (olive-css decl colors)
   #:use-module (olive-css decl spacing)
+  #:use-module (olive-css decl borders)
+  #:use-module (olive-css decl sizing)
+  #:use-module (olive-css decl typography)
+  #:use-module (olive-css decl filters)
+  #:use-module (olive-css decl transforms)
   #:export (spec))
 
+;; Rendering the lines directly (rather than through `write-css-to-file') keeps
+;; the suite free of temporary files, which the concurrent runner would race on.
 (define (css-of classes)
-  "Write CLASSES to a temporary stylesheet and return its text."
-  (let ((test-file (string-append "/tmp/olive-css-utilities-"
-                                  (number->string (getpid))
-                                  "-"
-                                  (symbol->string (gensym "css-"))
-                                  ".css")))
-    (dynamic-wind
-      (lambda () #t)
-      (lambda ()
-        (parameterize ((minified? #f))
-          (write-css-to-file #:file test-file #:css-lines classes))
-        (call-with-input-file test-file get-string-all))
-      (lambda ()
-        (when (file-exists? test-file)
-          (delete-file test-file))))))
+  "The stylesheet text CLASSES renders to."
+  (string-join (flatten-list (map format-css classes)) "\n"))
 
 (define background-suite
   (suite "background images"
@@ -148,7 +143,44 @@
                                   #:name "a transparent stop")
                  (assert-contains #:expect css
                                   #:got "--olive-gradient-from:transparent"
-                                  #:name "the transparent value")))))
+                                  #:name "the transparent value")
+                 (assert-contains #:expect css
+                                  #:got ".from-redwood-500\\/50"
+                                  #:name "an alpha stop")
+                 (assert-contains #:expect css
+                                  #:got
+                                  "--olive-gradient-from:oklch(0.5591 0.1288 31.7 / 0.5)"
+                                  #:name "the stop colour carries the alpha")
+                 (assert-contains #:expect css
+                                  #:got ".via-redwood-500\\/50"
+                                  #:name "an alpha via stop")
+                 (assert-contains #:expect css
+                                  #:got ".to-redwood-500\\/50"
+                                  #:name "an alpha to stop")
+                 (assert-contains #:expect css
+                                  #:got
+                                  "--olive-gradient-to:oklch(0.5591 0.1288 31.7 / 0.5)"
+                                  #:name "the to stop keeps the alpha")))))
+
+(define shadow-suite
+  (suite "shadows and their colour"
+         (test "the shadow colour is a variable the utilities read"
+               (let ((css (css-of (append (shadows)
+                                          (shadow-colors
+                                           (list (cons 'redwood
+                                                       (redwood))))))))
+                 (assert-contains #:expect css
+                                  #:got
+                                  "box-shadow:0 10px 15px -3px var(--olive-shadow-color, rgb(0 0 0 / 0.1))"
+                                  #:name "the geometry reads the variable")
+                 (assert-contains #:expect css #:got ".shadow-redwood-500"
+                                  #:name "a palette shadow colour")
+                 (assert-contains #:expect css
+                                  #:got
+                                  "--olive-shadow-color:oklch(0.5591 0.1288 31.7 / 1)"
+                                  #:name "the colour the shadow then uses")
+                 (assert-contains #:expect css #:got ".shadow-none"
+                                  #:name "the shadow reset")))))
 
 (define logical-spacing-suite
   (suite "logical and negative spacing"
@@ -337,7 +369,189 @@
                              #:got (minify-css ".a {color: red; background: oklch(1 0 0 / 1);}\n.b > .c { margin: 0 1px; }")
                              #:name "the compact form"))))
 
+;; The composed value has to be the same string in every rule of a family, or
+;; two utilities from different axes would still overwrite each other.
+(define (composition-of css class-name property)
+  "The value of PROPERTY written by the rule for CLASS-NAME in CSS."
+  (let* ((start (string-contains css
+                                 (string-append class-name " {")))
+         (rest (and start (substring css start (string-length css))))
+         (marker (string-append property ":")))
+    (and rest
+         (let* ((from (string-contains rest marker))
+                (text (and from (substring rest (+ from (string-length marker))
+                                           (string-length rest)))))
+           (and text (substring text 0 (string-index text #\;)))))))
+
+(define composition-suite
+  (suite "filters and transforms compose across axes"
+         (test "a filter utility writes its own function and the composed value"
+               (let ((css (css-of (filter-classes))))
+                 (assert-contains #:expect css #:got ".blur-sm {"
+                                  #:name "the blur utility")
+                 (assert-contains #:expect css #:got "--olive-blur:blur(3.00rem)"
+                                  #:name "its function goes in the variable")
+                 (assert-contains #:expect css #:got "filter:var(--olive-blur,)"
+                                  #:name "the composed value reads the variable")
+                 (assert-true (if (equal? (composition-of css ".blur-sm"
+                                                           "filter")
+                                          (composition-of css ".brightness-100"
+                                                          "filter"))
+                                  #t #f)
+                              #:name
+                              "blur and brightness compose the same filter value")))
+         (test "the new filter families exist"
+               (let ((css (css-of (filter-classes))))
+                 (assert-contains #:expect css
+                                  #:got "--olive-hue-rotate:hue-rotate(90deg)"
+                                  #:name "hue rotate")
+                 (assert-contains #:expect css
+                                  #:got "--olive-hue-rotate:hue-rotate(-15deg)"
+                                  #:name "a negative hue rotate")
+                 (assert-contains #:expect css
+                                  #:got
+                                  "--olive-drop-shadow:drop-shadow(0 2px 4px rgb(0 0 0 / 0.15))"
+                                  #:name "drop shadow")
+                 (assert-contains #:expect css
+                                  #:got "--olive-backdrop-opacity:opacity(50.00%)"
+                                  #:name "backdrop opacity")
+                 (assert-contains #:expect css
+                                  #:got "--olive-backdrop-hue-rotate:hue-rotate(30deg)"
+                                  #:name "backdrop hue rotate")
+                 (assert-contains #:expect css #:got "filter:none"
+                                  #:name "the filter reset")
+                 (assert-contains #:expect css #:got "backdrop-filter:none"
+                                  #:name "the backdrop filter reset")))
+         (test "3D transforms accumulate in transform"
+               (let ((css (css-of (transform-classes))))
+                 (assert-contains #:expect css
+                                  #:got "--olive-rotate-x:rotateX(45deg)"
+                                  #:name "rotate-x")
+                 (assert-contains #:expect css
+                                  #:got "--olive-rotate-y:rotateY(-12deg)"
+                                  #:name "a negative rotate-y")
+                 (assert-contains #:expect css
+                                  #:got "--olive-rotate-z:rotateZ(45deg)"
+                                  #:name "rotate-z")
+                 (assert-contains #:expect css
+                                  #:got "--olive-skew-x:skewX(6deg)"
+                                  #:name "skew-x")
+                 (assert-contains #:expect css
+                                  #:got
+                                  "transform:var(--olive-translate-z,) var(--olive-rotate-x,)"
+                                  #:name "the composed transform")
+                 (assert-true (if (equal? (composition-of css ".skew-x-6"
+                                                           "transform")
+                                          (composition-of css ".rotate-x-45"
+                                                          "transform"))
+                                  #t #f)
+                              #:name "skew and rotate compose the same value")
+                 (assert-contains #:expect css
+                                  #:got "--olive-translate-z:translateZ(4px)"
+                                  #:name "translate-z")))
+         (test "perspective, backface and the 3D transform style"
+               (let ((css (css-of (transform-classes))))
+                 (assert-contains #:expect css #:got ".perspective-near {"
+                                  #:name "a named perspective")
+                 (assert-contains #:expect css #:got "perspective:300px"
+                                  #:name "the perspective declaration")
+                 (assert-contains #:expect css #:got ".perspective-none {"
+                                  #:name "the perspective reset")
+                 (assert-contains #:expect css #:got "backface-visibility:hidden"
+                                  #:name "backface")
+                 (assert-contains #:expect css
+                                  #:got "transform-style:preserve-3d"
+                                  #:name "3D transform style")))))
+
+(define container-width-suite
+  (suite "container widths and generated content"
+         (test "the named container widths are emitted after the spacing scale"
+               (let* ((css (css-of (list (width))))
+                      (spacing (string-contains css ".max-w-sm {max-width:0.72rem;"))
+                      (container (string-contains css
+                                                  ".max-w-sm {max-width:24rem;")))
+                 (assert-contains #:expect css
+                                  #:got ".max-w-7xl {max-width:80rem;"
+                                  #:name "the largest named width")
+                 (assert-true (if (and spacing container (> container spacing))
+                                  #t #f)
+                              #:name "the container width wins the cascade")
+                 (assert-contains #:expect css
+                                  #:got ".max-w-96 {max-width:23.04rem"
+                                  #:name "a numeric width still uses the scale")
+                 (assert-contains #:expect css
+                                  #:got ".max-w-prose {max-width:84ch"
+                                  #:name "the prose width keeps its meaning")))
+         (test "content and list marker images"
+               (let ((css (css-of (list (content) (list-image)))))
+                 (assert-contains #:expect css #:got ".content-none {content:none"
+                                  #:name "no generated content")
+                 (assert-contains #:expect css
+                                  #:got ".content-empty {content:\"\""
+                                  #:name "an empty string")
+                 (assert-contains #:expect css
+                                  #:got ".content-open-quote {content:open-quote"
+                                  #:name "a quote")
+                 (assert-contains #:expect css
+                                  #:got ".list-image-none {list-style-image:none"
+                                  #:name "no marker image")))
+         (test "before and after carry the content to a pseudo-element"
+               (parameterize ((state-variants '(before after)))
+                 (let ((css (css-of (state-variant-classes))))
+                   (assert-contains #:expect css
+                                    #:got
+                                    ".before\\:content-empty::before {content:\"\""
+                                    #:name "before")
+                   (assert-contains #:expect css
+                                    #:got
+                                    ".after\\:content-open-quote::after {content:open-quote"
+                                    #:name "after"))))))
+
+(define logical-border-suite
+  (suite "logical borders and child dividers"
+         (test "border-s and border-e set the logical edges"
+               (let ((css (css-of (border-extras-classes))))
+                 (assert-contains #:expect css
+                                  #:got ".border-s {border-inline-start-width:1px;"
+                                  #:name "the start edge")
+                 (assert-contains #:expect css
+                                  #:got ".border-e {border-inline-end-width:1px;"
+                                  #:name "the end edge")
+                 (assert-contains #:expect css
+                                  #:got
+                                  ".border-s-2 {border-inline-start-width:2.00px;"
+                                  #:name "a start edge width")))
+         (test "dividers write both edges through the reverse variable"
+               (let ((css (css-of (list (divide-classes)
+                                        (space-between)))))
+                 (assert-contains #:expect css
+                                  #:got
+                                  "border-inline-end-width:calc(2.00px * var(--olive-divide-x-reverse, 0))"
+                                  #:name "the forward edge")
+                 (assert-contains #:expect css
+                                  #:got
+                                  "border-inline-start-width:calc(2.00px * calc(1 - var(--olive-divide-x-reverse, 0)))"
+                                  #:name "the edge the reverse swaps in")
+                 (assert-contains #:expect css
+                                  #:got ".divide-x-reverse > :not([hidden])~:not([hidden]) {--olive-divide-x-reverse:1;"
+                                  #:name "the divide reverse utility")
+                 (assert-contains #:expect css
+                                  #:got
+                                  "margin-inline-end:calc(1.12rem * var(--olive-space-x-reverse, 0))"
+                                  #:name "space on the forward edge")
+                 (assert-contains #:expect css
+                                  #:got ".space-y-reverse > :not([hidden])~:not([hidden]) {--olive-space-y-reverse:1;"
+                                  #:name "the space reverse utility")))
+         (test "divide colours land on the child selector"
+               (let ((css (css-of (divide-colors (list (cons 'redwood
+                                                             (redwood)))))))
+                 (assert-contains #:expect css
+                                  #:got
+                                  ".divide-redwood-500 > :not([hidden])~:not([hidden]) {border-color:oklch(0.5591 0.1288 31.7 / 1)"
+                                  #:name "the child carries the colour")))))
+
 (define (spec)
   (veritas-run background-suite scroll-spacing-suite gradient-suite
                logical-spacing-suite forced-color-suite color-scheme-suite
-               mask-suite minifier-suite))
+               mask-suite minifier-suite shadow-suite composition-suite
+               container-width-suite logical-border-suite))

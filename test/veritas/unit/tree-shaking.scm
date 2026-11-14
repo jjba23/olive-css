@@ -207,6 +207,14 @@ the rules nested in media queries and the dark-mode scope are visited too."
   ;; Inside a skipped directory, so it is only read when that option is cleared.
   (write-text-file! (string-append scan-site "/.git/ignored.html")
                     "<div class=\"bg-onyx-900\">history</div>"))
+  ;; An SXML template, in the shape Artanis and any SXML generator write: the
+  ;; class attribute is a list, which only the sxml mode reads.
+  (write-text-file! (string-append scan-site "/views/page.scm")
+                    (string-append "(div (@ (class \"p-4 md:p-8\")) \"hi\")\n"
+                                   "(p (@ (class \"text-onyx-500\")))"))
+  ;; A JSX attribute, which the html mode reads as well as `class'.
+  (write-text-file! (string-append scan-site "/component.jsx")
+                    "<div className=\"bg-mantis-900\">jsx</div>"))
 
 (define (classes-used-under path)
   "The classes a scan of PATH finds with the default options."
@@ -230,6 +238,23 @@ the rules nested in media queries and the dark-mode scope are visited too."
 (define scan-used-text-files
   (parameterize ((artifact-path scan-site)
                  (scanned-file-types '(".txt")))
+    (scan-used-classes scan-site)))
+
+(define scan-used-sxml-template
+  (parameterize ((artifact-path scan-site)
+                 (scan-mode 'sxml)
+                 (scanned-file-types '(".scm")))
+    (scan-used-classes scan-site)))
+
+(define scan-used-jsx
+  (parameterize ((artifact-path scan-site)
+                 (scanned-file-types '(".jsx")))
+    (scan-used-classes scan-site)))
+
+(define scan-used-manifest
+  (parameterize ((artifact-path scan-site)
+                 (scan-mode 'manifest)
+                 (preserved-classes '("bg-onyx-900")))
     (scan-used-classes scan-site)))
 
 (define e2e-root
@@ -260,6 +285,42 @@ the rules nested in media queries and the dark-mode scope are visited too."
 (define e2e-destination
   (assoc-ref e2e-result
              'destination))
+
+;; The manifest mode of the same site: no file is read, the classes are the
+;; ones the build declares.
+(define e2e-manifest-result
+  (parameterize ((artifact-path e2e-site)
+                 (base-stylesheet-path e2e-stylesheet)
+                 (output-css-target "manifest.min.css")
+                 (scan-mode 'manifest)
+                 (preserved-classes '("bg-jeans-blue-500")))
+    (tree-shake)))
+
+(define e2e-manifest-css
+  (read-text-file (string-append e2e-site "/manifest.min.css")))
+
+;;; ---------------------------------------------------------------------------
+;;; Selectors that name more than one class
+;;; ---------------------------------------------------------------------------
+
+(define variant-css
+  (string-append ".group:hover .group-hover" (escaped ":flex")
+                 "{display:flex}"
+                 ".peer:checked ~ .peer-checked" (escaped ":opacity-50")
+                 "{opacity:0.5}"
+                 "." (escaped "@sm") (escaped ":flex") "{display:flex}"))
+
+(define marker-only-pruned
+  (tree-shake-css variant-css '("group" "peer")))
+
+(define variant-kept
+  (tree-shake-css variant-css (list "group" (escape-class-name "group-hover:flex"))))
+
+(define pattern-kept
+  (tree-shake-css variant-css '("peer") #:patterns (list "group-hover:.*")))
+
+(define container-class-kept
+  (tree-shake-css variant-css (list (escape-class-name "@sm:flex"))))
 
 ;;; ---------------------------------------------------------------------------
 ;;; The real build, pruned once for the no-leakage tests
@@ -493,6 +554,60 @@ the rules nested in media queries and the dark-mode scope are visited too."
 ;;; Entry-point
 ;;; ---------------------------------------------------------------------------
 
+(define scanning-modes-suite
+  (suite "scanning modes"
+         #:after-all (lambda (vc)
+                       (remove-tree scan-root))
+         (test "the sxml mode reads class attributes in SXML templates"
+               (assert-false (contains? scan-used "p-4")
+                             #:name "nothing under a .scm file by default")
+               (assert-true (contains? scan-used-sxml-template "p-4")
+                            #:name "the SXML class attribute is read")
+               (assert-true (contains? scan-used-sxml-template
+                                       (escape-class-name "md:p-8"))
+                            #:name "every class of the list is read"))
+         (test "className is read like class"
+               (assert-true (contains? scan-used-jsx "bg-mantis-900")
+                            #:name "a JSX class attribute"))
+         (test "the manifest mode scans nothing"
+               (assert-equal #:expect '()
+                             #:got scan-used-manifest
+                             #:name "no file is read in manifest mode")
+               (assert-true (mentions? e2e-manifest-css ".bg-jeans-blue-500{")
+                            #:name "the declared class survives the prune")
+               (assert-false (mentions? e2e-manifest-css
+                                        (escape-class-name "hover:bg-white"))
+                             #:name "everything else is dropped")
+               (assert-equal #:expect 'manifest
+                             #:got (assoc-ref e2e-manifest-result
+                                              'mode)
+                             #:name "the mode is reported"))))
+
+(define multi-class-suite
+  (suite "selectors that name more than one class"
+         (test "a marker class does not keep a variant on its own"
+               (assert-false (mentions? marker-only-pruned
+                                        (escape-class-name "group-hover:flex"))
+                             #:name "group alone does not keep group-hover")
+               (assert-false (mentions? marker-only-pruned
+                                        (escape-class-name "peer-checked:opacity-50"))
+                             #:name "peer alone does not keep peer-checked"))
+         (test "the utility class keeps its variant"
+               (assert-true (mentions? variant-kept
+                                       (escape-class-name "group-hover:flex"))
+                            #:name "the variant class keeps the rule"))
+         (test "a pattern keeps a family no scan can enumerate"
+               (assert-true (mentions? pattern-kept
+                                       (escape-class-name "group-hover:flex"))
+                            #:name "the pattern keeps the rule")
+               (assert-false (mentions? pattern-kept
+                                        (escape-class-name "peer-checked:opacity-50"))
+                             #:name "a rule the pattern does not name is dropped"))
+         (test "a container variant class is escaped like any other"
+               (assert-true (mentions? container-class-kept
+                                       (escape-class-name "@sm:flex"))
+                            #:name "the escaped @ survives the scan and prune"))))
+
 (define (spec)
   (veritas-run escaping-suite scanning-suite pruning-suite end-to-end-suite
-               no-leakage-suite))
+               no-leakage-suite scanning-modes-suite multi-class-suite))
