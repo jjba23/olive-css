@@ -36,8 +36,15 @@
                                  output-css-target
                                  scanned-file-types
                                  skipped-directories
+                                 scan-mode
+                                 preserved-classes
+                                 preserved-patterns
                                  escape-class-name
+                                 unescape-class-name
                                  extract-classes-from-html
+                                 html-classes
+                                 sxml-classes
+                                 mode-extractors
                                  scan-used-classes
                                  parse-css-blocks
                                  serialize-css-blocks
@@ -77,6 +84,31 @@
 (define skipped-directories
   (make-parameter '(".git")))
 
+;; What a scan understands:
+;;
+;;   html      `class="..."' and `className="..."' in the scanned files
+;;   sxml      the same plus SXML `(@ (class "..."))' attributes, which is how
+;;             Artanis, Guile's own templates and any SXML generator write them
+;;   manifest  no scanning at all: the classes come from `preserved-classes',
+;;             for an application that builds its class names at run time
+;;
+;; A dynamic application usually needs one of the last two: a template that
+;; computes `text-<colour>-500' cannot be scanned, so the build either names the
+;; classes it renders or keeps them by pattern.
+(define scan-mode
+  (make-parameter 'html))
+
+;; Classes to keep whatever the scan finds.  Written the way the markup writes
+;; them (`bg-x/50', not `bg-x\/50').
+(define preserved-classes
+  (make-parameter '()))
+
+;; Regular expressions a class name has to match to be kept, for the families a
+;; scan cannot enumerate (`text-.*-500', `col-span-.*').  Matched against the
+;; class name as the markup writes it.
+(define preserved-patterns
+  (make-parameter '()))
+
 ;;; ---------------------------------------------------------------------------
 ;;; HTML scanning
 ;;; ---------------------------------------------------------------------------
@@ -89,28 +121,77 @@ becomes \"hover\\:bg-white\" and \"mask-t-from-50%\" becomes
           (string-replace-substring acc
                                     (car replacement)
                                     (cdr replacement))) name
-        '((":" . "\\:") ("/" . "\\/") ("%" . "\\%"))))
+        '((":" . "\\:") ("/" . "\\/") ("%" . "\\%") ("@" . "\\@"))))
+
+(define (unescape-class-name name)
+  "NAME with the CSS escapes removed, i.e. the way the markup wrote it."
+  (let loop
+    ((chars (string->list name))
+     (acc '()))
+    (cond
+      ((null? chars)
+       (list->string (reverse acc)))
+      ((and (char=? (car chars) #\\) (pair? (cdr chars)))
+       (loop (cddr chars)
+             (cons (cadr chars) acc)))
+      (else (loop (cdr chars)
+                  (cons (car chars) acc))))))
+
+;; `class=' and `className=' (JSX and friends).  The two alternatives are
+;; ordered longest-first, because POSIX matches the longest one.
+(define class-attribute-regexp
+  (make-regexp
+   "(className|class)[[:space:]]*=[[:space:]]*[\"']([^\"']*)[\"']"
+   regexp/extended))
+
+;; SXML writes an attribute as `(@ (class "a b"))', which the HTML form above
+;; does not see because the quotes are inside the list.
+(define sxml-class-regexp
+  (make-regexp "\\(class[[:space:]]+\"([^\"]*)\"" regexp/extended))
+
+(define* (extract-with regexp text #:key (group 1))
+  "The escaped class names the capturing GROUP of REGEXP matches in TEXT."
+  (let loop
+    ((start 0)
+     (acc '()))
+    (let ((matched (regexp-exec regexp text start)))
+      (if matched
+          (loop (match:end matched)
+                (append (map escape-class-name
+                             (string-tokenize (match:substring matched group)))
+                        acc))
+          acc))))
+
+(define (html-classes text)
+  "The class names a document's class attributes reference."
+  (extract-with class-attribute-regexp text #:group 2))
+
+(define (sxml-classes text)
+  "The class names a document references, in HTML or in SXML form."
+  (append (html-classes text)
+          (extract-with sxml-class-regexp text)))
+
+(define (mode-extractors)
+  "The extractors the current `scan-mode' applies to every file it reads."
+  (case (scan-mode)
+    ((html) (list html-classes))
+    ((sxml) (list sxml-classes))
+    ((manifest) '())
+    (else (error "unknown scan mode" (scan-mode)))))
 
 (define (extract-classes-from-html file-path)
   "Return the (escaped) class names referenced by the `class' attributes of the
 HTML file at FILE-PATH."
-  (let ((content (call-with-input-file file-path
-                   get-string-all))
-        (class-re (make-regexp "class=[\"']([^\"']+)[\"']" regexp/extended)))
-    (let loop
-      ((start 0)
-       (acc '()))
-      (let ((matched (regexp-exec class-re content start)))
-        (if matched
-            (let ((current (map escape-class-name
-                                (string-tokenize (match:substring matched 1)))))
-              (loop (match:end matched)
-                    (append current acc))) acc)))))
+  (html-classes (call-with-input-file file-path
+                  get-string-all)))
 
 (define (scan-used-classes base-dir)
   "Recursively traverse BASE-DIR to find every unique CSS class name used in
 the files matching `scanned-file-types'.  Returns a list of escaped class names,
-e.g. 'bg-apple-green-100\\/50' or 'hover\\:bg-white'."
+e.g. 'bg-apple-green-100\\/50' or 'hover\\:bg-white'.
+
+`scan-mode' decides what each file is read for; the `manifest' mode reads
+nothing and returns the empty list."
   (define (enter? path stat result)
     (not (member (basename path)
                  (skipped-directories))))
@@ -118,7 +199,12 @@ e.g. 'bg-apple-green-100\\/50' or 'hover\\:bg-white'."
     (if (any (lambda (extension)
                (string-suffix? extension path))
              (scanned-file-types))
-        (append (extract-classes-from-html path) result) result))
+        (let ((text (call-with-input-file path
+                      get-string-all)))
+          (append (append-map (lambda (extractor)
+                                (extractor text))
+                              (mode-extractors))
+                  result)) result))
   (define (down path stat result)
     result)
   (define (up path stat result)
@@ -281,23 +367,56 @@ e.g. 'bg-apple-green-100\\/50' or 'hover\\:bg-white'."
                                      (+ i 1) end) acc)))
             (loop (+ i 1) acc)))))
 
-(define (part-used? part used)
-  "True when PART is classless (reset/structural) or references a used class."
-  (let ((tokens (class-tokens part)))
+(define (marker-class? token)
+  "True when TOKEN only marks the element a variant watches.
+
+`group' and `peer' (and their named forms, `group\\/sidebar') appear in the
+selectors of every group and peer variant, but the site writes them on a
+different element than the utility.  Keeping a rule because of them would keep
+every variant a page ever generated."
+  (and (or (string=? token "group")
+           (string=? token "peer")
+           (string-prefix? "group\\/" token)
+           (string-prefix? "peer\\/" token)) #t))
+
+(define (class-kept? token used patterns)
+  "True when TOKEN is used, or matches one of the PATTERNS."
+  (or (member token used)
+      (any (lambda (pattern)
+             (regexp-exec pattern (unescape-class-name token))) patterns)))
+
+(define (part-used? part used patterns)
+  "True when PART is classless (reset/structural) or references a class the
+site uses.
+
+A selector with several classes needs only one of them to be used - the utility
+class - because the others name the context (`:where', `:not', the ancestor of a
+group variant).  Marker classes are the exception: they never decide alone."
+  (let ((tokens (remove marker-class? (class-tokens part))))
     (or (null? tokens)
         (any (lambda (token)
-               (member token used)) tokens))))
+               (class-kept? token used patterns)) tokens))))
 
 ;;; ---------------------------------------------------------------------------
 ;;; Filtering
 ;;; ---------------------------------------------------------------------------
 
-(define (filter-blocks nodes used)
-  "Keep only nodes of NODES that are relevant to USED class names."
+(define (filter-blocks nodes used patterns)
+  "Keep only nodes of NODES that are relevant to USED class names or PATTERNS."
   (filter-map (lambda (node)
-                (filter-block node used)) nodes))
+                (filter-block node used patterns)) nodes))
 
-(define (filter-block node used)
+(define (grouping-at-rule? sel)
+  "True when SEL opens a block whose children are rules rather than
+declarations, so the pruner has to descend instead of judging the prelude.
+
+Every at-rule but @code{@keyframes} and @code{@view-transition} qualifies:
+those two name their content indirectly and are kept whole."
+  (and (string-prefix? "@" sel)
+       (not (string-prefix? "@keyframes" sel))
+       (not (string-prefix? "@view-transition" sel))))
+
+(define (filter-block node used patterns)
   (let ((sel (car node))
         (inner (cdr node)))
     (cond
@@ -309,17 +428,15 @@ e.g. 'bg-apple-green-100\\/50' or 'hover\\:bg-white'."
            (string-prefix? "@view-transition" sel))
        node)
       ;; grouping rules: recurse and drop the group when it becomes empty.
-      ((or (string-prefix? "@media" sel)
-           (string-prefix? "@supports" sel)
-           (string-prefix? "@layer" sel)
+      ((or (grouping-at-rule? sel)
            (string-prefix? ":where" sel)
            (string-prefix? ":is" sel))
-       (let ((kept (filter-blocks (parse-css-blocks inner) used)))
+       (let ((kept (filter-blocks (parse-css-blocks inner) used patterns)))
          (if (null? kept) #f
              (cons sel
                    (serialize-css-blocks kept)))))
       (else (let ((parts (filter (lambda (part)
-                                   (part-used? part used))
+                                   (part-used? part used patterns))
                                  (split-selectors sel))))
               (if (null? parts) #f
                   (cons (string-join parts ",") inner)))))))
@@ -331,11 +448,18 @@ e.g. 'bg-apple-green-100\\/50' or 'hover\\:bg-white'."
     (if (string-null? header) ""
         (format #f "/*~a*/" header))))
 
-(define (tree-shake-css css used)
-  "Return a minified stylesheet containing only the rules relevant to USED."
-  (let ((kept (filter-blocks (parse-css-blocks css) used)))
+(define* (tree-shake-css css used #:key (patterns (preserved-patterns)))
+  "Return a minified stylesheet containing only the rules relevant to USED.
+
+PATTERNS is a list of regular expressions; a class name that matches one is kept
+even when no scan found it, which is how a build prunes an application whose
+class names are computed at run time."
+  (let ((compiled (map (lambda (pattern)
+                         (make-regexp pattern))
+                       patterns)))
     (string-append (license-comment)
-                   (serialize-css-blocks kept))))
+                   (serialize-css-blocks (filter-blocks (parse-css-blocks css)
+                                                        used compiled)))))
 
 ;;; ---------------------------------------------------------------------------
 ;;; Entry-point
@@ -357,7 +481,12 @@ after pruning."
                      (output-css-target)))
          (css (call-with-input-file stylesheet
                 get-string-all))
-         (used-classes (scan-used-classes directory))
+         ;; Declared classes count as used: a scan cannot see a name the
+         ;; application builds at run time.
+         (used-classes (delete-duplicates (append (map escape-class-name
+                                                       (preserved-classes))
+                                                  (scan-used-classes
+                                                   directory))))
          (output (tree-shake-css css used-classes))
          (destination (in-vicinity directory target)))
     (call-with-output-file destination
@@ -365,6 +494,8 @@ after pruning."
         (display output out-port)))
     `((stylesheet unquote stylesheet)
       (destination unquote destination)
+      (mode unquote
+            (scan-mode))
       (used-classes unquote
                     (length used-classes))
       (input-bytes unquote

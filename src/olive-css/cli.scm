@@ -45,6 +45,11 @@
                (value #t))
     (stylesheet (single-char #\s)
                 (value #t))
+    (mode (single-char #\m)
+          (value #t))
+    (keep (single-char #\k)
+          (value #t))
+    (keep-pattern (value #t))
     (list (single-char #\l)
           (value #f))
     (minified (value #f))
@@ -85,11 +90,18 @@
                  "      --no-minified    write readable CSS while debugging\n"
                  "\n"
                  "tree-shake options:\n"
-                 "  -d, --directory DIR  built HTML to scan (default: public)\n"
+                 "  -d, --directory DIR  built site to scan (default: public)\n"
                  "  -s, --stylesheet FILE\n"
                  "                       stylesheet to prune\n"
                  "                       (default: resources/css/olive.min.css)\n"
                  "  -o, --output FILE    output name inside DIR (default: olive.min.css)\n"
+                 "  -m, --mode MODE      what to scan for: html (class attributes),\n"
+                 "                       sxml (class attributes and (@ (class ...))),\n"
+                 "                       manifest (scan nothing, keep --keep)\n"
+                 "  -k, --keep CLASSES   comma-separated classes to keep as written\n"
+                 "      --keep-pattern RE\n"
+                 "                       comma-separated regular expressions; any class\n"
+                 "                       that matches one is kept\n"
                  "\n"
                  "other options:\n"
                  "  -h, --help           show this help and exit\n"
@@ -205,7 +217,8 @@ works like `olive-css generate --build full'."
 
 (define (report-tree-shake result)
   "Print what pruning did."
-  (format #t "Tree-shaking: ~a used classes~%"
+  (format #t "Tree-shaking (~a mode): ~a classes kept~%"
+          (assoc-ref result 'mode)
           (assoc-ref result 'used-classes))
   (format #t "  ~a: ~a bytes~%"
           (assoc-ref result 'stylesheet)
@@ -214,23 +227,44 @@ works like `olive-css generate --build full'."
           (assoc-ref result 'destination)
           (assoc-ref result 'output-bytes)))
 
+(define scan-modes
+  '(html sxml manifest))
+
+(define (comma-list value)
+  "The non-empty comma-separated words in VALUE, or the empty list."
+  (if value
+      (filter (lambda (word)
+                (not (string-null? word)))
+              (string-split value #\,))
+      '()))
+
 (define (tree-shake-command options)
   "Prune the stylesheet to the classes under a built site."
-  (let ((result (parameterize ((artifact-path (or (option-ref options
-                                                             'directory
+  (let ((mode (option-ref options 'mode "html")))
+    (if (not (memq (string->symbol mode) scan-modes))
+        (begin
+          (say-error "unknown scan mode: ~a" mode)
+          (say-error "the modes are: ~a" (string-join (map symbol->string
+                                                          scan-modes)
+                                                      ", "))
+          1)
+        (parameterize ((artifact-path (or (option-ref options 'directory #f)
+                                          (artifact-path)))
+                       (base-stylesheet-path (or (option-ref options
+                                                             'stylesheet
                                                              #f)
-                                                  (artifact-path)))
-                               (base-stylesheet-path (or (option-ref options
-                                                                     'stylesheet
-                                                                     #f)
-                                                         (base-stylesheet-path)))
-                               (output-css-target (or (option-ref options
-                                                                 'output
-                                                                 #f)
-                                                      (output-css-target))))
-                 (tree-shake))))
-    (report-tree-shake result)
-    0))
+                                                 (base-stylesheet-path)))
+                       (output-css-target (or (option-ref options 'output #f)
+                                              (output-css-target)))
+                       (scan-mode (string->symbol mode))
+                       (preserved-classes (comma-list (option-ref options
+                                                                  'keep
+                                                                  #f)))
+                       (preserved-patterns (comma-list (option-ref options
+                                                                   'keep-pattern
+                                                                   #f))))
+          (report-tree-shake (tree-shake))
+          0))))
 
 (define (run-command command options)
   (cond
