@@ -126,18 +126,35 @@
 
 Selectors are built directly (rather than through @code{css-rule-variants})
 because the general-sibling combinator `~' would otherwise collide with a
-format directive."
-  (map (lambda (s)
-         (css-rule (format #f ".space-~a-~a > :not([hidden])~~:not([hidden])"
-                           axis
-                           (car s))
-                   (css-declaration (if (equal? axis
-                                                'x)
-                                        'margin-inline-start
-                                        'margin-block-start)
-                                    (to-rem (* (cadr s)
-                                               (margin-multiplier))))))
-       (append numeric-sizes tshirt-sizes)))
+format directive.  Both edges are written, one multiplied by the reverse
+variable and the other by its complement, so =.space-x-reverse= only sets that
+variable on the parent."
+  (let ((start (if (equal? axis
+                          'x) 'margin-inline-start
+                   'margin-block-start))
+        (end (if (equal? axis
+                        'x) 'margin-inline-end
+                 'margin-block-end))
+        (variable (format #f "--olive-space-~a-reverse" axis))
+        (size (lambda (s)
+                (to-rem (* (cadr s)
+                           (margin-multiplier))))))
+    (append (map (lambda (s)
+                   (css-rule (format #f ".space-~a-~a > :not([hidden])~~:not([hidden])"
+                                     axis
+                                     (car s))
+                             (css-declaration end
+                                              (format #f
+                                                      "calc(~a * var(~a, 0))"
+                                                      (size s) variable))
+                             (css-declaration start
+                                              (format #f
+                                                      "calc(~a * calc(1 - var(~a, 0)))"
+                                                      (size s) variable))))
+                 (append numeric-sizes tshirt-sizes))
+            (list (css-rule (format #f ".space-~a-reverse > :not([hidden])~~:not([hidden])"
+                                    axis)
+                            (css-declaration variable 1))))))
 
 (define space-between
   (make-parameter (append (space-rules 'x)

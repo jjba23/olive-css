@@ -6,11 +6,12 @@
 (define-module (olive-css decl backgrounds)
   #:use-module (srfi srfi-1)
   #:use-module (olive-css dsl)
+  #:use-module (olive-css sizes)
   #:export (background-classes gradient-classes gradient-color-classes
                                background-image background-position
                                background-size background-repeat
                                background-attachment background-clip
-                               background-origin))
+                               background-origin gradient-alphas))
 
 (define background-image
   (make-parameter (list (css-rule ".bg-none"
@@ -128,6 +129,13 @@
     (format #f "oklch(~a ~a ~a / ~a)"
             (car color) (cadr color) (caddr color) alpha)))
 
+;; The opacity modifiers a gradient stop accepts.  The opaque entry is the
+;; stop's own class, so only the transparent ones become extra rules.
+(define gradient-alphas
+  (make-parameter (filter (lambda (a)
+                            (not (equal? "" (car a))))
+                          alphas)))
+
 (define (gradient-from-rule name color clear)
   (css-rule (format #f ".from-~a" name)
             (css-declaration "--olive-gradient-from" color)
@@ -158,13 +166,30 @@
                                      (caddr entry)))
               gradient-basic-colors))
 
+(define (gradient-shade-alpha-stops palette shade)
+  "The same stop at every opacity modifier, e.g. =from-redwood-500/50=.
+
+A stop is a pair of declarations - the colour the stop holds and the stops
+list that reads it - so the alpha has to be computed here, in the palette
+arithmetic, rather than applied to a literal at use time."
+  (map (lambda (alpha)
+         (let* ((suffix (format #f "\\/~a" (car alpha)))
+                (name (format #f "~a-~a~a" (car palette) (car shade) suffix))
+                (from (gradient-shade-color shade (cadr alpha)))
+                (clear (gradient-shade-color shade 0)))
+           (gradient-stop-rules name from clear)))
+       (gradient-alphas)))
+
 (define (gradient-palette-stops palettes)
   (append-map (lambda (palette)
                 (append-map (lambda (shade)
-                              (gradient-stop-rules
-                               (format #f "~a-~a" (car palette) (car shade))
-                               (gradient-shade-color shade 1)
-                               (gradient-shade-color shade 0)))
+                              (append (gradient-stop-rules
+                                       (format #f "~a-~a" (car palette)
+                                               (car shade))
+                                       (gradient-shade-color shade 1)
+                                       (gradient-shade-color shade 0))
+                                      (gradient-shade-alpha-stops palette
+                                                                  shade)))
                             (cdr palette)))
               palettes))
 
