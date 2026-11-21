@@ -9,6 +9,19 @@ by the release they belong to, and releases correspond to the repository's git
 tags.  See [[file:README.org][the README]] for installation, usage and the
 feature reference.
 
+* v2.0.2 - 2026-11-21
+
+** Fixed
+
+- *The API reference links.*  The published reference has been one page named
+  =index.html= since the dokgen migration, and every link still named
+  =API.html=.  The README, the documentation index, the development guide and
+  the reference now point at
+  https://jointhefreeworld.org/api-docs/olive-css/index.html.
+- *The pinned jointhefreeworld revision.*  =channels.scm= moves to the commit
+  that carries =guile-dokgen= 0.9.1, so the links and the generator that writes
+  the page they point at are the same version.
+
 * v1.1.4 - 2026-11-12
 
 - Builds against the channels this project builds against: the jointhefreeworld collection at v1.0.4, and Guix master `3b4e873`.

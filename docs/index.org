@@ -50,4 +50,4 @@ before touching a task or the release process.
 - [[file:../README.org][README]] - what Olive CSS is and how to install it
 - [[file:../CHANGELOG.org][Changelog]] - notable changes, one section per release
 - [[file:../LICENSE][LICENSE]] - the MIT licence
-- [[https://jointhefreeworld.org/api-docs/olive-css/API.html][Guile API documentation]] - signatures and docstrings
+- [[https://jointhefreeworld.org/api-docs/olive-css/index.html][Guile API documentation]] - signatures and docstrings

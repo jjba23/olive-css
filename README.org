@@ -137,7 +137,7 @@ table of contents and a link back to this page:
 | [[file:docs/development.org][Development and releases]]                 | tasks, tests, packaging, CI and =maak release=                   |
 
 The Guile Scheme API - signatures, exports, docstrings - is published at
-https://jointhefreeworld.org/api-docs/olive-css/API.html.  Notable changes live
+https://jointhefreeworld.org/api-docs/olive-css/index.html.  Notable changes live
 in [[file:CHANGELOG.org][the changelog]].
 
 * Why the name Olive?

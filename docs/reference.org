@@ -21,7 +21,7 @@ This document is the *complete reference* for the framework: every utility
 family, every value scale, every variant and every generator parameter is listed
 here.  For the Guile Scheme API (docstrings, signatures, exports) see the
 generated API documentation at
-https://jointhefreeworld.org/api-docs/olive-css/API.html, and for the release
+https://jointhefreeworld.org/api-docs/olive-css/index.html, and for the release
 history see [[file:../CHANGELOG.org][the changelog]].
 
 * How to read this reference
