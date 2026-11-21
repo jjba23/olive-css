@@ -11,6 +11,15 @@
 ;;; and change its palette and feature set; the CLI builds every entry here so
 ;;; `maak build' regenerates all of them in one call.
 ;;;
+;;; ```mermaid
+;;; flowchart LR
+;;;   decl["(olive-css decl ...): one module per CSS area"] --> spec["a build spec: name, file, palette, thunk"]
+;;;   spec --> css["build-css: the CSS lines of one build"]
+;;;   css --> shipped["resources/css/NAME.min.css"]
+;;;   shipped --> prune["tree-shake: keep the classes a site uses"]
+;;;   site["a site's built HTML"] --> prune
+;;;   prune --> pruned["the site's app.min.css"]
+;;; ```
 ;;;
 ;;; Code:
 

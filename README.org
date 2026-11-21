@@ -59,8 +59,11 @@ In one sentence: *Tailwind's syntax, a Lisp engine, and a stylesheet you own.*
 From a checkout, build the complete stylesheet:
 
 #+begin_src shell
-guix shell -m manifest.scm -- ./bin/olive-css generate --build full
+guix time-machine --channels=channels.scm -- shell -m manifest.scm -- ./bin/olive-css generate --build full
 #+end_src
+
+The channels file is named because the manifest takes ~guile-dokgen~ from the
+=jointhefreeworld= channel; inside that shell, ~maak build~ does the same thing.
 
 Load it, and point the tree-shaker at your built site for production:
 
@@ -71,6 +74,24 @@ Load it, and point the tree-shaker at your built site for production:
 #+begin_src shell
 ./bin/olive-css tree-shake --directory public --output app.min.css
 #+end_src
+
+** How a stylesheet is made
+:PROPERTIES:
+:CUSTOM_ID: how-a-stylesheet-is-made
+:END:
+
+A build is a Scheme value, not a configuration file.  The declaration modules
+emit the CSS lines of one area each, a build spec names the file it is written
+to and the palette and feature set it uses, and the tree-shaker keeps only the
+classes your pages actually use:
+
+#+attr_html: :width 760 :alt Olive CSS: declaration modules feed a build spec, whose CSS lines are written to resources/css, and the tree-shaker keeps the classes a site's built HTML uses
+[[file:resources/diagrams/stylesheet-pipeline.svg]]
+
+The diagram is generated from
+[[file:resources/diagrams/stylesheet-pipeline.mmd][resources/diagrams/stylesheet-pipeline.mmd]]
+by ~maak diagrams~.  The same diagram sits in the ~;;; Commentary:~ block of
+~(olive-css builds)~, so it also reaches the API reference.
 
 [[file:docs/getting-started.org][Getting started]] has the four install routes, a first page and the
 troubleshooting list.  Every command is in [[file:docs/cli.org][the CLI reference]].
@@ -149,8 +170,8 @@ Bug reports, class families and new palettes are all welcome.  The quickest
 loop is:
 
 #+begin_src shell
-guix shell -m manifest.scm -- maak test
-guix shell -m manifest.scm -- maak build
+guix time-machine --channels=channels.scm -- shell -m manifest.scm -- maak test
+guix time-machine --channels=channels.scm -- shell -m manifest.scm -- maak build
 #+end_src
 
 [[file:docs/development.org][Development and releases]] covers the tasks, the test suite and the release

@@ -199,8 +199,8 @@ Working on the framework itself (or trying a change before it is packaged) does
 not need an install.  The checkout's launcher adds =src/= to Guile's load path:
 
 #+begin_src shell
-guix shell -m manifest.scm -- ./bin/olive-css generate --build full
-guix shell -m manifest.scm -- ./bin/olive-css tree-shake
+guix time-machine --channels=channels.scm -- shell -m manifest.scm -- ./bin/olive-css generate --build full
+guix time-machine --channels=channels.scm -- shell -m manifest.scm -- ./bin/olive-css tree-shake
 #+end_src
 
 Without Guix, Guile 3.0 is the only requirement; put =src= on the load path and

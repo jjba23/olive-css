@@ -28,13 +28,20 @@
 
 Guile 3.0 is the only requirement to build and run the CLI.  The full
 environment - Veritas, Maak, the documentation tools and the exact Guile the
-project is tested with - comes from the manifest:
+project is tested with - comes from the manifest, read at the channels this
+repository pins:
 
 #+begin_src shell
 git clone https://github.com/jjba23/olive-css.git
 cd olive-css
-guix shell -m manifest.scm -- guile --version
+guix time-machine --channels=channels.scm -- shell -m manifest.scm -- guile --version
 #+end_src
+
+The pinned channels are the reason for ~time-machine~: the manifest names
+~guile-dokgen~, which comes from the =jointhefreeworld= channel, and a plain
+~guix shell -m manifest.scm~ would look for it among the channels your own Guix
+is configured with.  Every command below is written out in full; inside the
+shell it is enough to run ~maak~.
 
 Nix users get the same toolchain from ~nix develop~; the flake exports the
 package and a development shell.
@@ -88,7 +95,7 @@ shipped stylesheet gets an entry in ~build-specs~.
 :END:
 
 #+begin_src shell
-guix shell -m manifest.scm -- maak test
+guix time-machine --channels=channels.scm -- shell -m manifest.scm -- maak test
 #+end_src
 
 The suite uses [[https://codeberg.org/jjba23/veritas][Veritas]] and covers the tree-shaker (escaping, scanning,
@@ -120,7 +127,7 @@ A release is one command.  First bump ~olive-css-version~ in
 =CHANGELOG.org=, commit them, and make sure the tree is clean and on =trunk=:
 
 #+begin_src shell
-guix shell -m manifest.scm -- maak release
+guix time-machine --channels=channels.scm -- shell -m manifest.scm -- maak release
 #+end_src
 
 The task then:

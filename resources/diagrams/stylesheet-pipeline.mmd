@@ -1,0 +1,13 @@
+flowchart LR
+%% olive-css --- from a build spec to the stylesheet a site serves
+%% SPDX-License-Identifier: MIT
+%% Copyright © Josep Bigorra <jjbigorra@gmail.com>
+%% Rendered to stylesheet-pipeline.svg by `maak diagrams'.  The same diagram sits
+%% in the `;;; Commentary:' block of src/olive-css/builds.scm, which is where the
+%% API documentation picks it up.
+  decl["(olive-css decl ...): one module per CSS area"] --> spec["a build spec: name, file, palette, thunk"]
+  spec --> css["build-css: the CSS lines of one build"]
+  css --> shipped["resources/css/NAME.min.css"]
+  shipped --> prune["tree-shake: keep the classes a site uses"]
+  site["a site's built HTML"] --> prune
+  prune --> pruned["the site's app.min.css"]

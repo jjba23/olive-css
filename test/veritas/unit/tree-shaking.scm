@@ -206,7 +206,7 @@ the rules nested in media queries and the dark-mode scope are visited too."
                     "<div class=\"bg-mantis-900\">notes</div>")
   ;; Inside a skipped directory, so it is only read when that option is cleared.
   (write-text-file! (string-append scan-site "/.git/ignored.html")
-                    "<div class=\"bg-onyx-900\">history</div>"))
+                    "<div class=\"bg-onyx-900\">history</div>")
   ;; An SXML template, in the shape Artanis and any SXML generator write: the
   ;; class attribute is a list, which only the sxml mode reads.
   (write-text-file! (string-append scan-site "/views/page.scm")

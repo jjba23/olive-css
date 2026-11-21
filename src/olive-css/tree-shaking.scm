@@ -410,7 +410,7 @@ group variant).  Marker classes are the exception: they never decide alone."
   "True when SEL opens a block whose children are rules rather than
 declarations, so the pruner has to descend instead of judging the prelude.
 
-Every at-rule but @code{@keyframes} and @code{@view-transition} qualifies:
+Every at-rule but @code{@@keyframes} and @code{@@view-transition} qualifies:
 those two name their content indirectly and are kept whole."
   (and (string-prefix? "@" sel)
        (not (string-prefix? "@keyframes" sel))

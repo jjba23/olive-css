@@ -774,8 +774,8 @@ because their composed value is long and a hover-only blur is rare; bind
 Layout, box, type, transforms and effects are what a media query or a print
 stylesheet changes (`print:hidden', `motion-reduce:transition-none'), and
 colours stay out so the palette is not duplicated under every at-rule.  Unit
-spacing is left out as well: it is the largest family and `@sm:p-4' is rare
-next to `@sm:flex', so bind `at-rule-variant-targets' to
+spacing is left out as well: it is the largest family and `@@sm:p-4' is rare
+next to `@@sm:flex', so bind `at-rule-variant-targets' to
 `(default-at-rule-variant-targets)' plus `(spacing-classes)' to have it."
   (append (layout-classes)
           (display-utilities)

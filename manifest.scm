@@ -5,6 +5,7 @@
 
 (use-modules (guix packages)
              (gnu)
+             (gnu packages)
              (guix utils)
              (guix git-download)
              (guix download)
@@ -57,5 +58,5 @@ runs them concurrently by default to ensure robust testing practices.")
                           guile-ares-rs
                           guile-veritas
                           direvent
-                          guile-documenta))
+                          (specification->package "guile-dokgen")))
 

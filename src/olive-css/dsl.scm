@@ -233,7 +233,7 @@ the identity gives a class the surrounding at-rule already qualifies."
 
 (define (at-rule-block prelude args)
   "Wrap @var{args} in a block opened by @var{prelude}, which carries its own
-at-keyword: @code{\"@media print\"} or @code{\"@container (width >= 24rem)\"}."
+at-keyword: @code{\"@@media print\"} or @code{\"@@container (width >= 24rem)\"}."
   (append (list (format #f "~a {" prelude)) args
           '("}")))
 
