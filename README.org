@@ -9,6 +9,8 @@
 #+attr_html: :width 160 :alt Olive CSS logo
 [[file:logo.svg]]
 
+- 📖 *API reference:* [[https://jointhefreeworld.org/api-docs/olive-css/index.html][Olive CSS API reference]]
+
 *Utility-class CSS, written in Lisp.  Tailwind-style classes in your HTML, plain CSS out, and no npm, Node or JavaScript bundler anywhere.*
 
 * What is Olive CSS?
