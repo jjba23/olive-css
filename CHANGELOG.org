@@ -9,6 +9,21 @@ by the release they belong to, and releases correspond to the repository's git
 tags.  See [[file:README.org][the README]] for installation, usage and the
 feature reference.
 
+* Unreleased
+
+Work that lands after =v2.0.7= is recorded here until it is tagged.
+
+Nothing yet.
+
+* v2.0.7 - 2026-11-26
+
+** Changed
+
+- *The pinned jointhefreeworld revision.*  =channels.scm= moves to =59d58ac=,
+  the commit that carries =guile-dokgen= 0.12.0: the published API reference
+  folds the source behind each definition into a panel a reader opens, and
+  reads on a quieter page with translucent surfaces.
+
 * v2.0.3 - 2026-11-21
 
 ** Fixed
